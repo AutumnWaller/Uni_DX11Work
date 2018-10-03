@@ -1,24 +1,31 @@
 #pragma once
-#include "Application.h"
 
-class Object : Application
+#include <DirectXMath.h>
+
+
+
+
+class Object
 {
+
+
+
 public:
-	static struct Vertex
+	static struct StandardVertex
 	{
-		XMFLOAT3 Pos;
-		XMFLOAT4 Color;
+		DirectX::XMFLOAT3 Pos;
+		DirectX::XMFLOAT4 Color;
 	};
 
-	Object(Vertex vertices[]);
+	Object(StandardVertex vertices[]);
 	Object();
 	~Object();
 
 protected:
 
 	virtual void Draw();
-
-	Vertex vertices[];
+	int vertexAmount;
+	int indexAmount;
 
 };
 

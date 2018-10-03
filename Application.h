@@ -7,6 +7,7 @@
 #include <directxcolors.h>
 #include "resource.h"
 #include "Object.h"
+#include "Cube.h"
 
 using namespace DirectX;
 
@@ -51,8 +52,7 @@ private:
 	void Cleanup();
 	HRESULT CompileShaderFromFile(WCHAR* szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel, ID3DBlob** ppBlobOut);
 	HRESULT InitShadersAndInputLayout();
-	HRESULT InitVertexBuffer();
-	HRESULT InitIndexBuffer();
+	HRESULT InitDrawBuffers();
 	UINT _WindowHeight;
 	UINT _WindowWidth;
 

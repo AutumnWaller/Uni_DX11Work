@@ -146,105 +146,76 @@ HRESULT Application::InitShadersAndInputLayout()
 	return hr;
 }
 
-HRESULT Application::InitVertexBuffer()
+
+
+
+
+HRESULT Application::InitDrawBuffers()
 {
 	HRESULT hr;
 
 	XMFLOAT4 WHITE = { 1.0f, 1.0f, 1.0f, 1.0f };
 	XMFLOAT4 BLACK = { 0.0f, 0.0f, 0.0f, 1.0f };
-	XMFLOAT4 RED =	{ 1.0f, 0.0f, 0.0f, 1.0f };
+	XMFLOAT4 RED = { 1.0f, 0.0f, 0.0f, 1.0f };
 
-
-	Object::Vertex cubeVertices[] = {
-		{ XMFLOAT3(-3.0f, 1.0f, 0.0f), BLACK },
-		{ XMFLOAT3(-1.0f, 1.0f, 0.0f), BLACK },
-		{ XMFLOAT3(-3.0f, -1.0f, 0.0f), BLACK },
-		{ XMFLOAT3(-1.0f, -1.0f, 0.0f), BLACK },
-		
-		{ XMFLOAT3(-1.0f, 1.0f, -1.0f), RED },
-		{ XMFLOAT3(-1.0f, -1.0f, -1.0f), RED },
-		{ XMFLOAT3(-3.0f, -1.0f, -1.0f), RED },
-		{ XMFLOAT3(-3.0f, 1.0f, -1.0f), RED },
-	};
-
-    // Create vertex buffer
-	Object::Vertex vertices[] =
-    {
-        { XMFLOAT3( -3.0f, 1.0f, 0.0f ), BLACK },
-        { XMFLOAT3( -1.0f, 1.0f, 0.0f ), BLACK },
-        { XMFLOAT3( -3.0f, -1.0f, 0.0f ), WHITE },
-        { XMFLOAT3( -1.0f, -1.0f, 0.0f ), WHITE },
-
-		{ XMFLOAT3(-1.0f, -2.0f, 0.0f), RED },
-		{ XMFLOAT3(1.0f, -2.0f, 0.0f), RED},
-		{ XMFLOAT3(-1.0f, -3.0f, 0.0f), RED },
-		{ XMFLOAT3(1.0f, -3.0f, 0.0f), RED },
-    };
 	vertexCount = 8;
 	indexCount = 36;
-	
 
-    D3D11_BUFFER_DESC bd;
+
+	D3D11_BUFFER_DESC bd;
 	ZeroMemory(&bd, sizeof(bd));
-    bd.Usage = D3D11_USAGE_DEFAULT;
-    bd.ByteWidth = sizeof(Object::Vertex) * vertexCount;
-    bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	bd.Usage = D3D11_USAGE_DEFAULT;
+	bd.ByteWidth = sizeof(Object::StandardVertex) * vertexCount;
+	bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	bd.CPUAccessFlags = 0;
 
-    D3D11_SUBRESOURCE_DATA InitData;
+	D3D11_SUBRESOURCE_DATA InitData;
 	ZeroMemory(&InitData, sizeof(InitData));
-    InitData.pSysMem = cubeVertices;
-
-    hr = _pd3dDevice->CreateBuffer(&bd, &InitData, &_pVertexBuffer);
-
-    if (FAILED(hr))
-        return hr;
-
-	return S_OK;
-}
-
-HRESULT Application::InitIndexBuffer()
-{
-	HRESULT hr;
-
-    // Create index buffer
-	WORD indices[] = {
 	
+	InitData.pSysMem = cube->GetVertices();
+
+	hr = _pd3dDevice->CreateBuffer(&bd, &InitData, &_pVertexBuffer);
+
+	if (FAILED(hr))
+		return hr;
+
+
+	// Create index buffer
+	WORD indices[] = {
+
 		//Bottom
 		0,1,3,
 		0,3,2,
 
 		1,5,4,
 		3,5,1,
-		
+
 		3,6,5,
 		2,6,3,
-		
+
 		2,0,7,
 		7,6,2,
-		
+
 		0,1,4,
 		4,7,0,
-		
+
 		//Top
 		7,4,5,
 		5,6,7
 	};
 
-	D3D11_BUFFER_DESC bd;
 	ZeroMemory(&bd, sizeof(bd));
-    bd.Usage = D3D11_USAGE_DEFAULT;
-    bd.ByteWidth = sizeof(WORD) * indexCount;     
-    bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
+	bd.Usage = D3D11_USAGE_DEFAULT;
+	bd.ByteWidth = sizeof(WORD) * indexCount;
+	bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
 	bd.CPUAccessFlags = 0;
 
-	D3D11_SUBRESOURCE_DATA InitData;
 	ZeroMemory(&InitData, sizeof(InitData));
-    InitData.pSysMem = indices;
-    hr = _pd3dDevice->CreateBuffer(&bd, &InitData, &_pIndexBuffer);
+	InitData.pSysMem = indices;
+	hr = _pd3dDevice->CreateBuffer(&bd, &InitData, &_pIndexBuffer);
 
-    if (FAILED(hr))
-        return hr;
+	if (FAILED(hr))
+		return hr;
 
 	return S_OK;
 }
@@ -396,14 +367,12 @@ HRESULT Application::InitDevice()
 
 	InitShadersAndInputLayout();
 
-	InitVertexBuffer();
+	InitDrawBuffers();
 
     // Set vertex buffer
-    UINT stride = sizeof(Object::Vertex);
+    UINT stride = sizeof(Object::StandardVertex);
     UINT offset = 0;
     _pImmediateContext->IASetVertexBuffers(0, 1, &_pVertexBuffer, &stride, &offset);
-
-	InitIndexBuffer();
 
     // Set index buffer
     _pImmediateContext->IASetIndexBuffer(_pIndexBuffer, DXGI_FORMAT_R16_UINT, 0);

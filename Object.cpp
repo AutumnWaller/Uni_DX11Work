@@ -12,7 +12,7 @@ Object::Object()
 }
 
 
-Object::Object(Vertex vertices[])
+Object::Object(StandardVertex vertices[])
 {
 }
 
