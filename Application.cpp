@@ -154,18 +154,16 @@ HRESULT Application::InitDrawBuffers()
 {
 	HRESULT hr;
 
-	XMFLOAT4 WHITE = { 1.0f, 1.0f, 1.0f, 1.0f };
-	XMFLOAT4 BLACK = { 0.0f, 0.0f, 0.0f, 1.0f };
-	XMFLOAT4 RED = { 1.0f, 0.0f, 0.0f, 1.0f };
+	cube = new Cube();
 
-	vertexCount = 8;
-	indexCount = 36;
 
+
+	cube->ChangeColour(XMFLOAT4{1.0f, 0.2f, 0.0f, 1.0f});
 
 	D3D11_BUFFER_DESC bd;
 	ZeroMemory(&bd, sizeof(bd));
 	bd.Usage = D3D11_USAGE_DEFAULT;
-	bd.ByteWidth = sizeof(Object::StandardVertex) * vertexCount;
+	bd.ByteWidth = sizeof(Object::StandardVertex) * cube->vertexAmount;
 	bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	bd.CPUAccessFlags = 0;
 
@@ -180,38 +178,16 @@ HRESULT Application::InitDrawBuffers()
 		return hr;
 
 
-	// Create index buffer
-	WORD indices[] = {
-
-		//Bottom
-		0,1,3,
-		0,3,2,
-
-		1,5,4,
-		3,5,1,
-
-		3,6,5,
-		2,6,3,
-
-		2,0,7,
-		7,6,2,
-
-		0,1,4,
-		4,7,0,
-
-		//Top
-		7,4,5,
-		5,6,7
-	};
+	
 
 	ZeroMemory(&bd, sizeof(bd));
 	bd.Usage = D3D11_USAGE_DEFAULT;
-	bd.ByteWidth = sizeof(WORD) * indexCount;
+	bd.ByteWidth = sizeof(WORD) * cube->indexAmount;
 	bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
 	bd.CPUAccessFlags = 0;
 
 	ZeroMemory(&InitData, sizeof(InitData));
-	InitData.pSysMem = indices;
+	InitData.pSysMem = cube->GetIndices();
 	hr = _pd3dDevice->CreateBuffer(&bd, &InitData, &_pIndexBuffer);
 
 	if (FAILED(hr))
@@ -466,7 +442,7 @@ void Application::Draw()
 	_pImmediateContext->VSSetConstantBuffers(0, 1, &_pConstantBuffer);
     _pImmediateContext->PSSetConstantBuffers(0, 1, &_pConstantBuffer);
 	_pImmediateContext->PSSetShader(_pPixelShader, nullptr, 0);
-	_pImmediateContext->DrawIndexed(indexCount, 0, 0);
+	_pImmediateContext->DrawIndexed(cube->indexAmount, 0, 0);
 
     //
     // Present our back buffer to our front buffer

@@ -8,6 +8,8 @@
 #include "resource.h"
 #include "Object.h"
 #include "Cube.h"
+#include <DirectXColors.h>
+#include <vector>
 
 using namespace DirectX;
 
@@ -44,9 +46,7 @@ private:
 	XMFLOAT4X4              _projection;
 
 private:
-	UINT indexCount;
-	UINT vertexCount;
-
+	Cube *cube;
 	HRESULT InitWindow(HINSTANCE hInstance, int nCmdShow);
 	HRESULT InitDevice();
 	void Cleanup();
@@ -63,6 +63,7 @@ public:
 	~Application();
 
 	HRESULT Initialise(HINSTANCE hInstance, int nCmdShow);
+
 
 	void Update();
 	void Draw();
