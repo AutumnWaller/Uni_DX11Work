@@ -47,6 +47,7 @@ private:
 
 private:
 	Cube *cube;
+	Cube *cube2;
 	HRESULT InitWindow(HINSTANCE hInstance, int nCmdShow);
 	HRESULT InitDevice();
 	void Cleanup();
@@ -64,6 +65,7 @@ public:
 
 	HRESULT Initialise(HINSTANCE hInstance, int nCmdShow);
 
+	std::vector<Object*> objects;
 
 	void Update();
 	void Draw();

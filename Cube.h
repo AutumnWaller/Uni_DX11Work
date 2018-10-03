@@ -44,8 +44,7 @@ private:
 	};
 
 public:
-	Object::StandardVertex* GetVertices() { return pVertices; };
-	WORD* GetIndices() { return indices; };
+
 	Cube();
 	~Cube();
 

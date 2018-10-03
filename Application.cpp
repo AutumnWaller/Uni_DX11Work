@@ -154,11 +154,20 @@ HRESULT Application::InitDrawBuffers()
 {
 	HRESULT hr;
 
+	
+
 	cube = new Cube();
+	cube2 = new Cube();
+
+
 
 
 
 	cube->ChangeColour(XMFLOAT4{1.0f, 0.2f, 0.0f, 1.0f});
+	cube2->ChangeColour();
+
+	objects.emplace_back(cube);
+	objects.emplace_back(cube2);
 
 	D3D11_BUFFER_DESC bd;
 	ZeroMemory(&bd, sizeof(bd));
@@ -169,8 +178,8 @@ HRESULT Application::InitDrawBuffers()
 
 	D3D11_SUBRESOURCE_DATA InitData;
 	ZeroMemory(&InitData, sizeof(InitData));
-	
-	InitData.pSysMem = cube->GetVertices();
+	for(int i = 0; i < objects.capacity(); i++)
+		InitData.pSysMem = objects[0]->GetVertices();
 
 	hr = _pd3dDevice->CreateBuffer(&bd, &InitData, &_pVertexBuffer);
 
