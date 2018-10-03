@@ -14,6 +14,7 @@ void Object::ChangeColour(DirectX::XMFLOAT4 newColour)
 	}
 }
 
+
 Object::Object(StandardVertex vertices[])
 {
 }

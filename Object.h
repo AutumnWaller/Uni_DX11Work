@@ -2,7 +2,7 @@
 
 #include <DirectXMath.h>
 #include <Windows.h>
-
+#include <cstdio>
 
 
 class Object
@@ -23,7 +23,7 @@ public:
 
 	StandardVertex* GetVertices() { return pVertices; };
 	WORD* GetIndices() { return pIndices; };
-
+	std::size_t GetMemoryUsage() { return (sizeof(GetVertices()) * vertexAmount) + (sizeof(GetIndices()) * indexAmount); };
 	Object(StandardVertex vertices[]);
 	Object();
 	~Object();

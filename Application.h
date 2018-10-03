@@ -44,7 +44,9 @@ private:
 	XMFLOAT4X4              _world;
 	XMFLOAT4X4              _view;
 	XMFLOAT4X4              _projection;
-
+	
+	D3D11_BUFFER_DESC bd;
+	D3D11_SUBRESOURCE_DATA InitData;
 private:
 	Cube *cube;
 	Cube *cube2;
@@ -54,6 +56,7 @@ private:
 	HRESULT CompileShaderFromFile(WCHAR* szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel, ID3DBlob** ppBlobOut);
 	HRESULT InitShadersAndInputLayout();
 	HRESULT InitDrawBuffers();
+	void Test();
 	UINT _WindowHeight;
 	UINT _WindowWidth;
 

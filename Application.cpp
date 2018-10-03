@@ -169,15 +169,17 @@ HRESULT Application::InitDrawBuffers()
 	objects.emplace_back(cube);
 	objects.emplace_back(cube2);
 
-	D3D11_BUFFER_DESC bd;
+	
 	ZeroMemory(&bd, sizeof(bd));
+	ZeroMemory(&InitData, sizeof(InitData));
 	bd.Usage = D3D11_USAGE_DEFAULT;
-	bd.ByteWidth = sizeof(Object::StandardVertex) * cube->vertexAmount;
+
+	bd.ByteWidth = (objects.size() * (objects[0]->GetMemoryUsage())); //REDO
 	bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	bd.CPUAccessFlags = 0;
 
-	D3D11_SUBRESOURCE_DATA InitData;
-	ZeroMemory(&InitData, sizeof(InitData));
+	
+	
 	for(int i = 0; i < objects.capacity(); i++)
 		InitData.pSysMem = objects[0]->GetVertices();
 
@@ -204,6 +206,7 @@ HRESULT Application::InitDrawBuffers()
 
 	return S_OK;
 }
+
 
 HRESULT Application::InitWindow(HINSTANCE hInstance, int nCmdShow)
 {
