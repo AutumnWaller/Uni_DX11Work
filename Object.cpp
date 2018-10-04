@@ -15,8 +15,12 @@ void Object::ChangeColour(DirectX::XMFLOAT4 newColour)
 }
 
 
-Object::Object(StandardVertex vertices[])
+Object::Object(StandardVertex *vertices, WORD *indices, int vertexSize, int indexSize)
 {
+	pVertices = vertices;
+	pIndices = indices;
+	indexAmount = indexSize;
+	vertexAmount = vertexSize;
 }
 
 Object::~Object()

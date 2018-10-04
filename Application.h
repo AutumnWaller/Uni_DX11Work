@@ -8,6 +8,7 @@
 #include "resource.h"
 #include "Object.h"
 #include "Cube.h"
+#include "Pyramid.h"
 #include <DirectXColors.h>
 #include <vector>
 
@@ -48,15 +49,14 @@ private:
 	D3D11_BUFFER_DESC bd;
 	D3D11_SUBRESOURCE_DATA InitData;
 private:
-	Cube *cube;
-	Cube *cube2;
+	Pyramid *pyramid;
 	HRESULT InitWindow(HINSTANCE hInstance, int nCmdShow);
 	HRESULT InitDevice();
 	void Cleanup();
 	HRESULT CompileShaderFromFile(WCHAR* szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel, ID3DBlob** ppBlobOut);
 	HRESULT InitShadersAndInputLayout();
 	HRESULT InitDrawBuffers();
-	void Test();
+	
 	UINT _WindowHeight;
 	UINT _WindowWidth;
 

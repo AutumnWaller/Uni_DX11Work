@@ -24,7 +24,7 @@ public:
 	StandardVertex* GetVertices() { return pVertices; };
 	WORD* GetIndices() { return pIndices; };
 	std::size_t GetMemoryUsage() { return (sizeof(GetVertices()) * vertexAmount) + (sizeof(GetIndices()) * indexAmount); };
-	Object(StandardVertex vertices[]);
+	Object(StandardVertex *vertices, WORD *indices, int vertexSize, int indexSize);
 	Object();
 	~Object();
 

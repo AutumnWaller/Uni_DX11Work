@@ -154,20 +154,15 @@ HRESULT Application::InitDrawBuffers()
 {
 	HRESULT hr;
 
+	pyramid = new Pyramid();
+
+
+
+
+	pyramid->ChangeColour(XMFLOAT4{1.0f, 0.2f, 0.0f, 1.0f});
 	
 
-	cube = new Cube();
-	cube2 = new Cube();
-
-
-
-
-
-	cube->ChangeColour(XMFLOAT4{1.0f, 0.2f, 0.0f, 1.0f});
-	cube2->ChangeColour();
-
-	objects.emplace_back(cube);
-	objects.emplace_back(cube2);
+	objects.emplace_back(pyramid);
 
 	
 	ZeroMemory(&bd, sizeof(bd));
@@ -193,12 +188,12 @@ HRESULT Application::InitDrawBuffers()
 
 	ZeroMemory(&bd, sizeof(bd));
 	bd.Usage = D3D11_USAGE_DEFAULT;
-	bd.ByteWidth = sizeof(WORD) * cube->indexAmount;
+	bd.ByteWidth = sizeof(WORD) * pyramid->indexAmount;
 	bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
 	bd.CPUAccessFlags = 0;
 
 	ZeroMemory(&InitData, sizeof(InitData));
-	InitData.pSysMem = cube->GetIndices();
+	InitData.pSysMem = pyramid->GetIndices();
 	hr = _pd3dDevice->CreateBuffer(&bd, &InitData, &_pIndexBuffer);
 
 	if (FAILED(hr))
@@ -454,7 +449,7 @@ void Application::Draw()
 	_pImmediateContext->VSSetConstantBuffers(0, 1, &_pConstantBuffer);
     _pImmediateContext->PSSetConstantBuffers(0, 1, &_pConstantBuffer);
 	_pImmediateContext->PSSetShader(_pPixelShader, nullptr, 0);
-	_pImmediateContext->DrawIndexed(cube->indexAmount, 0, 0);
+	_pImmediateContext->DrawIndexed(pyramid->indexAmount, 0, 0);
 
     //
     // Present our back buffer to our front buffer
