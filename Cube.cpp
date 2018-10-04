@@ -13,4 +13,6 @@ Cube::Cube()
 
 Cube::~Cube()
 {
+	pVertices = nullptr;
+	pIndices = nullptr;
 }

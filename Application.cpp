@@ -155,21 +155,20 @@ HRESULT Application::InitDrawBuffers()
 	HRESULT hr;
 
 	pyramid = new Pyramid();
+	cube = new Cube();
 
 
 
-
-	pyramid->ChangeColour(XMFLOAT4{1.0f, 0.2f, 0.0f, 1.0f});
 	
 
 	objects.emplace_back(pyramid);
-
+	objects.emplace_back(cube);
 	
 	ZeroMemory(&bd, sizeof(bd));
 	ZeroMemory(&InitData, sizeof(InitData));
 	bd.Usage = D3D11_USAGE_DEFAULT;
 
-	bd.ByteWidth = (objects.size() * (objects[0]->GetMemoryUsage())); //REDO
+	bd.ByteWidth = pyramid->GetVertexByteWidth(); //REDO
 	bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	bd.CPUAccessFlags = 0;
 
@@ -188,7 +187,7 @@ HRESULT Application::InitDrawBuffers()
 
 	ZeroMemory(&bd, sizeof(bd));
 	bd.Usage = D3D11_USAGE_DEFAULT;
-	bd.ByteWidth = sizeof(WORD) * pyramid->indexAmount;
+	bd.ByteWidth = pyramid->GetIndexByteWidth();
 	bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
 	bd.CPUAccessFlags = 0;
 
