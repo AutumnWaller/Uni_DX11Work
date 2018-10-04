@@ -3,7 +3,7 @@
 #include <DirectXMath.h>
 #include <Windows.h>
 #include <cstdio>
-
+#include <vector>
 
 class Object
 {
@@ -14,7 +14,7 @@ public:
 		DirectX::XMFLOAT3 Pos;
 		DirectX::XMFLOAT4 Colour;
 	};
-
+	static StandardVertex *GetAllVertices(std::vector<Object*> objectList);
 
 
 	int vertexAmount;
@@ -25,6 +25,7 @@ public:
 	WORD* GetIndices() { return pIndices; };
 	std::size_t GetVertexByteWidth() { return sizeof(StandardVertex) * vertexAmount; };
 	std::size_t GetIndexByteWidth() { return sizeof(WORD) * indexAmount; };
+	
 	Object(StandardVertex *vertices, WORD *indices, int vertexSize, int indexSize);
 	Object();
 	~Object();

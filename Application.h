@@ -51,6 +51,7 @@ private:
 private:
 	Pyramid *pyramid;
 	Cube *cube;
+
 	HRESULT InitWindow(HINSTANCE hInstance, int nCmdShow);
 	HRESULT InitDevice();
 	void Cleanup();

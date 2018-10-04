@@ -174,8 +174,7 @@ HRESULT Application::InitDrawBuffers()
 
 	
 	
-	for(int i = 0; i < objects.capacity(); i++)
-		InitData.pSysMem = objects[0]->GetVertices();
+	InitData.pSysMem = Object::GetAllVertices(objects);
 
 	hr = _pd3dDevice->CreateBuffer(&bd, &InitData, &_pVertexBuffer);
 
@@ -448,7 +447,7 @@ void Application::Draw()
 	_pImmediateContext->VSSetConstantBuffers(0, 1, &_pConstantBuffer);
     _pImmediateContext->PSSetConstantBuffers(0, 1, &_pConstantBuffer);
 	_pImmediateContext->PSSetShader(_pPixelShader, nullptr, 0);
-	_pImmediateContext->DrawIndexed(pyramid->indexAmount, 0, 0);
+	_pImmediateContext->DrawIndexed(objects[0]->indexAmount, 0, 0);
 
     //
     // Present our back buffer to our front buffer
