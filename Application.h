@@ -11,6 +11,7 @@
 #include "Pyramid.h"
 #include <DirectXColors.h>
 #include <vector>
+#include <WinUser.h>
 
 using namespace DirectX;
 
@@ -22,6 +23,7 @@ struct ConstantBuffer
 	XMMATRIX mView;
 	XMMATRIX mProjection;
 };
+
 
 class Object;
 
@@ -47,13 +49,16 @@ private:
 	XMFLOAT4X4              _projection;
 	ID3D11DepthStencilView* _depthStencilView;
 	ID3D11Texture2D* _depthStencilBuffer;
+	ID3D11RasterizerState* _wireFrame;
+	ID3D11RasterizerState* _solid;
 
+	PBYTE kbState;
 
 	D3D11_BUFFER_DESC bd;
 	D3D11_SUBRESOURCE_DATA InitData;
 private:
 	Cube *cube;
-	Pyramid *pyramid;
+	Cube *cube2;
 	HRESULT InitWindow(HINSTANCE hInstance, int nCmdShow);
 	HRESULT InitDevice();
 	void Cleanup();

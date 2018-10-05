@@ -4,7 +4,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     PAINTSTRUCT ps;
     HDC hdc;
-
     switch (message)
     {
         case WM_PAINT:
@@ -155,13 +154,13 @@ HRESULT Application::InitDrawBuffers()
 	HRESULT hr;
 
 	cube = new Cube();
-	pyramid = new Pyramid();
+	cube2 = new Cube();
 
 
 	
 
 	objects.emplace_back(cube);
-	objects.emplace_back(pyramid);
+	objects.emplace_back(cube2);
 
 	ZeroMemory(&bd, sizeof(bd));
 	ZeroMemory(&InitData, sizeof(InitData));
@@ -387,6 +386,18 @@ HRESULT Application::InitDevice()
 	bd.CPUAccessFlags = 0;
     hr = _pd3dDevice->CreateBuffer(&bd, nullptr, &_pConstantBuffer);
 
+	D3D11_RASTERIZER_DESC wfDesc;
+	ZeroMemory(&wfDesc, sizeof(D3D11_RASTERIZER_DESC));
+	wfDesc.FillMode = D3D11_FILL_WIREFRAME;
+	wfDesc.CullMode = D3D11_CULL_NONE;
+	hr = _pd3dDevice->CreateRasterizerState(&wfDesc, &_wireFrame);
+
+	D3D11_RASTERIZER_DESC solidDesc;
+	ZeroMemory(&solidDesc, sizeof(D3D11_RASTERIZER_DESC));
+	solidDesc.FillMode = D3D11_FILL_SOLID;
+	solidDesc.CullMode = D3D11_CULL_BACK;
+	hr = _pd3dDevice->CreateRasterizerState(&solidDesc, &_solid);
+
     if (FAILED(hr))
         return hr;
 
@@ -409,11 +420,17 @@ void Application::Cleanup()
     if (_pd3dDevice) _pd3dDevice->Release();
 	if (_depthStencilView) _depthStencilView->Release();
 	if (_depthStencilBuffer) _depthStencilBuffer->Release();
-
+	if (_wireFrame) _wireFrame->Release();
 }
 
 void Application::Update()
 {
+	if (GetKeyState(VK_SPACE) == 1) {
+		_pImmediateContext->RSSetState(_wireFrame);
+	}if (GetKeyState(VK_RETURN) == 1) {
+		_pImmediateContext->RSSetState(_solid);
+	}
+	
     // Update our time
     static float t = 0.0f;
 
@@ -432,6 +449,7 @@ void Application::Update()
         t = (dwTimeCur - dwTimeStart) / 1000.0f;
     }
 
+
     //
     // Animate the cube
     //
@@ -448,7 +466,7 @@ void Application::Draw()
     _pImmediateContext->ClearRenderTargetView(_pRenderTargetView, ClearColor);
 
 	_pImmediateContext->ClearDepthStencilView(_depthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
-
+	
 	XMMATRIX world = XMLoadFloat4x4(&_world);
 	XMMATRIX view = XMLoadFloat4x4(&_view);
 	XMMATRIX projection = XMLoadFloat4x4(&_projection);
@@ -472,7 +490,6 @@ void Application::Draw()
 	_pImmediateContext->VSSetConstantBuffers(0, 1, &_pConstantBuffer);
     _pImmediateContext->PSSetConstantBuffers(0, 1, &_pConstantBuffer);
 	_pImmediateContext->PSSetShader(_pPixelShader, nullptr, 0);
-	
 	
 	world = XMLoadFloat4x4(&_world);
 	cb.mWorld = XMMatrixTranspose(world);
