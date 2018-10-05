@@ -42,16 +42,18 @@ private:
 	ID3D11Buffer*           _pVertexBuffer;
 	ID3D11Buffer*           _pIndexBuffer;
 	ID3D11Buffer*           _pConstantBuffer;
-	XMFLOAT4X4              _world;
+	XMFLOAT4X4              _world, _world2;
 	XMFLOAT4X4              _view;
 	XMFLOAT4X4              _projection;
-	
+	ID3D11DepthStencilView* _depthStencilView;
+	ID3D11Texture2D* _depthStencilBuffer;
+
+
 	D3D11_BUFFER_DESC bd;
 	D3D11_SUBRESOURCE_DATA InitData;
 private:
-	Pyramid *pyramid;
 	Cube *cube;
-
+	Pyramid *pyramid;
 	HRESULT InitWindow(HINSTANCE hInstance, int nCmdShow);
 	HRESULT InitDevice();
 	void Cleanup();

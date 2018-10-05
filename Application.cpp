@@ -154,27 +154,26 @@ HRESULT Application::InitDrawBuffers()
 {
 	HRESULT hr;
 
-	pyramid = new Pyramid();
 	cube = new Cube();
-
+	pyramid = new Pyramid();
 
 
 	
 
-	objects.emplace_back(pyramid);
 	objects.emplace_back(cube);
-	
+	objects.emplace_back(pyramid);
+
 	ZeroMemory(&bd, sizeof(bd));
 	ZeroMemory(&InitData, sizeof(InitData));
 	bd.Usage = D3D11_USAGE_DEFAULT;
 
-	bd.ByteWidth = pyramid->GetVertexByteWidth(); //REDO
+	bd.ByteWidth = cube->GetVertexByteWidth(); //REDO
 	bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	bd.CPUAccessFlags = 0;
 
 	
 	
-	InitData.pSysMem = Object::GetAllVertices(objects);
+	InitData.pSysMem = objects[0]->GetVertices();
 
 	hr = _pd3dDevice->CreateBuffer(&bd, &InitData, &_pVertexBuffer);
 
@@ -186,12 +185,12 @@ HRESULT Application::InitDrawBuffers()
 
 	ZeroMemory(&bd, sizeof(bd));
 	bd.Usage = D3D11_USAGE_DEFAULT;
-	bd.ByteWidth = pyramid->GetIndexByteWidth();
+	bd.ByteWidth = objects[0]->GetIndexByteWidth();
 	bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
 	bd.CPUAccessFlags = 0;
 
 	ZeroMemory(&InitData, sizeof(InitData));
-	InitData.pSysMem = pyramid->GetIndices();
+	InitData.pSysMem = objects[0]->GetIndices();
 	hr = _pd3dDevice->CreateBuffer(&bd, &InitData, &_pIndexBuffer);
 
 	if (FAILED(hr))
@@ -333,8 +332,26 @@ HRESULT Application::InitDevice()
 
     if (FAILED(hr))
         return hr;
+	//Set Depth Buffer Here
+	D3D11_TEXTURE2D_DESC depthStencilDesc;
 
-    _pImmediateContext->OMSetRenderTargets(1, &_pRenderTargetView, nullptr);
+	depthStencilDesc.Width = _WindowWidth;
+	depthStencilDesc.Height = _WindowHeight;
+	depthStencilDesc.MipLevels = 1;
+	depthStencilDesc.ArraySize = 1;
+	depthStencilDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+	depthStencilDesc.SampleDesc.Count = 1;
+	depthStencilDesc.SampleDesc.Quality = 0;
+	depthStencilDesc.Usage = D3D11_USAGE_DEFAULT;
+	depthStencilDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+	depthStencilDesc.CPUAccessFlags = 0;
+	depthStencilDesc.MiscFlags = 0;
+
+	_pd3dDevice->CreateTexture2D(&depthStencilDesc, nullptr, &_depthStencilBuffer);
+	_pd3dDevice->CreateDepthStencilView(_depthStencilBuffer, nullptr, &_depthStencilView);
+
+
+    _pImmediateContext->OMSetRenderTargets(1, &_pRenderTargetView, _depthStencilView);
 
     // Setup the viewport
     D3D11_VIEWPORT vp;
@@ -390,6 +407,9 @@ void Application::Cleanup()
     if (_pSwapChain) _pSwapChain->Release();
     if (_pImmediateContext) _pImmediateContext->Release();
     if (_pd3dDevice) _pd3dDevice->Release();
+	if (_depthStencilView) _depthStencilView->Release();
+	if (_depthStencilBuffer) _depthStencilBuffer->Release();
+
 }
 
 void Application::Update()
@@ -416,6 +436,7 @@ void Application::Update()
     // Animate the cube
     //
 	XMStoreFloat4x4(&_world, XMMatrixRotationZ(t));
+	XMStoreFloat4x4(&_world2, XMMatrixRotationZ(t) * XMMatrixScaling(0.25f, 0.25f, 0.25f) * XMMatrixTranslation(2, 0, 0));
 }
 
 void Application::Draw()
@@ -426,9 +447,14 @@ void Application::Draw()
     float ClearColor[4] = {0.0f, 0.125f, 0.3f, 1.0f}; // red,green,blue,alpha
     _pImmediateContext->ClearRenderTargetView(_pRenderTargetView, ClearColor);
 
+	_pImmediateContext->ClearDepthStencilView(_depthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+
 	XMMATRIX world = XMLoadFloat4x4(&_world);
 	XMMATRIX view = XMLoadFloat4x4(&_view);
 	XMMATRIX projection = XMLoadFloat4x4(&_projection);
+
+	
+
     //
     // Update variables
     //
@@ -437,7 +463,6 @@ void Application::Draw()
 	cb.mView = XMMatrixTranspose(view);
 	cb.mProjection = XMMatrixTranspose(projection);
 
-	_pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &cb, 0, 0);
 
     //
     // Renders a triangle
@@ -447,7 +472,18 @@ void Application::Draw()
 	_pImmediateContext->VSSetConstantBuffers(0, 1, &_pConstantBuffer);
     _pImmediateContext->PSSetConstantBuffers(0, 1, &_pConstantBuffer);
 	_pImmediateContext->PSSetShader(_pPixelShader, nullptr, 0);
+	
+	
+	world = XMLoadFloat4x4(&_world);
+	cb.mWorld = XMMatrixTranspose(world);
+	_pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &cb, 0, 0);
 	_pImmediateContext->DrawIndexed(objects[0]->indexAmount, 0, 0);
+
+	world = XMLoadFloat4x4(&_world2);
+	cb.mWorld = XMMatrixTranspose(world);
+	_pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &cb, 0, 0);
+	_pImmediateContext->DrawIndexed(objects[1]->indexAmount, 0, 0);
+
 
     //
     // Present our back buffer to our front buffer

@@ -14,16 +14,6 @@ void Object::ChangeColour(DirectX::XMFLOAT4 newColour)
 }
 
 
-Object::StandardVertex *Object::GetAllVertices(std::vector<Object*> objectList)
-{
-	Object::StandardVertex *verts = new Object::StandardVertex();
-	for (int i = 0; i < objectList.size(); i++)
-	{
-		verts[i] = *objectList[i]->GetVertices();
-	}
-	return verts;
-}
-
 Object::Object(StandardVertex *vertices, WORD *indices, int vertexSize, int indexSize)
 {
 	pVertices = vertices;

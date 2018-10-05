@@ -14,7 +14,6 @@ public:
 		DirectX::XMFLOAT3 Pos;
 		DirectX::XMFLOAT4 Colour;
 	};
-	static StandardVertex *GetAllVertices(std::vector<Object*> objectList);
 
 
 	int vertexAmount;
