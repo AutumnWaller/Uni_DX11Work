@@ -36,9 +36,7 @@ Application::Application()
 	_pVertexShader = nullptr;
 	_pPixelShader = nullptr;
 	_pVertexLayout = nullptr;
-	_pVertexBuffer = nullptr;
-	_pIndexBuffer = nullptr;
-	_pConstantBuffer = nullptr;
+
 }
 
 Application::~Application()
@@ -173,9 +171,14 @@ HRESULT Application::InitDrawBuffers()
 
 	
 	
-	InitData.pSysMem = objects[0]->GetVertices();
 
-	hr = _pd3dDevice->CreateBuffer(&bd, &InitData, &_pVertexBuffer);
+	for (int i = 0; i < objects.size(); i++)
+	{
+		//_pDrawBuffers[i]->vertexBuffer = nullptr;
+		InitData.pSysMem = objects[i]->GetVertices();
+		hr = _pd3dDevice->CreateBuffer(&bd, &InitData, &_pDrawBuffers[i]->vertexBuffer);
+	}
+	
 
 	if (FAILED(hr))
 		return hr;
@@ -190,9 +193,10 @@ HRESULT Application::InitDrawBuffers()
 	bd.CPUAccessFlags = 0;
 
 	ZeroMemory(&InitData, sizeof(InitData));
-	InitData.pSysMem = objects[0]->GetIndices();
-	hr = _pd3dDevice->CreateBuffer(&bd, &InitData, &_pIndexBuffer);
-
+	for (int i = 0; i < objects.size(); i++) {
+		InitData.pSysMem = objects[i]->GetIndices();
+		hr = _pd3dDevice->CreateBuffer(&bd, &InitData, &_pDrawBuffers[i]->indexBuffer);
+	}
 	if (FAILED(hr))
 		return hr;
 
@@ -370,11 +374,13 @@ HRESULT Application::InitDevice()
     // Set vertex buffer
     UINT stride = sizeof(Object::StandardVertex);
     UINT offset = 0;
-    _pImmediateContext->IASetVertexBuffers(0, 1, &_pVertexBuffer, &stride, &offset);
+	for (int i = 0; i < objects.size(); i++) {
+		_pImmediateContext->IASetVertexBuffers(0, 1, &_pDrawBuffers[i]->vertexBuffer, &stride, &offset);
 
-    // Set index buffer
-    _pImmediateContext->IASetIndexBuffer(_pIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
+		// Set index buffer
+		_pImmediateContext->IASetIndexBuffer(_pDrawBuffers[i]->indexBuffer, DXGI_FORMAT_R16_UINT, 0);
 
+	}
     // Set primitive topology
     _pImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
@@ -385,7 +391,8 @@ HRESULT Application::InitDevice()
 	bd.ByteWidth = sizeof(ConstantBuffer);
 	bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	bd.CPUAccessFlags = 0;
-    hr = _pd3dDevice->CreateBuffer(&bd, nullptr, &_pConstantBuffer);
+	for(int i = 0; i < objects.size(); i++)
+		hr = _pd3dDevice->CreateBuffer(&bd, nullptr, &_pDrawBuffers[i]->constantBuffer);
 
     if (FAILED(hr))
         return hr;
@@ -397,9 +404,9 @@ void Application::Cleanup()
 {
     if (_pImmediateContext) _pImmediateContext->ClearState();
 
-    if (_pConstantBuffer) _pConstantBuffer->Release();
-    if (_pVertexBuffer) _pVertexBuffer->Release();
-    if (_pIndexBuffer) _pIndexBuffer->Release();
+    //if (&_pDrawBuffers[i]->_pConstantBuffer) _pConstantBuffer->Release();
+    //if (_pVertexBuffer) _pVertexBuffer->Release();
+    //if (_pIndexBuffer) _pIndexBuffer->Release();
     if (_pVertexLayout) _pVertexLayout->Release();
     if (_pVertexShader) _pVertexShader->Release();
     if (_pPixelShader) _pPixelShader->Release();
@@ -469,19 +476,21 @@ void Application::Draw()
     //
 	
 	_pImmediateContext->VSSetShader(_pVertexShader, nullptr, 0);
-	_pImmediateContext->VSSetConstantBuffers(0, 1, &_pConstantBuffer);
-    _pImmediateContext->PSSetConstantBuffers(0, 1, &_pConstantBuffer);
+	for (int i = 0; i < objects.size(); i++) {
+		_pImmediateContext->VSSetConstantBuffers(0, 1, &_pDrawBuffers[i]->constantBuffer);
+		_pImmediateContext->PSSetConstantBuffers(0, 1, &_pDrawBuffers[i]->constantBuffer);
+	}
 	_pImmediateContext->PSSetShader(_pPixelShader, nullptr, 0);
 	
 	
 	world = XMLoadFloat4x4(&_world);
 	cb.mWorld = XMMatrixTranspose(world);
-	_pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &cb, 0, 0);
+	_pImmediateContext->UpdateSubresource(_pDrawBuffers[0]->constantBuffer, 0, nullptr, &cb, 0, 0);
 	_pImmediateContext->DrawIndexed(objects[0]->indexAmount, 0, 0);
 
 	world = XMLoadFloat4x4(&_world2);
 	cb.mWorld = XMMatrixTranspose(world);
-	_pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &cb, 0, 0);
+	_pImmediateContext->UpdateSubresource(_pDrawBuffers[1]->constantBuffer, 0, nullptr, &cb, 0, 0);
 	_pImmediateContext->DrawIndexed(objects[1]->indexAmount, 0, 0);
 
 

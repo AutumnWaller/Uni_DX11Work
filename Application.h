@@ -23,6 +23,12 @@ struct ConstantBuffer
 	XMMATRIX mProjection;
 };
 
+struct DrawBuffers {
+	ID3D11Buffer*           vertexBuffer;
+	ID3D11Buffer*           indexBuffer;
+	ID3D11Buffer*           constantBuffer;
+};
+
 class Object;
 
 class Application
@@ -39,9 +45,7 @@ private:
 	ID3D11VertexShader*     _pVertexShader;
 	ID3D11PixelShader*      _pPixelShader;
 	ID3D11InputLayout*      _pVertexLayout;
-	ID3D11Buffer*           _pVertexBuffer;
-	ID3D11Buffer*           _pIndexBuffer;
-	ID3D11Buffer*           _pConstantBuffer;
+	std::vector<DrawBuffers*> _pDrawBuffers;
 	XMFLOAT4X4              _world, _world2;
 	XMFLOAT4X4              _view;
 	XMFLOAT4X4              _projection;
