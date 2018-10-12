@@ -4,7 +4,7 @@
 class Pyramid : public Object
 {
 private:
-	StandardVertex vertices[5] = 
+	StaticStructs::StandardVertex vertices[5] =
 	{ 
 		{ DirectX::XMFLOAT3(1.0f, 1.0f, 0.0f), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f) },
 		{ DirectX::XMFLOAT3(3.0f, 1.0f, 0.0f), DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f) },
@@ -28,5 +28,8 @@ private:
 public:
 	Pyramid();
 	~Pyramid();
+	virtual void Initialise(ID3D11Device *deviceRef, D3D11_SUBRESOURCE_DATA data, ID3D11DeviceContext *context, ID3D11Buffer* cBuffer) override;
+	virtual void Draw(DirectX::XMMATRIX appWorld, StaticStructs::ConstantBuffer cb) override;
+	virtual void Update(float time) override;
 };
 

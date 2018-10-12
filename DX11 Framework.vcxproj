@@ -390,6 +390,7 @@
     <ClInclude Include="Object.h" />
     <ClInclude Include="Pyramid.h" />
     <CLInclude Include="resource.h" />
+    <ClInclude Include="StaticStructs.h" />
     <ResourceCompile Include="DX11 Framework.rc" />
   </ItemGroup>
   <ItemGroup>

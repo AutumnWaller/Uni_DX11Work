@@ -159,12 +159,19 @@ HRESULT Application::InitDrawBuffers()
 
 	cube = new Cube();
 	cube2 = new Cube();
+	cube2->Translate(StaticStructs::Vector3f{1, 1, 1});
 	cube3 = new Cube();
+	cube3->Translate(StaticStructs::Vector3f{ 2, 3, 4 });
 	cube4 = new Cube();
 	cube5 = new Cube();
 	pyramid = new Pyramid();
+	pyramid->Translate(StaticStructs::Vector3f{ -2, -2, 0 });
 
-	
+	//XMStoreFloat4x4(&_world2, XMMatrixScaling(0.25f, 0.25f, 0.25f) * XMMatrixRotationZ(t) * XMMatrixTranslation(2.5f, 0, 0)  * XMMatrixRotationZ(t * 2.0f));
+//XMStoreFloat4x4(&_world3, XMMatrixScaling(0.2f, 0.2f, 0.2f) * XMMatrixRotationZ(t) * XMMatrixTranslation(1.0f, 0, 0)  * XMMatrixRotationZ(t * 3.0f)  * XMMatrixTranslation(2.5f, 0, 0)  * XMMatrixRotationZ(t * 2.0f));
+//XMStoreFloat4x4(&_world4, XMMatrixScaling(0.1f, 0.1f, 0.1f) * XMMatrixRotationZ(t) * XMMatrixTranslation(0.5f, 0, 0)  * XMMatrixRotationZ(t * 4.0f) * XMMatrixTranslation(1.0f, 0, 0)  * XMMatrixRotationZ(t * 3.0f)  * XMMatrixTranslation(2.5f, 0, 0)  * XMMatrixRotationZ(t * 2.0f));
+//XMStoreFloat4x4(&_world5, XMMatrixScaling(0.25f, 0.25f, 0.25f)  * XMMatrixTranslation(1.5f, 0, 0) * XMMatrixRotationZ(-t));
+//XMStoreFloat4x4(&_world6, XMMatrixScaling(0.25f, 0.25f, 0.25f)  * XMMatrixTranslation(2.0f, 0, 0) * XMMatrixRotationZ(-t));
 
 	objects.emplace_back(cube);
 	objects.emplace_back(cube2);
@@ -177,38 +184,19 @@ HRESULT Application::InitDrawBuffers()
 	ZeroMemory(&InitData, sizeof(InitData));
 	bd.Usage = D3D11_USAGE_DEFAULT;
 
-	bd.ByteWidth = cube->GetVertexByteWidth(); //REDO
+	bd.ByteWidth = sizeof(cube); //REDO
 	bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	bd.CPUAccessFlags = 0;
-
-	
-	
-	InitData.pSysMem = cube->GetVertices();
-	hr = _pd3dDevice->CreateBuffer(&bd, &InitData, &_pVertexBuffer);
-
-	InitData.pSysMem = pyramid->GetVertices();
-	hr = _pd3dDevice->CreateBuffer(&bd, &InitData, &_pVertexBufferPyramid);
-	if (FAILED(hr))
-		return hr;
-
-
 	
 
 	ZeroMemory(&bd, sizeof(bd));
 	bd.Usage = D3D11_USAGE_DEFAULT;
-	bd.ByteWidth = cube->GetIndexByteWidth();
+	bd.ByteWidth = sizeof(Object) * objects.size();
 	bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
 	bd.CPUAccessFlags = 0;
 
 	ZeroMemory(&InitData, sizeof(InitData));
-	InitData.pSysMem = cube->GetIndices();
-	hr = _pd3dDevice->CreateBuffer(&bd, &InitData, &_pIndexBuffer);
 
-	InitData.pSysMem = pyramid->GetIndices();
-	hr = _pd3dDevice->CreateBuffer(&bd, &InitData, &_pIndexBufferPyramid);
-
-	if (FAILED(hr))
-		return hr;
 
 	return S_OK;
 }
@@ -235,7 +223,7 @@ HRESULT Application::InitWindow(HINSTANCE hInstance, int nCmdShow)
 
     // Create window
     _hInst = hInstance;
-    RECT rc = {0, 0, 640, 480};
+    RECT rc = {0, 0, 1280, 720};
     AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, FALSE);
     _hWnd = CreateWindow(L"TutorialWindowClass", L"DX11 Framework", WS_OVERLAPPEDWINDOW,
                          CW_USEDEFAULT, CW_USEDEFAULT, rc.right - rc.left, rc.bottom - rc.top, nullptr, nullptr, hInstance,
@@ -381,14 +369,6 @@ HRESULT Application::InitDevice()
 
 	InitDrawBuffers();
 
-    // Set vertex buffer
-    UINT stride = sizeof(Object::StandardVertex);
-    UINT offset = 0;
-    _pImmediateContext->IASetVertexBuffers(0, 1, &_pVertexBuffer, &stride, &offset);
-
-    // Set index buffer
-    _pImmediateContext->IASetIndexBuffer(_pIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
-
     // Set primitive topology
     _pImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
@@ -396,10 +376,13 @@ HRESULT Application::InitDevice()
 	D3D11_BUFFER_DESC bd;
 	ZeroMemory(&bd, sizeof(bd));
 	bd.Usage = D3D11_USAGE_DEFAULT;
-	bd.ByteWidth = sizeof(ConstantBuffer);
+	bd.ByteWidth = sizeof(StaticStructs::ConstantBuffer);
 	bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	bd.CPUAccessFlags = 0;
     hr = _pd3dDevice->CreateBuffer(&bd, nullptr, &_pConstantBuffer);
+
+	for(int i = 0; i < objects.size(); i++)
+		objects[i]->Initialise(_pd3dDevice, InitData, _pImmediateContext, _pConstantBuffer);
 
 	D3D11_RASTERIZER_DESC wfDesc;
 	ZeroMemory(&wfDesc, sizeof(D3D11_RASTERIZER_DESC));
@@ -471,22 +454,18 @@ void Application::Update()
     //
     // Animate the cube
     //
-	XMStoreFloat4x4(&_world, XMMatrixScaling(0.5f, 0.5f, 0.5f)  * XMMatrixRotationZ(t * 0.25f));
-	XMStoreFloat4x4(&_world2, XMMatrixScaling(0.25f, 0.25f, 0.25f) * XMMatrixRotationZ(t) * XMMatrixTranslation(2.5f, 0, 0)  * XMMatrixRotationZ(t * 2.0f));
-	XMStoreFloat4x4(&_world3, XMMatrixScaling(0.2f, 0.2f, 0.2f) * XMMatrixRotationZ(t) * XMMatrixTranslation(1.0f, 0, 0)  * XMMatrixRotationZ(t * 3.0f)  * XMMatrixTranslation(2.5f, 0, 0)  * XMMatrixRotationZ(t * 2.0f));
-	XMStoreFloat4x4(&_world4, XMMatrixScaling(0.1f, 0.1f, 0.1f) * XMMatrixRotationZ(t) * XMMatrixTranslation(0.5f, 0, 0)  * XMMatrixRotationZ(t * 4.0f) * XMMatrixTranslation(1.0f, 0, 0)  * XMMatrixRotationZ(t * 3.0f)  * XMMatrixTranslation(2.5f, 0, 0)  * XMMatrixRotationZ(t * 2.0f));
-	XMStoreFloat4x4(&_world5, XMMatrixScaling(0.25f, 0.25f, 0.25f)  * XMMatrixTranslation(1.5f, 0, 0) * XMMatrixRotationZ(-t));
-	XMStoreFloat4x4(&_world6, XMMatrixScaling(0.25f, 0.25f, 0.25f)  * XMMatrixTranslation(2.0f, 0, 0) * XMMatrixRotationZ(-t));
+	for(int i = 0; i < objects.size(); i++)
+		objects[i]->Update(t);
+
 }
 
 void Application::Draw()
 {
 
 	// Set vertex buffer
-	UINT stride = sizeof(Object::StandardVertex);
+	UINT stride = sizeof(StaticStructs::StandardVertex);
 	UINT offset = 0;
 	_pImmediateContext->IASetVertexBuffers(0, 1, &_pVertexBuffer, &stride, &offset);
-	_pImmediateContext->IASetIndexBuffer(_pIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
 
     //
     // Clear the back buffer
@@ -505,7 +484,7 @@ void Application::Draw()
     //
     // Update variables
     //
-    ConstantBuffer cb;
+	StaticStructs::ConstantBuffer cb;
 	cb.mWorld = XMMatrixTranspose(world);
 	cb.mView = XMMatrixTranspose(view);
 	cb.mProjection = XMMatrixTranspose(projection);
@@ -521,39 +500,8 @@ void Application::Draw()
     _pImmediateContext->PSSetConstantBuffers(0, 1, &_pConstantBuffer);
 	_pImmediateContext->PSSetShader(_pPixelShader, nullptr, 0);
 	
-	world = XMLoadFloat4x4(&_world);
-	cb.mWorld = XMMatrixTranspose(world);
-	_pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &cb, 0, 0);
-	_pImmediateContext->DrawIndexed(objects[0]->indexAmount, 0, 0);
-
-	world = XMLoadFloat4x4(&_world2);
-	cb.mWorld = XMMatrixTranspose(world);
-	_pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &cb, 0, 0);
-	_pImmediateContext->DrawIndexed(objects[1]->indexAmount, 0, 0);
-	
-	world = XMLoadFloat4x4(&_world3);
-	cb.mWorld = XMMatrixTranspose(world);
-	_pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &cb, 0, 0);
-	_pImmediateContext->DrawIndexed(objects[2]->indexAmount, 0, 0);
-	
-	world = XMLoadFloat4x4(&_world4);
-	cb.mWorld = XMMatrixTranspose(world);
-	_pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &cb, 0, 0);
-	_pImmediateContext->DrawIndexed(objects[3]->indexAmount, 0, 0);
-	
-	world = XMLoadFloat4x4(&_world5);
-	cb.mWorld = XMMatrixTranspose(world);
-	_pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &cb, 0, 0);
-	_pImmediateContext->DrawIndexed(objects[4]->indexAmount, 0, 0);
-
-	_pImmediateContext->IASetVertexBuffers(0, 1, &_pVertexBufferPyramid, &stride, &offset);
-	_pImmediateContext->IASetIndexBuffer(_pIndexBufferPyramid, DXGI_FORMAT_R16_UINT, 0);
-
-	world = XMLoadFloat4x4(&_world6);
-	cb.mWorld = XMMatrixTranspose(world);
-	_pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &cb, 0, 0);
-	_pImmediateContext->DrawIndexed(objects[5]->indexAmount, 0, 0);
-
+	for (int i = 0; i < objects.size(); i++)
+		objects[i]->Draw(world, cb);
 
     //
     // Present our back buffer to our front buffer

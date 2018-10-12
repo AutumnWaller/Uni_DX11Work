@@ -9,6 +9,7 @@
 #include "Object.h"
 #include "Cube.h"
 #include "Pyramid.h"
+#include "StaticStructs.h"
 #include <DirectXColors.h>
 #include <vector>
 #include <WinUser.h>
@@ -17,13 +18,7 @@ using namespace DirectX;
 
 
 
-struct ConstantBuffer
-{
-	XMMATRIX mWorld;
-	XMMATRIX mView;
-	XMMATRIX mProjection;
-	float gTime;
-};
+
 
 
 class Object;
@@ -42,7 +37,6 @@ private:
 	ID3D11VertexShader*     _pVertexShader;
 	ID3D11PixelShader*      _pPixelShader;
 	ID3D11InputLayout*      _pVertexLayout;
-	ID3D11InputLayout*      _pVertexLayoutPyramid;
 	ID3D11Buffer*           _pVertexBuffer;
 	ID3D11Buffer*			_pVertexBufferPyramid;
 	ID3D11Buffer*           _pIndexBuffer;
