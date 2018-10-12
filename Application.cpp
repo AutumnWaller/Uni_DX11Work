@@ -36,7 +36,9 @@ Application::Application()
 	_pPixelShader = nullptr;
 	_pVertexLayout = nullptr;
 	_pVertexBuffer = nullptr;
+	_pVertexBufferPyramid = nullptr;
 	_pIndexBuffer = nullptr;
+	_pIndexBufferPyramid = nullptr;
 	_pConstantBuffer = nullptr;
 }
 
@@ -135,6 +137,8 @@ HRESULT Application::InitShadersAndInputLayout()
 	hr = _pd3dDevice->CreateInputLayout(layout, numElements, pVSBlob->GetBufferPointer(),
                                         pVSBlob->GetBufferSize(), &_pVertexLayout);
 	pVSBlob->Release();
+	
+	pVSBlob->Release();
 
 	if (FAILED(hr))
         return hr;
@@ -155,12 +159,19 @@ HRESULT Application::InitDrawBuffers()
 
 	cube = new Cube();
 	cube2 = new Cube();
-
+	cube3 = new Cube();
+	cube4 = new Cube();
+	cube5 = new Cube();
+	pyramid = new Pyramid();
 
 	
 
 	objects.emplace_back(cube);
 	objects.emplace_back(cube2);
+	objects.emplace_back(cube3);
+	objects.emplace_back(cube4);
+	objects.emplace_back(cube5);
+	objects.emplace_back(pyramid);
 
 	ZeroMemory(&bd, sizeof(bd));
 	ZeroMemory(&InitData, sizeof(InitData));
@@ -172,10 +183,11 @@ HRESULT Application::InitDrawBuffers()
 
 	
 	
-	InitData.pSysMem = objects[0]->GetVertices();
-
+	InitData.pSysMem = cube->GetVertices();
 	hr = _pd3dDevice->CreateBuffer(&bd, &InitData, &_pVertexBuffer);
 
+	InitData.pSysMem = pyramid->GetVertices();
+	hr = _pd3dDevice->CreateBuffer(&bd, &InitData, &_pVertexBufferPyramid);
 	if (FAILED(hr))
 		return hr;
 
@@ -184,13 +196,16 @@ HRESULT Application::InitDrawBuffers()
 
 	ZeroMemory(&bd, sizeof(bd));
 	bd.Usage = D3D11_USAGE_DEFAULT;
-	bd.ByteWidth = objects[0]->GetIndexByteWidth();
+	bd.ByteWidth = cube->GetIndexByteWidth();
 	bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
 	bd.CPUAccessFlags = 0;
 
 	ZeroMemory(&InitData, sizeof(InitData));
-	InitData.pSysMem = objects[0]->GetIndices();
+	InitData.pSysMem = cube->GetIndices();
 	hr = _pd3dDevice->CreateBuffer(&bd, &InitData, &_pIndexBuffer);
+
+	InitData.pSysMem = pyramid->GetIndices();
+	hr = _pd3dDevice->CreateBuffer(&bd, &InitData, &_pIndexBufferPyramid);
 
 	if (FAILED(hr))
 		return hr;
@@ -410,7 +425,9 @@ void Application::Cleanup()
 
     if (_pConstantBuffer) _pConstantBuffer->Release();
     if (_pVertexBuffer) _pVertexBuffer->Release();
+    if (_pVertexBuffer) _pVertexBufferPyramid->Release();
     if (_pIndexBuffer) _pIndexBuffer->Release();
+    if (_pIndexBuffer) _pIndexBufferPyramid->Release();
     if (_pVertexLayout) _pVertexLayout->Release();
     if (_pVertexShader) _pVertexShader->Release();
     if (_pPixelShader) _pPixelShader->Release();
@@ -425,9 +442,9 @@ void Application::Cleanup()
 
 void Application::Update()
 {
-	if (GetKeyState(VK_SPACE) == 1) {
+	if (GetAsyncKeyState(VK_SPACE)) {
 		_pImmediateContext->RSSetState(_wireFrame);
-	}if (GetKeyState(VK_RETURN) == 1) {
+	}if (GetAsyncKeyState(VK_RETURN)) {
 		_pImmediateContext->RSSetState(_solid);
 	}
 	
@@ -449,16 +466,28 @@ void Application::Update()
         t = (dwTimeCur - dwTimeStart) / 1000.0f;
     }
 
+	gTime = t;
 
     //
     // Animate the cube
     //
-	XMStoreFloat4x4(&_world, XMMatrixRotationZ(t));
-	XMStoreFloat4x4(&_world2, XMMatrixRotationZ(t) * XMMatrixScaling(0.25f, 0.25f, 0.25f) * XMMatrixTranslation(-_world.m[0][1] + 2,-_world.m[1][1], 0));
+	XMStoreFloat4x4(&_world, XMMatrixScaling(0.5f, 0.5f, 0.5f)  * XMMatrixRotationZ(t * 0.25f));
+	XMStoreFloat4x4(&_world2, XMMatrixScaling(0.25f, 0.25f, 0.25f) * XMMatrixRotationZ(t) * XMMatrixTranslation(2.5f, 0, 0)  * XMMatrixRotationZ(t * 2.0f));
+	XMStoreFloat4x4(&_world3, XMMatrixScaling(0.2f, 0.2f, 0.2f) * XMMatrixRotationZ(t) * XMMatrixTranslation(1.0f, 0, 0)  * XMMatrixRotationZ(t * 3.0f)  * XMMatrixTranslation(2.5f, 0, 0)  * XMMatrixRotationZ(t * 2.0f));
+	XMStoreFloat4x4(&_world4, XMMatrixScaling(0.1f, 0.1f, 0.1f) * XMMatrixRotationZ(t) * XMMatrixTranslation(0.5f, 0, 0)  * XMMatrixRotationZ(t * 4.0f) * XMMatrixTranslation(1.0f, 0, 0)  * XMMatrixRotationZ(t * 3.0f)  * XMMatrixTranslation(2.5f, 0, 0)  * XMMatrixRotationZ(t * 2.0f));
+	XMStoreFloat4x4(&_world5, XMMatrixScaling(0.25f, 0.25f, 0.25f)  * XMMatrixTranslation(1.5f, 0, 0) * XMMatrixRotationZ(-t));
+	XMStoreFloat4x4(&_world6, XMMatrixScaling(0.25f, 0.25f, 0.25f)  * XMMatrixTranslation(2.0f, 0, 0) * XMMatrixRotationZ(-t));
 }
 
 void Application::Draw()
 {
+
+	// Set vertex buffer
+	UINT stride = sizeof(Object::StandardVertex);
+	UINT offset = 0;
+	_pImmediateContext->IASetVertexBuffers(0, 1, &_pVertexBuffer, &stride, &offset);
+	_pImmediateContext->IASetIndexBuffer(_pIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
+
     //
     // Clear the back buffer
     //
@@ -480,6 +509,7 @@ void Application::Draw()
 	cb.mWorld = XMMatrixTranspose(world);
 	cb.mView = XMMatrixTranspose(view);
 	cb.mProjection = XMMatrixTranspose(projection);
+	cb.gTime = gTime;
 
 
     //
@@ -500,6 +530,29 @@ void Application::Draw()
 	cb.mWorld = XMMatrixTranspose(world);
 	_pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &cb, 0, 0);
 	_pImmediateContext->DrawIndexed(objects[1]->indexAmount, 0, 0);
+	
+	world = XMLoadFloat4x4(&_world3);
+	cb.mWorld = XMMatrixTranspose(world);
+	_pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &cb, 0, 0);
+	_pImmediateContext->DrawIndexed(objects[2]->indexAmount, 0, 0);
+	
+	world = XMLoadFloat4x4(&_world4);
+	cb.mWorld = XMMatrixTranspose(world);
+	_pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &cb, 0, 0);
+	_pImmediateContext->DrawIndexed(objects[3]->indexAmount, 0, 0);
+	
+	world = XMLoadFloat4x4(&_world5);
+	cb.mWorld = XMMatrixTranspose(world);
+	_pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &cb, 0, 0);
+	_pImmediateContext->DrawIndexed(objects[4]->indexAmount, 0, 0);
+
+	_pImmediateContext->IASetVertexBuffers(0, 1, &_pVertexBufferPyramid, &stride, &offset);
+	_pImmediateContext->IASetIndexBuffer(_pIndexBufferPyramid, DXGI_FORMAT_R16_UINT, 0);
+
+	world = XMLoadFloat4x4(&_world6);
+	cb.mWorld = XMMatrixTranspose(world);
+	_pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &cb, 0, 0);
+	_pImmediateContext->DrawIndexed(objects[5]->indexAmount, 0, 0);
 
 
     //

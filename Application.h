@@ -22,6 +22,7 @@ struct ConstantBuffer
 	XMMATRIX mWorld;
 	XMMATRIX mView;
 	XMMATRIX mProjection;
+	float gTime;
 };
 
 
@@ -41,10 +42,14 @@ private:
 	ID3D11VertexShader*     _pVertexShader;
 	ID3D11PixelShader*      _pPixelShader;
 	ID3D11InputLayout*      _pVertexLayout;
+	ID3D11InputLayout*      _pVertexLayoutPyramid;
 	ID3D11Buffer*           _pVertexBuffer;
+	ID3D11Buffer*			_pVertexBufferPyramid;
 	ID3D11Buffer*           _pIndexBuffer;
+	ID3D11Buffer*           _pIndexBufferPyramid;
+	
 	ID3D11Buffer*           _pConstantBuffer;
-	XMFLOAT4X4              _world, _world2;
+	XMFLOAT4X4              _world, _world2, _world3, _world4, _world5, _world6;
 	XMFLOAT4X4              _view;
 	XMFLOAT4X4              _projection;
 	ID3D11DepthStencilView* _depthStencilView;
@@ -59,6 +64,11 @@ private:
 private:
 	Cube *cube;
 	Cube *cube2;
+	Cube *cube3;
+	Cube *cube4;
+	Cube *cube5;
+	Pyramid *pyramid;
+
 	HRESULT InitWindow(HINSTANCE hInstance, int nCmdShow);
 	HRESULT InitDevice();
 	void Cleanup();
@@ -72,6 +82,7 @@ private:
 
 
 public:
+	float gTime;
 	Application();
 	~Application();
 
