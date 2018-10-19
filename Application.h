@@ -43,7 +43,7 @@ private:
 	ID3D11Buffer*           _pIndexBufferPyramid;
 	
 	ID3D11Buffer*           _pConstantBuffer;
-	XMFLOAT4X4              _world, _world2, _world3, _world4, _world5, _world6;
+	XMFLOAT4X4              _world;
 	XMFLOAT4X4              _view;
 	XMFLOAT4X4              _projection;
 	ID3D11DepthStencilView* _depthStencilView;
@@ -72,6 +72,16 @@ private:
 	
 	UINT _WindowHeight;
 	UINT _WindowWidth;
+
+	// Light direction from surface (XYZ)
+	XMFLOAT3 lightDirection = XMFLOAT3(0.25f, 0.5f, -1.0f);
+	// Diffuse material properties (RGBA)
+	XMFLOAT4 diffuseMaterial = XMFLOAT4(0.8f, 0.5f, 0.5f, 1.0f);
+	// Diffuse light colour (RGBA)
+	XMFLOAT4 diffuseLight = XMFLOAT4(1.0f, 0.5f, 0.0f, 1.0f);
+
+	XMFLOAT3 ambientLight = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	XMFLOAT3 ambientMaterial = XMFLOAT3(0.0f, 0.0f, 0.0f);
 
 
 

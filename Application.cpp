@@ -128,7 +128,7 @@ HRESULT Application::InitShadersAndInputLayout()
     D3D11_INPUT_ELEMENT_DESC layout[] =
     {
         { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-        { "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	};
 
 	UINT numElements = ARRAYSIZE(layout);
@@ -159,19 +159,10 @@ HRESULT Application::InitDrawBuffers()
 
 	cube = new Cube();
 	cube2 = new Cube();
-	cube2->Translate(StaticStructs::Vector3f{1, 1, 1});
 	cube3 = new Cube();
-	cube3->Translate(StaticStructs::Vector3f{ 2, 3, 4 });
 	cube4 = new Cube();
 	cube5 = new Cube();
 	pyramid = new Pyramid();
-	pyramid->Translate(StaticStructs::Vector3f{ -2, -2, 0 });
-
-	//XMStoreFloat4x4(&_world2, XMMatrixScaling(0.25f, 0.25f, 0.25f) * XMMatrixRotationZ(t) * XMMatrixTranslation(2.5f, 0, 0)  * XMMatrixRotationZ(t * 2.0f));
-//XMStoreFloat4x4(&_world3, XMMatrixScaling(0.2f, 0.2f, 0.2f) * XMMatrixRotationZ(t) * XMMatrixTranslation(1.0f, 0, 0)  * XMMatrixRotationZ(t * 3.0f)  * XMMatrixTranslation(2.5f, 0, 0)  * XMMatrixRotationZ(t * 2.0f));
-//XMStoreFloat4x4(&_world4, XMMatrixScaling(0.1f, 0.1f, 0.1f) * XMMatrixRotationZ(t) * XMMatrixTranslation(0.5f, 0, 0)  * XMMatrixRotationZ(t * 4.0f) * XMMatrixTranslation(1.0f, 0, 0)  * XMMatrixRotationZ(t * 3.0f)  * XMMatrixTranslation(2.5f, 0, 0)  * XMMatrixRotationZ(t * 2.0f));
-//XMStoreFloat4x4(&_world5, XMMatrixScaling(0.25f, 0.25f, 0.25f)  * XMMatrixTranslation(1.5f, 0, 0) * XMMatrixRotationZ(-t));
-//XMStoreFloat4x4(&_world6, XMMatrixScaling(0.25f, 0.25f, 0.25f)  * XMMatrixTranslation(2.0f, 0, 0) * XMMatrixRotationZ(-t));
 
 	objects.emplace_back(cube);
 	objects.emplace_back(cube2);
@@ -451,11 +442,17 @@ void Application::Update()
 
 	gTime = t;
 
-    //
-    // Animate the cube
-    //
+	objects[0]->ChangeWorld(XMMatrixScaling(0.5f, 0.5f, 0.5f)  * XMMatrixRotationZ(t * 0.25f));
+	objects[1]->ChangeWorld(XMMatrixScaling(0.25f, 0.25f, 0.25f) * XMMatrixRotationZ(t) * XMMatrixTranslation(2.5f, 0, 0)  * XMMatrixRotationZ(t * 2.0f));
+	objects[2]->ChangeWorld(XMMatrixScaling(0.2f, 0.2f, 0.2f) * XMMatrixRotationZ(t) * XMMatrixTranslation(1.0f, 0, 0)  * XMMatrixRotationZ(t * 3.0f)  * XMMatrixTranslation(2.5f, 0, 0)  * XMMatrixRotationZ(t * 2.0f));
+	objects[3]->ChangeWorld(XMMatrixScaling(0.1f, 0.1f, 0.1f) * XMMatrixRotationZ(t) * XMMatrixTranslation(0.5f, 0, 0)  * XMMatrixRotationZ(t * 4.0f) * XMMatrixTranslation(1.0f, 0, 0)  * XMMatrixRotationZ(t * 3.0f)  * XMMatrixTranslation(2.5f, 0, 0)  * XMMatrixRotationZ(t * 2.0f));
+	objects[4]->ChangeWorld(XMMatrixScaling(0.25f, 0.25f, 0.25f)  * XMMatrixTranslation(1.5f, 0, 0) * XMMatrixRotationZ(-t));
+	objects[5]->ChangeWorld(XMMatrixScaling(0.25f, 0.25f, 0.25f)  * XMMatrixTranslation(3.0f, 0, 0) * XMMatrixRotationZ(t));
+
 	for(int i = 0; i < objects.size(); i++)
 		objects[i]->Update(t);
+
+
 
 }
 
@@ -489,8 +486,11 @@ void Application::Draw()
 	cb.mView = XMMatrixTranspose(view);
 	cb.mProjection = XMMatrixTranspose(projection);
 	cb.gTime = gTime;
-
-
+	cb.LightVecW = lightDirection;
+	cb.DiffuseLight = diffuseLight;
+	cb.DiffuseMtrl = diffuseMaterial;
+	cb.AmbientLight = ambientLight;
+	cb.AmbientMtrl = ambientMaterial;
     //
     // Renders a triangle
     //

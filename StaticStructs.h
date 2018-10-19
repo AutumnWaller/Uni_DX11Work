@@ -1,20 +1,30 @@
 #pragma once
 #include <d3d11.h>
 #include <DirectXMath.h>
+using namespace DirectX;
 static class StaticStructs {
 public:
 	static struct StandardVertex
 	{
-		DirectX::XMFLOAT3 Pos;
-		DirectX::XMFLOAT4 Colour;
+		XMFLOAT3 Pos;
+		XMFLOAT3 Normal;
 	};
 
 	struct ConstantBuffer
 	{
-		DirectX::XMMATRIX mWorld;
-		DirectX::XMMATRIX mView;
-		DirectX::XMMATRIX mProjection;
+		XMMATRIX mWorld;
+		XMMATRIX mView;
+		XMMATRIX mProjection;
 		float gTime;
+		
+		XMFLOAT3 LightVecW;
+
+		XMFLOAT4 DiffuseMtrl;
+		XMFLOAT4 DiffuseLight;
+		
+		XMFLOAT3 AmbientMtrl;
+		XMFLOAT3 AmbientLight;
+
 	};
 
 	static struct Vector3f{

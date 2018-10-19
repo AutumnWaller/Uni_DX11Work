@@ -6,14 +6,15 @@ Object::Object()
 }
 
 
-void Object::ChangeColour(DirectX::XMFLOAT4 newColour)
+void Object::CalculateNormals()
 {
-	colour = newColour;
+
 	for (int i = 0; i < vertexAmount; i++) {
-		pVertices[i].Colour = newColour;
+		pVertices[i].Normal = pVertices[i].Pos;
+		pVertices[i].Normal.y += 1;
+
 	}
 }
-
 
 Object::Object(StaticStructs::StandardVertex *vertices, WORD *indices, int vertexSize, int indexSize)
 {
@@ -29,14 +30,10 @@ Object::~Object()
 	delete pIndices;
 }
 
-void Object::Translate(StaticStructs::Vector3f newPosition)
-{
-	translationOffset = newPosition;
-}
 
-void Object::ChangeMatrix(DirectX::XMMATRIX matrix)
+void Object::ChangeWorld(DirectX::XMMATRIX matrix)
 {
-	currMatrix = matrix;
+	DirectX::XMStoreFloat4x4(&world, matrix);
 }
 
 void Object::Initialise(ID3D11Device *deviceRef, D3D11_SUBRESOURCE_DATA data, ID3D11DeviceContext *context, ID3D11Buffer* cBuffer)
@@ -84,5 +81,5 @@ void Object::Draw(DirectX::XMMATRIX appWorld, StaticStructs::ConstantBuffer cb)
 
 void Object::Update(float time)
 {
-	DirectX::XMStoreFloat4x4(&world, currMatrix * DirectX::XMMatrixTranslation(translationOffset.x, translationOffset.y, translationOffset.z));
+	//
 }

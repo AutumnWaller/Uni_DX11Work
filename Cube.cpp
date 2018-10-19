@@ -8,6 +8,7 @@ Cube::Cube()
 	indexAmount = 36;
 	pVertices = vertices;
 	pIndices = indices;
+	CalculateNormals();
 }
 
 

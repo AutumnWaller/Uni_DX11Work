@@ -8,6 +8,7 @@ Pyramid::Pyramid()
 	pIndices = indices;
 	indexAmount = 18;
 	vertexAmount = 5;
+	CalculateNormals();
 }
 
 
