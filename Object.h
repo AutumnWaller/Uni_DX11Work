@@ -29,7 +29,7 @@ public:
 
 protected:
 	void CalculateNormals();
-
+	void CalculateTexCoords();
 	StaticStructs::StandardVertex *pVertices = nullptr;
 	WORD *pIndices = nullptr;
 	DirectX::XMFLOAT4X4 world;

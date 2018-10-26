@@ -10,6 +10,7 @@
 #include "Cube.h"
 #include "Pyramid.h"
 #include "StaticStructs.h"
+#include "DDSTextureLoader.h"
 #include <DirectXColors.h>
 #include <vector>
 #include <WinUser.h>
@@ -41,8 +42,9 @@ private:
 	ID3D11Buffer*			_pVertexBufferPyramid;
 	ID3D11Buffer*           _pIndexBuffer;
 	ID3D11Buffer*           _pIndexBufferPyramid;
-	
 	ID3D11Buffer*           _pConstantBuffer;
+	ID3D11ShaderResourceView * _pTextureRV = nullptr;
+	ID3D11SamplerState * _pSamplerLinear = nullptr;
 	XMFLOAT4X4              _world;
 	XMFLOAT4X4              _view;
 	XMFLOAT4X4              _projection;
@@ -66,6 +68,7 @@ private:
 	HRESULT InitWindow(HINSTANCE hInstance, int nCmdShow);
 	HRESULT InitDevice();
 	void Cleanup();
+	void LoadTextures();
 	HRESULT CompileShaderFromFile(WCHAR* szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel, ID3DBlob** ppBlobOut);
 	HRESULT InitShadersAndInputLayout();
 	HRESULT InitDrawBuffers();

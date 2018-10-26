@@ -8,6 +8,7 @@ public:
 	{
 		XMFLOAT3 Pos;
 		XMFLOAT3 Normal;
+		XMFLOAT2 TexC;
 	};
 
 	struct ConstantBuffer

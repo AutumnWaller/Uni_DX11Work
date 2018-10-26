@@ -12,7 +12,14 @@ void Object::CalculateNormals()
 	for (int i = 0; i < vertexAmount; i++) {
 		pVertices[i].Normal = pVertices[i].Pos;
 		pVertices[i].Normal.y += 1;
+	}
+	CalculateTexCoords();
+}
 
+void Object::CalculateTexCoords()
+{
+	for (int i = 0; i < vertexAmount; i++) {
+		pVertices[i].TexC = XMFLOAT2{ pVertices[i].Pos.x, pVertices[i].Pos.y };
 	}
 }
 
