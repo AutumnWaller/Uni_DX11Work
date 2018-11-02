@@ -8,10 +8,10 @@ Object::Object()
 
 void Object::CalculateNormals()
 {
-
 	for (int i = 0; i < vertexAmount; i++) {
-		pVertices[i].Normal = pVertices[i].Pos;
-		pVertices[i].Normal.y += 1;
+		XMVECTOR v1 = XMLoadFloat3(&pVertices[i].Pos);
+		XMVECTOR v2 = XMLoadFloat3(&pVertices[i + 1].Pos);
+		XMStoreFloat3(&pVertices[i].Normal , XMVector3Cross(v1, v2));
 	}
 	CalculateTexCoords();
 }
@@ -19,7 +19,7 @@ void Object::CalculateNormals()
 void Object::CalculateTexCoords()
 {
 	for (int i = 0; i < vertexAmount; i++) {
-		pVertices[i].TexC = XMFLOAT2{ pVertices[i].Pos.x, pVertices[i].Pos.y };
+		pVertices[i].TexC = XMFLOAT2{ pVertices[i].Pos.x / vertexAmount, pVertices[i].Pos.y / vertexAmount };
 	}
 }
 
@@ -69,6 +69,8 @@ void Object::Initialise(ID3D11Device *deviceRef, D3D11_SUBRESOURCE_DATA data, ID
 	deviceRef->CreateBuffer(&bd, &data, &indexBuffer);
 	deviceContext = context;
 	constantBuffer = cBuffer;
+
+
 	
 }
 

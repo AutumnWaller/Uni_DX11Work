@@ -79,19 +79,6 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
     // Initialize the projection matrix
 	XMStoreFloat4x4(&_projection, XMMatrixPerspectiveFovLH(XM_PIDIV2, _WindowWidth / (FLOAT) _WindowHeight, 0.01f, 100.0f));
 
-	// Create the sample state
-	D3D11_SAMPLER_DESC sampDesc;
-	ZeroMemory(&sampDesc, sizeof(sampDesc));
-	sampDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-	sampDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
-	sampDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-	sampDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
-	sampDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
-	sampDesc.MinLOD = 0;
-	sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
-
-	_pd3dDevice->CreateSamplerState(&sampDesc, &_pSamplerLinear);
-	LoadTextures();
 
 	return S_OK;
 }
@@ -402,6 +389,21 @@ HRESULT Application::InitDevice()
 	solidDesc.CullMode = D3D11_CULL_BACK;
 	hr = _pd3dDevice->CreateRasterizerState(&solidDesc, &_solid);
 
+	D3D11_SAMPLER_DESC sampDesc;
+	ZeroMemory(&sampDesc, sizeof(sampDesc));
+	sampDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+	sampDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+	sampDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+	sampDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+	sampDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
+	sampDesc.MinLOD = 0;
+	sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
+
+	CreateDDSTextureFromFile(_pd3dDevice, L"Crate_COLOR.dds", nullptr, &_pTextureRV);
+
+	_pImmediateContext->PSSetShaderResources(0, 1, &_pTextureRV);
+	_pd3dDevice->CreateSamplerState(&sampDesc, &_pSamplerLinear);
+
     if (FAILED(hr))
         return hr;
 
@@ -429,12 +431,6 @@ void Application::Cleanup()
 	if (_wireFrame) _wireFrame->Release();
 }
 
-void Application::LoadTextures()
-{
-	CreateDDSTextureFromFile(_pd3dDevice, L"Crate_COLOR.dds", nullptr, &_pTextureRV);
-
-	_pImmediateContext->PSSetShaderResources(0, 1, &_pTextureRV);
-}
 
 void Application::Update()
 {
@@ -513,9 +509,6 @@ void Application::Draw()
 	cb.DiffuseMtrl = diffuseMaterial;
 	cb.AmbientLight = ambientLight;
 	cb.AmbientMtrl = ambientMaterial;
-    //
-    // Renders a triangle
-    //
 	
 	_pImmediateContext->VSSetShader(_pVertexShader, nullptr, 0);
 	_pImmediateContext->VSSetConstantBuffers(0, 1, &_pConstantBuffer);

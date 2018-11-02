@@ -5,6 +5,7 @@
 #include "StaticStructs.h"
 #include <cstdio>
 #include <vector>
+#include "DDSTextureLoader.h"
 #include <d3d11.h>
 
 class Object

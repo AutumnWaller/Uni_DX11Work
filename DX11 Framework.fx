@@ -52,21 +52,20 @@ struct PS_INPUT
 //--------------------------------------------------------------------------------------
 // Vertex Shader
 //--------------------------------------------------------------------------------------
-VS_OUTPUT VS(float4 Pos : POSITION, float3 NormalL : NORMAL)
+VS_OUTPUT VS(float4 Pos : POSITION, float3 NormalL : NORMAL, float2 Tex : TEXCOORD0)
 {
 VS_OUTPUT output = (VS_OUTPUT)0;
-VS_INPUT input = (VS_INPUT)0;
     output.Pos = mul( Pos, World );
     output.Pos = mul( output.Pos, View );
-    output.Pos = mul( output.Pos, Projection );
-	output.Tex = input.Tex;
+	output.Pos = mul(output.Pos, Projection);
+	output.Tex = Tex;
     // Convert from local space to world space 
     // W component of vector is 0 as vectors cannot be translated
     float3 normalW = mul(float4(NormalL, 0.0f), World).xyz;
     normalW = normalize(normalW);
 
     float diffuseAmount = max(dot(LightVecW, normalW), 0.0f);
-    output.Color.rgb = diffuseAmount * ((DiffuseMtrl + AmbientMtrl) * (DiffuseLight + AmbientLight)).rgb;
+    output.Color.rgb = (diffuseAmount * ((DiffuseMtrl + AmbientMtrl) * (DiffuseLight + AmbientLight))).rgb;
     output.Color.a = DiffuseMtrl.a;
 
     return output;

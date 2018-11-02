@@ -10,7 +10,6 @@
 #include "Cube.h"
 #include "Pyramid.h"
 #include "StaticStructs.h"
-#include "DDSTextureLoader.h"
 #include <DirectXColors.h>
 #include <vector>
 #include <WinUser.h>

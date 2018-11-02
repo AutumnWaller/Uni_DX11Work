@@ -8,15 +8,15 @@ class Cube : public Object
 private:
 	StaticStructs::StandardVertex vertices[8] =
 	{
-		{ XMFLOAT3(-1.0f, 1.0f, 0.0f), XMFLOAT3(0, 1, 0)},
-		{ XMFLOAT3(1.0f, 1.0f, 0.0f), XMFLOAT3(0, 1, 0) },
-		{ XMFLOAT3(-1.0f, -1.0f, 0.0f), XMFLOAT3(0, 1, 0)},
-		{ XMFLOAT3(1.0f, -1.0f, 0.0f), XMFLOAT3(0, 1, 0) },
+		{ XMFLOAT3(-1.0f, 1.0f, 0.0f), XMFLOAT3(0, 1, 0), XMFLOAT2(0, 0)},
+		{ XMFLOAT3(1.0f, 1.0f, 0.0f), XMFLOAT3(0, 1, 0), XMFLOAT2(1, 0) },
+		{ XMFLOAT3(-1.0f, -1.0f, 0.0f), XMFLOAT3(0, 1, 0), XMFLOAT2(0, 1)},
+		{ XMFLOAT3(1.0f, -1.0f, 0.0f), XMFLOAT3(0, 1, 0), XMFLOAT2(1, 1) },
 
-		{ XMFLOAT3(1.0f, 1.0f, -1.0f), XMFLOAT3(0, 1, 0)},
-		{ XMFLOAT3(1.0f, -1.0f, -1.0f), XMFLOAT3(0, 1, 0)},
-		{ XMFLOAT3(-1.0f, -1.0f, -1.0f), XMFLOAT3(0, 1, 0)},
-		{ XMFLOAT3(-1.0f, 1.0f, -1.0f), XMFLOAT3(0, 1, 0) },
+		{ XMFLOAT3(1.0f, 1.0f, -1.0f), XMFLOAT3(0, 1, 0), XMFLOAT2(0, 0)},
+		{ XMFLOAT3(1.0f, -1.0f, -1.0f), XMFLOAT3(0, 1, 0), XMFLOAT2(1, 0)},
+		{ XMFLOAT3(-1.0f, -1.0f, -1.0f), XMFLOAT3(0, 1, 0), XMFLOAT2(0, 1)},
+		{ XMFLOAT3(-1.0f, 1.0f, -1.0f), XMFLOAT3(0, 1, 0), XMFLOAT2(1, 1)},
 	};
 
 	WORD indices[36] = 
