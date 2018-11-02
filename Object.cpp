@@ -8,19 +8,43 @@ Object::Object()
 
 void Object::CalculateNormals()
 {
-	for (int i = 0; i < vertexAmount; i++) {
-		XMVECTOR v1 = XMLoadFloat3(&pVertices[i].Pos);
-		XMVECTOR v2 = XMLoadFloat3(&pVertices[i + 1].Pos);
-		XMStoreFloat3(&pVertices[i].Normal , XMVector3Cross(v1, v2));
+	for (int i = 0; i < vertexAmount; i+=2) {
+
+		XMVECTOR v1 = XMLoadFloat3(&XMFLOAT3((float)pIndices[i], (float)pIndices[i + 1], (float)pIndices[i + 2]));
+		XMVECTOR v2 = XMLoadFloat3(&XMFLOAT3((float)pIndices[i + 3], (float)pIndices[i + 4], (float)pIndices[i + 5]));
+		XMStoreFloat3(&pVertices[i].Normal, XMVector3Cross(v1, v2));
 	}
 	CalculateTexCoords();
 }
 
 void Object::CalculateTexCoords()
 {
+	float lowestX = 0, highestX = 0, lowestY = 0, highestY = 0;
 	for (int i = 0; i < vertexAmount; i++) {
-		pVertices[i].TexC = XMFLOAT2{ pVertices[i].Pos.x / vertexAmount, pVertices[i].Pos.y / vertexAmount };
+		if (pVertices[i].Pos.x < lowestX)
+			lowestX = pVertices[i].Pos.x;
+		if (pVertices[i].Pos.x > highestX)
+			highestX = pVertices[i].Pos.x;
+
+		if (pVertices[i].Pos.y < lowestY)
+			lowestY = pVertices[i].Pos.y;
+		if (pVertices[i].Pos.y > highestY)
+			highestY = pVertices[i].Pos.y;
+
+		//pVertices[i].TexC = XMFLOAT2{ pVertices[i].Pos.x / vertexAmount, pVertices[i].Pos.y / vertexAmount };
 	}
+	float offsetX = 0 - lowestX;
+	float offsetY = 0 - lowestY;
+	float rangeX = lowestX - highestX;
+	float rangeY = lowestY - highestY;
+	for (int i = 0; i < vertexAmount; i++) {
+		float posX = (offsetX + pVertices[i].Pos.x) / rangeX;
+		float posY = (offsetX + pVertices[i].Pos.x) / rangeX;
+		pVertices[i].TexC.x = (offsetX + pVertices[i].Pos.x) / rangeX;
+		pVertices[i].TexC.y = (offsetY + pVertices[i].Pos.y) / rangeY;
+	}
+
+
 }
 
 Object::Object(StaticStructs::StandardVertex *vertices, WORD *indices, int vertexSize, int indexSize)

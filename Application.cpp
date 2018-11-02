@@ -177,7 +177,7 @@ HRESULT Application::InitDrawBuffers()
 	ZeroMemory(&InitData, sizeof(InitData));
 	bd.Usage = D3D11_USAGE_DEFAULT;
 
-	bd.ByteWidth = sizeof(cube); //REDO
+	bd.ByteWidth = sizeof(cube);
 	bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	bd.CPUAccessFlags = 0;
 	
