@@ -5,14 +5,14 @@ Object::Object()
 	
 }
 
-
 void Object::CalculateNormals()
 {
-	for (int i = 0; i < vertexAmount; i+=2) {
+	for (int i = 0; i < vertexAmount; i+=3) {
 
 		XMVECTOR v1 = XMLoadFloat3(&XMFLOAT3((float)pIndices[i], (float)pIndices[i + 1], (float)pIndices[i + 2]));
 		XMVECTOR v2 = XMLoadFloat3(&XMFLOAT3((float)pIndices[i + 3], (float)pIndices[i + 4], (float)pIndices[i + 5]));
-		XMStoreFloat3(&pVertices[i].Normal, XMVector3Cross(v1, v2));
+		XMVECTOR v3 = XMLoadFloat3(&XMFLOAT3((float)pIndices[i + 6], (float)pIndices[i + 7], (float)pIndices[i + 8]));
+		XMStoreFloat3(&pVertices[i].Normal, XMVector3Cross(XMVectorSubtract(v1, v2), XMVectorSubtract(v3, v1)));
 	}
 	CalculateTexCoords();
 }

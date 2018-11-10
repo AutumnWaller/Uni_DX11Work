@@ -4,7 +4,7 @@
 
 Cube::Cube()
 {
-	vertexAmount = 8;
+	vertexAmount = 24;
 	indexAmount = 36;
 	pVertices = vertices;
 	pIndices = indices;

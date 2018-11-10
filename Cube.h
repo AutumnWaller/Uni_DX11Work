@@ -6,41 +6,60 @@ using namespace DirectX;
 class Cube : public Object
 {
 private:
-	StaticStructs::StandardVertex vertices[8] =
+	StaticStructs::StandardVertex vertices[24] =
 	{
-		{ XMFLOAT3(-1.0f, 1.0f, 0.0f), XMFLOAT3(0, 1, 0)},
-		{ XMFLOAT3(1.0f, 1.0f, 0.0f), XMFLOAT3(0, 1, 0) },
-		{ XMFLOAT3(-1.0f, -1.0f, 0.0f), XMFLOAT3(0, 1, 0)},
-		{ XMFLOAT3(1.0f, -1.0f, 0.0f), XMFLOAT3(0, 1, 0)},
-
-		{ XMFLOAT3(1.0f, 1.0f, -1.0f), XMFLOAT3(0, 1, 0)},
-		{ XMFLOAT3(1.0f, -1.0f, -1.0f), XMFLOAT3(0, 1, 0)},
-		{ XMFLOAT3(-1.0f, -1.0f, -1.0f), XMFLOAT3(0, 1, 0)},
-		{ XMFLOAT3(-1.0f, 1.0f, -1.0f), XMFLOAT3(0, 1, 0)},
+		//Bottom
+		{ XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0, 1, 0)},
+		{ XMFLOAT3(1.0f, 0.0f, 0.0f), XMFLOAT3(0, 1, 0)},
+		{ XMFLOAT3(1.0f, 1.0f, 0.0f), XMFLOAT3(0, 1, 0)},
+		{ XMFLOAT3(0.0f, 1.0f, 0.0f), XMFLOAT3(0, 1, 0)},
+		
+		//Top
+		{ XMFLOAT3(0.0f, 0.0f, 1.0f), XMFLOAT3(0, 1, 0)},
+		{ XMFLOAT3(1.0f, 0.0f, 1.0f), XMFLOAT3(0, 1, 0)},
+		{ XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT3(0, 1, 0)},
+		{ XMFLOAT3(0.0f, 1.0f, 1.0f), XMFLOAT3(0, 1, 0)},
+		//Left
+		{ XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0, 1, 0)},
+		{ XMFLOAT3(0.0f, 0.0f, 1.0f), XMFLOAT3(0, 1, 0)},
+		{ XMFLOAT3(1.0f, 0.0f, 1.0f), XMFLOAT3(0, 1, 0)},
+		{ XMFLOAT3(1.0f, 0.0f, 0.0f), XMFLOAT3(0, 1, 0)},
+		//Right
+		{ XMFLOAT3(1.0f, 1.0f, 0.0f), XMFLOAT3(0, 1, 0)},
+		{ XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT3(0, 1, 0)},
+		{ XMFLOAT3(0.0f, 1.0f, 1.0f), XMFLOAT3(0, 1, 0)},
+		{ XMFLOAT3(0.0f, 1.0f, 0.0f), XMFLOAT3(0, 1, 0)},
+		//Front
+		{ XMFLOAT3(1.0f, 0.0f, 0.0f), XMFLOAT3(0, 1, 0)},
+		{ XMFLOAT3(1.0f, 0.0f, 1.0f), XMFLOAT3(0, 1, 0)},
+		{ XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT3(0, 1, 0)},
+		{ XMFLOAT3(1.0f, 1.0f, 0.0f), XMFLOAT3(0, 1, 0)},
+		//Back
+		{ XMFLOAT3(0.0f, 1.0f, 0.0f), XMFLOAT3(0, 1, 0)},
+		{ XMFLOAT3(0.0f, 1.0f, 1.0f), XMFLOAT3(0, 1, 0)},
+		{ XMFLOAT3(0.0f, 0.0f, 1.0f), XMFLOAT3(0, 1, 0)},
+		{ XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0, 1, 0)},
 	};
 
 	WORD indices[36] = 
 	{
-
-		//Bottom
-		0,1,3,
 		0,3,2,
+		2,1,0,
 
-		1,5,4,
-		3,5,1,
+		4,7,6,
+		6,5,4,
 
-		3,6,5,
-		2,6,3,
+		8,11,10,
+		10,9,8,
 
-		2,0,7,
-		7,6,2,
+		12,15,14,
+		14,13,12,
 
-		0,1,4,
-		4,7,0,
+		16,19,18,
+		18,17,16,
 
-		//Top
-		7,4,5,
-		5,6,7
+		20,23,22,
+		22,21,20,
 	};
 
 	XMFLOAT4X4 world;
