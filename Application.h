@@ -42,15 +42,15 @@ private:
 	ID3D11Buffer*           _pIndexBuffer;
 	ID3D11Buffer*           _pIndexBufferPyramid;
 	ID3D11Buffer*           _pConstantBuffer;
-	ID3D11ShaderResourceView * _pTextureRV = nullptr;
-	ID3D11SamplerState * _pSamplerLinear = nullptr;
+
 	XMFLOAT4X4              _world;
 	XMFLOAT4X4              _view;
 	XMFLOAT4X4              _projection;
-	ID3D11DepthStencilView* _depthStencilView;
-	ID3D11Texture2D* _depthStencilBuffer;
-	ID3D11RasterizerState* _wireFrame;
-	ID3D11RasterizerState* _solid;
+	ID3D11DepthStencilView* _pDepthStencilView;
+	ID3D11Texture2D* _pDepthStencilBuffer;
+	ID3D11RasterizerState* _pWireframe;
+	ID3D11RasterizerState* _pSolid;
+	ID3D11BlendState* _pTransparency;
 
 	PBYTE kbState;
 

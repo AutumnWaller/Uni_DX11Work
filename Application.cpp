@@ -40,6 +40,7 @@ Application::Application()
 	_pIndexBuffer = nullptr;
 	_pIndexBufferPyramid = nullptr;
 	_pConstantBuffer = nullptr;
+	_pTransparency = nullptr;
 }
 
 Application::~Application()
@@ -159,11 +160,11 @@ HRESULT Application::InitDrawBuffers()
 {
 	HRESULT hr;
 
-	cube = new Cube();
-	cube2 = new Cube();
-	cube3 = new Cube();
-	cube4 = new Cube();
-	cube5 = new Cube();
+	cube = new Cube(L"Crate_COLOR");
+	cube2 = new Cube(L"Crate_COLOR");
+	cube3 = new Cube(L"Crate_COLOR");
+	cube4 = new Cube(L"Crate_COLOR");
+	cube5 = new Cube(L"Crate_COLOR");
 	pyramid = new Pyramid();
 
 	objects.emplace_back(cube);
@@ -342,11 +343,11 @@ HRESULT Application::InitDevice()
 	depthStencilDesc.CPUAccessFlags = 0;
 	depthStencilDesc.MiscFlags = 0;
 
-	_pd3dDevice->CreateTexture2D(&depthStencilDesc, nullptr, &_depthStencilBuffer);
-	_pd3dDevice->CreateDepthStencilView(_depthStencilBuffer, nullptr, &_depthStencilView);
+	_pd3dDevice->CreateTexture2D(&depthStencilDesc, nullptr, &_pDepthStencilBuffer);
+	_pd3dDevice->CreateDepthStencilView(_pDepthStencilBuffer, nullptr, &_pDepthStencilView);
 
 
-    _pImmediateContext->OMSetRenderTargets(1, &_pRenderTargetView, _depthStencilView);
+    _pImmediateContext->OMSetRenderTargets(1, &_pRenderTargetView, _pDepthStencilView);
 
     // Setup the viewport
     D3D11_VIEWPORT vp;
@@ -381,28 +382,38 @@ HRESULT Application::InitDevice()
 	ZeroMemory(&wfDesc, sizeof(D3D11_RASTERIZER_DESC));
 	wfDesc.FillMode = D3D11_FILL_WIREFRAME;
 	wfDesc.CullMode = D3D11_CULL_NONE;
-	hr = _pd3dDevice->CreateRasterizerState(&wfDesc, &_wireFrame);
+	hr = _pd3dDevice->CreateRasterizerState(&wfDesc, &_pWireframe);
 
 	D3D11_RASTERIZER_DESC solidDesc;
 	ZeroMemory(&solidDesc, sizeof(D3D11_RASTERIZER_DESC));
 	solidDesc.FillMode = D3D11_FILL_SOLID;
 	solidDesc.CullMode = D3D11_CULL_BACK;
-	hr = _pd3dDevice->CreateRasterizerState(&solidDesc, &_solid);
+	hr = _pd3dDevice->CreateRasterizerState(&solidDesc, &_pSolid);
 
-	D3D11_SAMPLER_DESC sampDesc;
-	ZeroMemory(&sampDesc, sizeof(sampDesc));
-	sampDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-	sampDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
-	sampDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-	sampDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
-	sampDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
-	sampDesc.MinLOD = 0;
-	sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
+	
 
-	CreateDDSTextureFromFile(_pd3dDevice, L"Crate_COLOR.dds", nullptr, &_pTextureRV);
 
-	_pImmediateContext->PSSetShaderResources(0, 1, &_pTextureRV);
-	_pd3dDevice->CreateSamplerState(&sampDesc, &_pSamplerLinear);
+
+	D3D11_BLEND_DESC blendDesc;
+	ZeroMemory(&blendDesc, sizeof(blendDesc));
+
+	D3D11_RENDER_TARGET_BLEND_DESC rtbd;
+	ZeroMemory(&rtbd, sizeof(rtbd));
+
+	rtbd.BlendEnable = true;
+	rtbd.SrcBlend = D3D11_BLEND_SRC_COLOR;
+	rtbd.DestBlend = D3D11_BLEND_BLEND_FACTOR;
+	rtbd.BlendOp = D3D11_BLEND_OP_ADD;
+	rtbd.SrcBlendAlpha = D3D11_BLEND_ONE;
+	rtbd.DestBlendAlpha = D3D11_BLEND_ZERO;
+	rtbd.BlendOpAlpha = D3D11_BLEND_OP_ADD;
+	rtbd.RenderTargetWriteMask = D3D10_COLOR_WRITE_ENABLE_ALL;
+
+	blendDesc.AlphaToCoverageEnable = false;
+	blendDesc.RenderTarget[0] = rtbd;
+
+	_pd3dDevice->CreateBlendState(&blendDesc, &_pTransparency);
+
 
     if (FAILED(hr))
         return hr;
@@ -426,18 +437,20 @@ void Application::Cleanup()
     if (_pSwapChain) _pSwapChain->Release();
     if (_pImmediateContext) _pImmediateContext->Release();
     if (_pd3dDevice) _pd3dDevice->Release();
-	if (_depthStencilView) _depthStencilView->Release();
-	if (_depthStencilBuffer) _depthStencilBuffer->Release();
-	if (_wireFrame) _wireFrame->Release();
+	if (_pWireframe) _pWireframe->Release();
+	if(_pDepthStencilView) _pDepthStencilView->Release();
+	if(_pDepthStencilBuffer) _pDepthStencilBuffer->Release();
+	if(_pSolid) _pSolid->Release();
+	if(_pTransparency) _pTransparency->Release();
 }
 
 
 void Application::Update()
 {
 	if (GetAsyncKeyState(VK_SPACE)) {
-		_pImmediateContext->RSSetState(_wireFrame);
+		_pImmediateContext->RSSetState(_pWireframe);
 	}if (GetAsyncKeyState(VK_RETURN)) {
-		_pImmediateContext->RSSetState(_solid);
+		_pImmediateContext->RSSetState(_pSolid);
 	}
 	
     // Update our time
@@ -488,13 +501,23 @@ void Application::Draw()
     float ClearColor[4] = {0.0f, 0.125f, 0.3f, 1.0f}; // red,green,blue,alpha
     _pImmediateContext->ClearRenderTargetView(_pRenderTargetView, ClearColor);
 
-	_pImmediateContext->ClearDepthStencilView(_depthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+	_pImmediateContext->ClearDepthStencilView(_pDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 	
 	XMMATRIX world = XMLoadFloat4x4(&_world);
 	XMMATRIX view = XMLoadFloat4x4(&_view);
 	XMMATRIX projection = XMLoadFloat4x4(&_projection);
 
-	
+	// "fine-tune" the blending equation
+	float blendFactor[] = { 0.75f, 0.75f, 0.75f, 1.0f };
+
+	// Set the default blend state (no blending) for opaque objects
+	_pImmediateContext->OMSetBlendState(0, 0, 0xffffffff);
+
+	// Render opaque objects //
+
+	// Set the blend state for transparent objects
+	_pImmediateContext->OMSetBlendState(_pTransparency, blendFactor, 0xffffffff);
+
 
     //
     // Update variables
@@ -514,7 +537,7 @@ void Application::Draw()
 	_pImmediateContext->VSSetConstantBuffers(0, 1, &_pConstantBuffer);
     _pImmediateContext->PSSetConstantBuffers(0, 1, &_pConstantBuffer);
 	_pImmediateContext->PSSetShader(_pPixelShader, nullptr, 0);
-	_pImmediateContext->PSSetSamplers(0, 1, &_pSamplerLinear);
+	
 	for (int i = 0; i < objects.size(); i++)
 		objects[i]->Draw(world, cb);
 

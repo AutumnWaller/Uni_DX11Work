@@ -4,8 +4,8 @@
 
 Pyramid::Pyramid()
 {
-	pVertices = vertices;
-	pIndices = indices;
+	_pVertices = vertices;
+	_pIndices = indices;
 	indexAmount = 18;
 	vertexAmount = 5;
 	CalculateNormals();
@@ -14,8 +14,11 @@ Pyramid::Pyramid()
 
 Pyramid::~Pyramid()
 {
-	pVertices = nullptr;
-	pIndices = nullptr;
+}
+
+void Pyramid::Cleanup()
+{
+	Object::Cleanup();
 }
 
 void Pyramid::Initialise(ID3D11Device * deviceRef, D3D11_SUBRESOURCE_DATA data, ID3D11DeviceContext * context, ID3D11Buffer * cBuffer)
