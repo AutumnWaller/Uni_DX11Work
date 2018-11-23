@@ -162,8 +162,9 @@ HRESULT Application::InitDrawBuffers()
 {
 	HRESULT hr;
 
-	_pCamera = new Camera(XMVECTOR(XMVectorSet(0.0f, 0.0f, -3.0f, 0.0f)), XMVECTOR(XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f)), XMVECTOR(XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f)));
-
+	_pCamera = new Camera(XMVECTOR(XMVectorSet(0.0f, 0.0f, -3.0f, 0.0f)), XMVECTOR(XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f)), XMVECTOR(XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f)), XMVECTOR(XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f)));
+	_pCamera2 = new Camera(XMVECTOR(XMVectorSet(0.0f, 0.0f, 3.0f, 0.0f)), XMVECTOR(XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f)), XMVECTOR(XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f)), XMVECTOR(XMVectorSet(0.0f, 0.0f, -2.0f, 0.0f)));
+	_pCurrCamera = _pCamera;
 	cube = new Cube(L"ChainLink.dds");
 	cube2 = new Cube(L"ChainLink.dds");
 	cube3 = new Cube();
@@ -455,12 +456,21 @@ void Application::Cleanup()
 
 void Application::Update()
 {
-	if (GetAsyncKeyState(VK_SPACE)) {
+	if (GetAsyncKeyState(VK_SPACE)) 
 		_pImmediateContext->RSSetState(_pWireframe);
-	}if (GetAsyncKeyState(VK_RETURN)) {
+	if (GetAsyncKeyState(VK_RETURN))
 		_pImmediateContext->RSSetState(_pSolid);
-	}
 	
+	if (GetAsyncKeyState(VK_NUMPAD1)) 
+		_pCurrCamera = _pCamera;
+	else if (GetAsyncKeyState(VK_NUMPAD2)) 
+		_pCurrCamera = _pCamera2;
+
+	if (GetAsyncKeyState(0x57)) 
+		_pCurrCamera->MoveForward(1);
+	if (GetAsyncKeyState(0x53))
+		_pCurrCamera->MoveForward(-1);
+
     // Update our time
     static float t = 0.0f;
 
@@ -517,9 +527,12 @@ void Application::Draw()
 
 	_pImmediateContext->ClearDepthStencilView(_pDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 	
+
+
+
 	XMMATRIX world = XMLoadFloat4x4(&_world);
-	XMMATRIX view = XMLoadFloat4x4(&_pCamera->GetViewMatrix());
-	XMMATRIX projection = XMLoadFloat4x4(&_pCamera->GetProjectionMatrix());
+	XMMATRIX view = XMLoadFloat4x4(&_pCurrCamera->GetViewMatrix());
+	XMMATRIX projection = XMLoadFloat4x4(&_pCurrCamera->GetProjectionMatrix());
 
 	// "fine-tune" the blending equation
 	float blendFactor[] = { 0.75f, 0.75f, 0.75f, 1.0f };

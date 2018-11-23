@@ -58,7 +58,7 @@ private:
 	D3D11_BUFFER_DESC bd;
 	D3D11_SUBRESOURCE_DATA InitData;
 private:
-	Camera *_pCamera;
+	Camera *_pCamera, *_pCamera2, *_pCurrCamera;
 	Cube *cube;
 	Cube *cube2;
 	Cube *cube3;
