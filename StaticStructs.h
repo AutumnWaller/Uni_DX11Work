@@ -2,9 +2,9 @@
 #include <d3d11.h>
 #include <DirectXMath.h>
 using namespace DirectX;
-static class StaticStructs {
+class StaticStructs {
 public:
-	static struct StandardVertex
+	struct StandardVertex
 	{
 		XMFLOAT3 Pos;
 		XMFLOAT3 Normal;
@@ -28,7 +28,7 @@ public:
 
 	};
 
-	static struct Vector3f{
+	struct Vector3f{
 		float x;
 		float y;
 		float z;

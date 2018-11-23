@@ -23,8 +23,9 @@ cbuffer ConstantBuffer : register( b0 )
 	float4 DiffuseLight;
 
 	float3 AmbientMtrl;
+	float a = 0;
 	float3 AmbientLight;
-
+	float b = 0;
 }
 
 
@@ -80,5 +81,6 @@ VS_OUTPUT output = (VS_OUTPUT)0;
 float4 PS( VS_OUTPUT input ) : SV_Target
 {
 	float4 textureColour = txDiffuse.Sample(samLinear, input.Tex);
+	clip(textureColour.a - 0.95f);
 	return textureColour;
 }

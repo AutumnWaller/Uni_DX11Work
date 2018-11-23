@@ -48,8 +48,19 @@ Application::~Application()
 	Cleanup();
 }
 
+void* operator new(size_t i)
+{
+	return _mm_malloc(i, 16);
+}
+
+void operator delete(void* p)
+{
+	_mm_free(p);
+}
+
 HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
 {
+
     if (FAILED(InitWindow(hInstance, nCmdShow)))
 	{
         return E_FAIL;
@@ -70,16 +81,7 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
 	// Initialize the world matrix
 	XMStoreFloat4x4(&_world, XMMatrixIdentity());
 
-    // Initialize the view matrix
-	XMVECTOR Eye = XMVectorSet(0.0f, 0.0f, -3.0f, 0.0f);
-	XMVECTOR At = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
-	XMVECTOR Up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
-
-	XMStoreFloat4x4(&_view, XMMatrixLookAtLH(Eye, At, Up));
-
-    // Initialize the projection matrix
-	XMStoreFloat4x4(&_projection, XMMatrixPerspectiveFovLH(XM_PIDIV2, _WindowWidth / (FLOAT) _WindowHeight, 0.01f, 100.0f));
-
+    
 
 	return S_OK;
 }
@@ -160,8 +162,8 @@ HRESULT Application::InitDrawBuffers()
 {
 	HRESULT hr;
 
-	cube = new Cube(L"Crate_NRM.dds");
-	cube2 = new Cube();
+	cube = new Cube(L"ChainLink.dds");
+	cube2 = new Cube(L"ChainLink.dds");
 	cube3 = new Cube();
 	cube4 = new Cube();
 	cube5 = new Cube();
@@ -524,8 +526,7 @@ void Application::Draw()
 
 	// Render opaque objects //
 
-	// Set the blend state for transparent objects
-	_pImmediateContext->OMSetBlendState(_pTransparency, blendFactor, 0xffffffff);
+
 
 
     //
@@ -546,6 +547,9 @@ void Application::Draw()
 	
 	for (int i = 0; i < objects.size(); i++)
 		objects[i]->Draw(world, cb);
+
+	// Set the blend state for transparent objects
+	_pImmediateContext->OMSetBlendState(_pTransparency, blendFactor, 0xffffffff);
 
     //
     // Present our back buffer to our front buffer

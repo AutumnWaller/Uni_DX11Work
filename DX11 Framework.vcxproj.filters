@@ -17,6 +17,7 @@
     <ClInclude Include="Pyramid.h" />
     <ClInclude Include="StaticStructs.h" />
     <ClInclude Include="DDSTextureLoader.h" />
+    <ClInclude Include="Camera.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
@@ -25,6 +26,7 @@
     <ClCompile Include="Cube.cpp" />
     <ClCompile Include="Pyramid.cpp" />
     <ClCompile Include="DDSTextureLoader.cpp" />
+    <ClCompile Include="Camera.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CLInclude Include="resource.h">
