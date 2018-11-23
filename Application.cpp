@@ -162,6 +162,8 @@ HRESULT Application::InitDrawBuffers()
 {
 	HRESULT hr;
 
+	_pCamera = new Camera(XMVECTOR(XMVectorSet(0.0f, 0.0f, -3.0f, 0.0f)), XMVECTOR(XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f)), XMVECTOR(XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f)));
+
 	cube = new Cube(L"ChainLink.dds");
 	cube2 = new Cube(L"ChainLink.dds");
 	cube3 = new Cube();
@@ -447,6 +449,7 @@ void Application::Cleanup()
 	if(_pDepthStencilBuffer) _pDepthStencilBuffer->Release();
 	if(_pSolid) _pSolid->Release();
 	if(_pTransparency) _pTransparency->Release();
+	if (_pCamera) delete _pCamera;
 }
 
 
@@ -515,8 +518,8 @@ void Application::Draw()
 	_pImmediateContext->ClearDepthStencilView(_pDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 	
 	XMMATRIX world = XMLoadFloat4x4(&_world);
-	XMMATRIX view = XMLoadFloat4x4(&_view);
-	XMMATRIX projection = XMLoadFloat4x4(&_projection);
+	XMMATRIX view = XMLoadFloat4x4(&_pCamera->GetViewMatrix());
+	XMMATRIX projection = XMLoadFloat4x4(&_pCamera->GetProjectionMatrix());
 
 	// "fine-tune" the blending equation
 	float blendFactor[] = { 0.75f, 0.75f, 0.75f, 1.0f };

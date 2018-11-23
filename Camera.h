@@ -12,14 +12,16 @@ class Camera
 private:
 	XMFLOAT4X4 view;
 	XMFLOAT4X4 projection;
-	XMFLOAT4X4 *_pEye;
-	XMFLOAT4X4 *_pAt;
-	XMFLOAT4X4 *_pUp;
+	XMFLOAT4 *_pEye;
+	XMFLOAT4 *_pAt;
+	XMFLOAT4 *_pUp;
 public:
-	Camera(XMVECTOR _Eye, XMVECTOR _At, XMVECTOR _Up);
+	Camera(XMVECTOR _Eye, XMVECTOR _At, XMVECTOR _Up, int windowWidth = 1280, int windowHeight = 720);
 	~Camera();
-	XMFLOAT4X4* GetEye() { return _pEye; }
-	XMFLOAT4X4* GetAt() { return _pAt; }
-	XMFLOAT4X4* GetUp() { return _pUp; }
+	XMFLOAT4* GetEye() { return _pEye; }
+	XMFLOAT4* GetAt() { return _pAt; }
+	XMFLOAT4* GetUp() { return _pUp; }
+	XMFLOAT4X4 GetViewMatrix() { return view; }
+	XMFLOAT4X4 GetProjectionMatrix() { return projection; }
 };
 

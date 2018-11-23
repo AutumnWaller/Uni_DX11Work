@@ -11,6 +11,7 @@
 #include "Pyramid.h"
 #include "StaticStructs.h"
 #include <DirectXColors.h>
+#include "Camera.h"
 #include <vector>
 #include <WinUser.h>
 
@@ -57,6 +58,7 @@ private:
 	D3D11_BUFFER_DESC bd;
 	D3D11_SUBRESOURCE_DATA InitData;
 private:
+	Camera *_pCamera;
 	Cube *cube;
 	Cube *cube2;
 	Cube *cube3;
@@ -67,7 +69,6 @@ private:
 	HRESULT InitWindow(HINSTANCE hInstance, int nCmdShow);
 	HRESULT InitDevice();
 	void Cleanup();
-	void LoadTextures();
 	HRESULT CompileShaderFromFile(WCHAR* szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel, ID3DBlob** ppBlobOut);
 	HRESULT InitShadersAndInputLayout();
 	HRESULT InitDrawBuffers();
