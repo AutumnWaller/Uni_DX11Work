@@ -2,8 +2,9 @@
 
 
 
-Pyramid::Pyramid()
+Pyramid::Pyramid(const wchar_t *name)
 {
+	_pTexturePath = name;
 	_pVertices = vertices;
 	_pIndices = indices;
 	indexAmount = 18;

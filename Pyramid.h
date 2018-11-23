@@ -26,7 +26,7 @@ private:
 	};
 
 public:
-	Pyramid();
+	Pyramid(const wchar_t *name);
 	~Pyramid();
 	virtual void Cleanup() override;
 	virtual void Initialise(ID3D11Device *deviceRef, D3D11_SUBRESOURCE_DATA data, ID3D11DeviceContext *context, ID3D11Buffer* cBuffer) override;

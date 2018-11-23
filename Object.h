@@ -27,6 +27,7 @@ public:
 	virtual void Draw(DirectX::XMMATRIX appWorld, StaticStructs::ConstantBuffer cb);
 	virtual void Update(float time);
 	virtual void Cleanup();
+	void SetTexture(const wchar_t *texturePath);
 protected:
 	void CalculateNormals();
 	StaticStructs::StandardVertex *_pVertices;
@@ -42,6 +43,7 @@ protected:
 	ID3D11Buffer* _pConstantBuffer;
 	ID3D11DeviceContext* _pDeviceContext;
 	ID3D11SamplerState * _pSamplerLinear;
+	ID3D11Device *_pDeviceRef;
 	StaticStructs::Vector3f translationOffset;
 	DirectX::XMMATRIX currMatrix;
 	

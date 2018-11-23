@@ -160,12 +160,13 @@ HRESULT Application::InitDrawBuffers()
 {
 	HRESULT hr;
 
-	cube = new Cube(L"Crate_COLOR");
-	cube2 = new Cube(L"Crate_COLOR");
-	cube3 = new Cube(L"Crate_COLOR");
-	cube4 = new Cube(L"Crate_COLOR");
-	cube5 = new Cube(L"Crate_COLOR");
-	pyramid = new Pyramid();
+	cube = new Cube(L"Crate_COLOR.dds");
+	cube2 = new Cube(L"Crate_NRM.dds");
+	cube3 = new Cube(L"Crate_NRM.dds");
+	cube4 = new Cube(L"Crate_NRM.dds");
+	cube5 = new Cube(L"Crate_COLOR.dds");
+	pyramid = new Pyramid(L"Crate_COLOR.dds");
+
 
 	objects.emplace_back(cube);
 	objects.emplace_back(cube2);
@@ -375,9 +376,11 @@ HRESULT Application::InitDevice()
 	bd.CPUAccessFlags = 0;
     hr = _pd3dDevice->CreateBuffer(&bd, nullptr, &_pConstantBuffer);
 
-	for(int i = 0; i < objects.size(); i++)
+	for (int i = 0; i < objects.size(); i++) {
 		objects[i]->Initialise(_pd3dDevice, InitData, _pImmediateContext, _pConstantBuffer);
+	}
 
+	
 	D3D11_RASTERIZER_DESC wfDesc;
 	ZeroMemory(&wfDesc, sizeof(D3D11_RASTERIZER_DESC));
 	wfDesc.FillMode = D3D11_FILL_WIREFRAME;

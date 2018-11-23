@@ -2,15 +2,16 @@
 
 
 
-Cube::Cube(const wchar_t *texturePathRef)
+Cube::Cube(const wchar_t *name)
 {
+	_pTexturePath = name;
 	vertexAmount = 24;
 	indexAmount = 36;
 	_pVertices = vertices;
 	_pIndices = indices;
 	CalculateNormals();
-	_pTexturePath = texturePathRef;
 }
+
 
 
 Cube::~Cube()

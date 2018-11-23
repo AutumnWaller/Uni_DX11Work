@@ -50,11 +50,11 @@ void Object::ChangeWorld(DirectX::XMMATRIX matrix)
 
 void Object::Initialise(ID3D11Device *deviceRef, D3D11_SUBRESOURCE_DATA data, ID3D11DeviceContext *context, ID3D11Buffer* cBuffer)
 {
-	
+	_pDeviceRef = deviceRef;
+	_pDeviceContext = context;
+	_pConstantBuffer = cBuffer;
 
-
-	CreateDDSTextureFromFile(deviceRef, L"CRATE_COLOR.dds", nullptr, &_pTextureRV);
-	context->PSSetShaderResources(0, 1, &_pTextureRV);
+	CreateDDSTextureFromFile(_pDeviceRef, _pTexturePath, nullptr, &_pTextureRV);
 
 	D3D11_SAMPLER_DESC sampDesc;
 	ZeroMemory(&sampDesc, sizeof(sampDesc));
@@ -66,8 +66,9 @@ void Object::Initialise(ID3D11Device *deviceRef, D3D11_SUBRESOURCE_DATA data, ID
 	sampDesc.MinLOD = 0;
 	sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
 
-	deviceRef->CreateSamplerState(&sampDesc, &_pSamplerLinear);
-	context->PSSetSamplers(0, 1, &_pSamplerLinear);
+	_pDeviceRef->CreateSamplerState(&sampDesc, &_pSamplerLinear);
+	_pDeviceContext->PSSetSamplers(0, 1, &_pSamplerLinear);
+	_pDeviceContext->PSSetShaderResources(0, 1, &_pTextureRV);
 
 	currMatrix = DirectX::XMMatrixIdentity();
 
@@ -82,7 +83,7 @@ void Object::Initialise(ID3D11Device *deviceRef, D3D11_SUBRESOURCE_DATA data, ID
 	bd.CPUAccessFlags = 0;
 	bd.MiscFlags = 0;
 	data.pSysMem = GetVertices();
-	deviceRef->CreateBuffer(&bd, &data, &_pVertexBuffer);
+	_pDeviceRef->CreateBuffer(&bd, &data, &_pVertexBuffer);
 
 	ZeroMemory(&bd, sizeof(bd));
 	bd.Usage = D3D11_USAGE_DEFAULT;
@@ -91,9 +92,8 @@ void Object::Initialise(ID3D11Device *deviceRef, D3D11_SUBRESOURCE_DATA data, ID
 	bd.CPUAccessFlags = 0;
 	bd.MiscFlags = 0;
 	data.pSysMem = GetIndices();
-	deviceRef->CreateBuffer(&bd, &data, &_pIndexBuffer);
-	_pDeviceContext = context;
-	_pConstantBuffer = cBuffer;
+	_pDeviceRef->CreateBuffer(&bd, &data, &_pIndexBuffer);
+
 	
 }
 
@@ -113,7 +113,7 @@ void Object::Draw(DirectX::XMMATRIX appWorld, StaticStructs::ConstantBuffer cb)
 
 void Object::Update(float time)
 {
-	//
+
 }
 
 void Object::Cleanup()
@@ -127,4 +127,9 @@ void Object::Cleanup()
 	if (_pTexture) delete _pTexture;
 	if (_pTextureRV) delete _pTextureRV;
 	if (_pSamplerLinear) delete _pSamplerLinear;
+}
+
+void Object::SetTexture(const wchar_t *texturePath)
+{
+	_pTexturePath = texturePath;
 }
