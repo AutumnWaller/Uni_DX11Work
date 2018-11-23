@@ -4,6 +4,7 @@
 
 Pyramid::Pyramid(const wchar_t *name)
 {
+	Object();
 	_pTexturePath = name;
 	_pVertices = vertices;
 	_pIndices = indices;

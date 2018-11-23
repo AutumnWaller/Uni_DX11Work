@@ -14,6 +14,9 @@ Object::Object()
 	_pConstantBuffer = nullptr;
 	_pDeviceContext = nullptr;
 	_pSamplerLinear = nullptr;
+	_pVertexShader = nullptr;
+	_pPixelShader = nullptr;
+
 }
 
 void Object::CalculateNormals()
@@ -28,12 +31,14 @@ void Object::CalculateNormals()
 }
 
 
-Object::Object(StaticStructs::StandardVertex *vertices, WORD *indices, int vertexSize, int indexSize)
+Object::Object(StaticStructs::StandardVertex *vertices, WORD *indices, int vertexSize, int indexSize, const wchar_t *texturePath = L"Crate_COLOR.dds")
 {
+	_pTexturePath = texturePath;
 	_pVertices = vertices;
 	_pIndices = indices;
 	indexAmount = indexSize;
 	vertexAmount = vertexSize;
+
 
 }
 
@@ -67,8 +72,6 @@ void Object::Initialise(ID3D11Device *deviceRef, D3D11_SUBRESOURCE_DATA data, ID
 	sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
 
 	_pDeviceRef->CreateSamplerState(&sampDesc, &_pSamplerLinear);
-	_pDeviceContext->PSSetSamplers(0, 1, &_pSamplerLinear);
-	_pDeviceContext->PSSetShaderResources(0, 1, &_pTextureRV);
 
 	currMatrix = DirectX::XMMatrixIdentity();
 
@@ -103,12 +106,21 @@ void Object::Draw(DirectX::XMMATRIX appWorld, StaticStructs::ConstantBuffer cb)
 	UINT offset = 0;
 	_pDeviceContext->IASetVertexBuffers(0, 1, &_pVertexBuffer, &stride, &offset);
 
+	//Per object shader at some point
+	//_pDeviceContext->VSSetShader(_pVertexShader, nullptr, 0);
+	//_pDeviceContext->VSSetConstantBuffers(0, 1, &_pConstantBuffer);
+	//_pDeviceContext->PSSetConstantBuffers(0, 1, &_pConstantBuffer);
+	//_pDeviceContext->PSSetShader(_pPixelShader, nullptr, 0);
 
 	_pDeviceContext->IASetIndexBuffer(_pIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
 	appWorld = DirectX::XMLoadFloat4x4(&world);
 	cb.mWorld = XMMatrixTranspose(appWorld);
 	_pDeviceContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &cb, 0, 0);
+	_pDeviceContext->PSSetSamplers(0, 1, &_pSamplerLinear);
+	_pDeviceContext->PSSetShaderResources(0, 1, &_pTextureRV);
 	_pDeviceContext->DrawIndexed(indexAmount, 0, 0);
+
+
 }
 
 void Object::Update(float time)
@@ -127,9 +139,6 @@ void Object::Cleanup()
 	if (_pTexture) delete _pTexture;
 	if (_pTextureRV) delete _pTextureRV;
 	if (_pSamplerLinear) delete _pSamplerLinear;
-}
-
-void Object::SetTexture(const wchar_t *texturePath)
-{
-	_pTexturePath = texturePath;
+	if(_pVertexShader) delete _pVertexShader;
+	if(_pPixelShader) delete _pPixelShader;
 }

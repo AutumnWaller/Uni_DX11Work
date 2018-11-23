@@ -68,7 +68,7 @@ private:
 	
 public:
 
-	Cube(const wchar_t *name);
+	Cube(const wchar_t *name = L"Crate_COLOR.dds");
 	~Cube();
 	virtual void Initialise(ID3D11Device *deviceRef, D3D11_SUBRESOURCE_DATA data, ID3D11DeviceContext *context, ID3D11Buffer* cBuffer) override;
 	virtual void Draw(DirectX::XMMATRIX appWorld, StaticStructs::ConstantBuffer cb) override;

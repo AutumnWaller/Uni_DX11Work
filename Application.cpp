@@ -160,12 +160,12 @@ HRESULT Application::InitDrawBuffers()
 {
 	HRESULT hr;
 
-	cube = new Cube(L"Crate_COLOR.dds");
-	cube2 = new Cube(L"Crate_NRM.dds");
-	cube3 = new Cube(L"Crate_NRM.dds");
-	cube4 = new Cube(L"Crate_NRM.dds");
-	cube5 = new Cube(L"Crate_COLOR.dds");
-	pyramid = new Pyramid(L"Crate_COLOR.dds");
+	cube = new Cube(L"Crate_NRM.dds");
+	cube2 = new Cube();
+	cube3 = new Cube();
+	cube4 = new Cube();
+	cube5 = new Cube();
+	pyramid = new Pyramid(L"Crate_NRM.dds");
 
 
 	objects.emplace_back(cube);
@@ -498,6 +498,12 @@ void Application::Draw()
 	UINT offset = 0;
 	_pImmediateContext->IASetVertexBuffers(0, 1, &_pVertexBuffer, &stride, &offset);
 
+
+	_pImmediateContext->VSSetShader(_pVertexShader, nullptr, 0);
+	_pImmediateContext->VSSetConstantBuffers(0, 1, &_pConstantBuffer);
+	_pImmediateContext->PSSetConstantBuffers(0, 1, &_pConstantBuffer);
+	_pImmediateContext->PSSetShader(_pPixelShader, nullptr, 0);
+
     //
     // Clear the back buffer
     //
@@ -536,10 +542,7 @@ void Application::Draw()
 	cb.AmbientLight = ambientLight;
 	cb.AmbientMtrl = ambientMaterial;
 	
-	_pImmediateContext->VSSetShader(_pVertexShader, nullptr, 0);
-	_pImmediateContext->VSSetConstantBuffers(0, 1, &_pConstantBuffer);
-    _pImmediateContext->PSSetConstantBuffers(0, 1, &_pConstantBuffer);
-	_pImmediateContext->PSSetShader(_pPixelShader, nullptr, 0);
+
 	
 	for (int i = 0; i < objects.size(); i++)
 		objects[i]->Draw(world, cb);

@@ -4,6 +4,7 @@
 
 Cube::Cube(const wchar_t *name)
 {
+	Object();
 	_pTexturePath = name;
 	vertexAmount = 24;
 	indexAmount = 36;
