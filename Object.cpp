@@ -1,5 +1,24 @@
 #include "Object.h"
 
+Object::Object(const wchar_t *texturePath = L"Crate_COLOR.dds")
+{
+	_pVertices = nullptr;
+	_pIndices = nullptr;
+
+	_pTexturePath = nullptr;
+	_pTexture = nullptr;
+	_pTextureRV = nullptr;
+
+	_pIndexBuffer = nullptr;
+	_pVertexBuffer = nullptr;
+	_pConstantBuffer = nullptr;
+	_pDeviceContext = nullptr;
+	_pSamplerLinear = nullptr;
+	_pVertexShader = nullptr;
+	_pPixelShader = nullptr;
+	_pTexturePath = texturePath;
+}
+
 Object::Object()
 {
 	_pVertices = nullptr;
@@ -16,7 +35,6 @@ Object::Object()
 	_pSamplerLinear = nullptr;
 	_pVertexShader = nullptr;
 	_pPixelShader = nullptr;
-
 }
 
 void Object::CalculateNormals()
@@ -61,6 +79,8 @@ void Object::Initialise(ID3D11Device *deviceRef, D3D11_SUBRESOURCE_DATA data, ID
 
 	CreateDDSTextureFromFile(_pDeviceRef, _pTexturePath, nullptr, &_pTextureRV);
 
+
+
 	D3D11_SAMPLER_DESC sampDesc;
 	ZeroMemory(&sampDesc, sizeof(sampDesc));
 	sampDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
@@ -81,28 +101,61 @@ void Object::Initialise(ID3D11Device *deviceRef, D3D11_SUBRESOURCE_DATA data, ID
 
 	ZeroMemory(&bd, sizeof(bd));
 	bd.Usage = D3D11_USAGE_DEFAULT;
-	bd.ByteWidth = sizeof(StaticStructs::StandardVertex) * vertexAmount;
+	bd.ByteWidth = sizeof(StaticStructs::StandardVertex) * meshData.IndexCount;
 	bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	bd.CPUAccessFlags = 0;
 	bd.MiscFlags = 0;
-	data.pSysMem = GetVertices();
+	data.pSysMem = meshData.VertexBuffer;
 	_pDeviceRef->CreateBuffer(&bd, &data, &_pVertexBuffer);
 
 	ZeroMemory(&bd, sizeof(bd));
 	bd.Usage = D3D11_USAGE_DEFAULT;
-	bd.ByteWidth = sizeof(unsigned int) * 3 * indexAmount;
+	bd.ByteWidth = sizeof(unsigned int) * 3 * meshData.IndexCount;
 	bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
 	bd.CPUAccessFlags = 0;
 	bd.MiscFlags = 0;
-	data.pSysMem = GetIndices();
+	data.pSysMem = meshData.IndexBuffer;
 	_pDeviceRef->CreateBuffer(&bd, &data, &_pIndexBuffer);
 
 	
 }
 
+void Object::Initialise(char *filePath, ID3D11Device * deviceRef, D3D11_SUBRESOURCE_DATA data, ID3D11DeviceContext * context, ID3D11Buffer * cBuffer)
+{
+	_pDeviceRef = deviceRef;
+	_pDeviceContext = context;
+	_pConstantBuffer = cBuffer;
+
+	if (!_pTexturePath)
+		_pTexturePath = L"Crate_COLOR.dds";
+	CreateDDSTextureFromFile(_pDeviceRef, _pTexturePath, nullptr, &_pTextureRV);
+
+
+	if (_pDeviceRef) {
+		meshData = OBJLoader::Load(filePath, _pDeviceRef);
+	}
+
+	D3D11_SAMPLER_DESC sampDesc;
+	ZeroMemory(&sampDesc, sizeof(sampDesc));
+	sampDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+	sampDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+	sampDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+	sampDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+	sampDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
+	sampDesc.MinLOD = 0;
+	sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
+
+	_pDeviceRef->CreateSamplerState(&sampDesc, &_pSamplerLinear);
+
+	currMatrix = DirectX::XMMatrixIdentity();
+	_pVertexBuffer = meshData.VertexBuffer;
+	_pIndexBuffer = meshData.IndexBuffer;
+	indexAmount = meshData.IndexCount;
+}
+
 void Object::Draw(DirectX::XMMATRIX appWorld, StaticStructs::ConstantBuffer cb)
 {
-	UINT stride = sizeof(StaticStructs::StandardVertex);
+	UINT stride = meshData.VBStride;
 	UINT offset = 0;
 	_pDeviceContext->IASetVertexBuffers(0, 1, &_pVertexBuffer, &stride, &offset);
 

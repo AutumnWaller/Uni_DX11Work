@@ -47,17 +47,6 @@ Application::~Application()
 {
 	Cleanup();
 }
-
-void* operator new(size_t i)
-{
-	return _mm_malloc(i, 16);
-}
-
-void operator delete(void* p)
-{
-	_mm_free(p);
-}
-
 HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
 {
 
@@ -165,20 +154,21 @@ HRESULT Application::InitDrawBuffers()
 	_pCamera = new Camera(XMVECTOR(XMVectorSet(0.0f, 0.0f, -3.0f, 0.0f)), XMVECTOR(XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f)), XMVECTOR(XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f)), XMVECTOR(XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f)));
 	_pCamera2 = new Camera(XMVECTOR(XMVectorSet(0.0f, 0.0f, 3.0f, 0.0f)), XMVECTOR(XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f)), XMVECTOR(XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f)), XMVECTOR(XMVectorSet(0.0f, 0.0f, -2.0f, 0.0f)));
 	_pCurrCamera = _pCamera;
-	cube = new Cube(L"ChainLink.dds");
-	cube2 = new Cube(L"ChainLink.dds");
-	cube3 = new Cube();
-	cube4 = new Cube();
-	cube5 = new Cube();
-	pyramid = new Pyramid(L"Crate_NRM.dds");
+	//cube = new Cube(L"ChainLink.dds");
+	//cube2 = new Cube(L"ChainLink.dds");
+	//cube3 = new Cube();
+	//cube4 = new Cube();
+	//cube5 = new Cube();
+	//pyramid = new Pyramid(L"Crate_NRM.dds");
+	obj = new Object(L"Textures/Hercules_COLOR.dds");
 
-
-	objects.emplace_back(cube);
-	objects.emplace_back(cube2);
-	objects.emplace_back(cube3);
-	objects.emplace_back(cube4);
-	objects.emplace_back(cube5);
-	objects.emplace_back(pyramid);
+	objects.emplace_back(obj);
+	//objects.emplace_back(cube);
+	//objects.emplace_back(cube2);
+	//objects.emplace_back(cube3);
+	//objects.emplace_back(cube4);
+	//objects.emplace_back(cube5);
+	//objects.emplace_back(pyramid);
 
 	ZeroMemory(&bd, sizeof(bd));
 	ZeroMemory(&InitData, sizeof(InitData));
@@ -382,7 +372,7 @@ HRESULT Application::InitDevice()
     hr = _pd3dDevice->CreateBuffer(&bd, nullptr, &_pConstantBuffer);
 
 	for (int i = 0; i < objects.size(); i++) {
-		objects[i]->Initialise(_pd3dDevice, InitData, _pImmediateContext, _pConstantBuffer);
+		objects[i]->Initialise("Models/Hercules.obj", _pd3dDevice, InitData, _pImmediateContext, _pConstantBuffer);
 	}
 
 	
@@ -492,11 +482,11 @@ void Application::Update()
 	gTime = t;
 
 	objects[0]->ChangeWorld(XMMatrixScaling(1.0f, 1.0f, 1.0f)  * XMMatrixRotationZ(t * 0.25f));
-	objects[1]->ChangeWorld(XMMatrixScaling(1.0f, 1.0f, 1.0f) * XMMatrixRotationZ(t) * XMMatrixTranslation(2.5f, 0, 0)  * XMMatrixRotationZ(t * 2.0f));
-	objects[2]->ChangeWorld(XMMatrixScaling(0.2f, 0.2f, 0.2f) * XMMatrixRotationZ(t) * XMMatrixTranslation(1.0f, 0, 0)  * XMMatrixRotationZ(t * 3.0f)  * XMMatrixTranslation(2.5f, 0, 0)  * XMMatrixRotationZ(t * 2.0f));
-	objects[3]->ChangeWorld(XMMatrixScaling(0.1f, 0.1f, 0.1f) * XMMatrixRotationZ(t) * XMMatrixTranslation(0.5f, 0, 0)  * XMMatrixRotationZ(t * 4.0f) * XMMatrixTranslation(1.0f, 0, 0)  * XMMatrixRotationZ(t * 3.0f)  * XMMatrixTranslation(2.5f, 0, 0)  * XMMatrixRotationZ(t * 2.0f));
-	objects[4]->ChangeWorld(XMMatrixScaling(0.25f, 0.25f, 0.25f)  * XMMatrixTranslation(1.5f, 0, 0) * XMMatrixRotationZ(-t));
-	objects[5]->ChangeWorld(XMMatrixScaling(0.25f, 0.25f, 0.25f)  * XMMatrixTranslation(3.0f, 0, 0) * XMMatrixRotationZ(t));
+	//objects[1]->ChangeWorld(XMMatrixScaling(1.0f, 1.0f, 1.0f) * XMMatrixRotationZ(t) * XMMatrixTranslation(2.5f, 0, 0)  * XMMatrixRotationZ(t * 2.0f));
+	//objects[2]->ChangeWorld(XMMatrixScaling(0.2f, 0.2f, 0.2f) * XMMatrixRotationZ(t) * XMMatrixTranslation(1.0f, 0, 0)  * XMMatrixRotationZ(t * 3.0f)  * XMMatrixTranslation(2.5f, 0, 0)  * XMMatrixRotationZ(t * 2.0f));
+	//objects[3]->ChangeWorld(XMMatrixScaling(0.1f, 0.1f, 0.1f) * XMMatrixRotationZ(t) * XMMatrixTranslation(0.5f, 0, 0)  * XMMatrixRotationZ(t * 4.0f) * XMMatrixTranslation(1.0f, 0, 0)  * XMMatrixRotationZ(t * 3.0f)  * XMMatrixTranslation(2.5f, 0, 0)  * XMMatrixRotationZ(t * 2.0f));
+	//objects[4]->ChangeWorld(XMMatrixScaling(0.25f, 0.25f, 0.25f)  * XMMatrixTranslation(1.5f, 0, 0) * XMMatrixRotationZ(-t));
+	//objects[5]->ChangeWorld(XMMatrixScaling(0.25f, 0.25f, 0.25f)  * XMMatrixTranslation(3.0f, 0, 0) * XMMatrixRotationZ(t));
 
 	for(int i = 0; i < objects.size(); i++)
 		objects[i]->Update(t);

@@ -9,6 +9,11 @@ public:
 		XMFLOAT3 Pos;
 		XMFLOAT3 Normal;
 		XMFLOAT2 TexC;
+		bool operator<(const StandardVertex other) const
+		{
+			return memcmp((void*)this, (void*)&other, sizeof(StandardVertex)) > 0;
+		};
+
 	};
 
 	struct ConstantBuffer

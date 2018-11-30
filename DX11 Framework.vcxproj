@@ -381,6 +381,7 @@
     <ClCompile Include="DDSTextureLoader.cpp" />
     <ClCompile Include="DX11 Framework.cpp" />
     <ClCompile Include="Object.cpp" />
+    <ClCompile Include="OBJLoader.cpp" />
     <ClCompile Include="Pyramid.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -392,6 +393,7 @@
     <ClInclude Include="Cube.h" />
     <ClInclude Include="DDSTextureLoader.h" />
     <ClInclude Include="Object.h" />
+    <ClInclude Include="OBJLoader.h" />
     <ClInclude Include="Pyramid.h" />
     <CLInclude Include="resource.h" />
     <ClInclude Include="StaticStructs.h" />

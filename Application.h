@@ -65,6 +65,7 @@ private:
 	Cube *cube4;
 	Cube *cube5;
 	Pyramid *pyramid;
+	Object *obj;
 
 	HRESULT InitWindow(HINSTANCE hInstance, int nCmdShow);
 	HRESULT InitDevice();
