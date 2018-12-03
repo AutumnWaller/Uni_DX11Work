@@ -23,14 +23,13 @@ public:
 	
 	
 	Object(StaticStructs::StandardVertex *vertices, WORD *indices, int vertexSize, int indexSize, const wchar_t *texturePath);
-	Object(const wchar_t *texturePath);
+	Object(char *modelPath, const wchar_t *texturePath);
 	Object();
 	~Object();
 
 	void ChangeWorld(DirectX::XMMATRIX matrix);
-	virtual void Initialise(ID3D11Device *deviceRef, D3D11_SUBRESOURCE_DATA data, ID3D11DeviceContext *context, ID3D11Buffer* cBuffer);
-	virtual void Initialise(char *filePath, ID3D11Device *deviceRef, D3D11_SUBRESOURCE_DATA data, ID3D11DeviceContext *context, ID3D11Buffer* cBuffer);
-
+	virtual void Initialise(ID3D11Device *deviceRef, ID3D11DeviceContext *context, ID3D11Buffer* cBuffer);
+	void LoadModel(char *filePath);
 	virtual void Draw(DirectX::XMMATRIX appWorld, StaticStructs::ConstantBuffer cb);
 	virtual void Update(float time);
 	virtual void Cleanup();
@@ -40,6 +39,7 @@ protected:
 	WORD *_pIndices = nullptr;
 
 	const wchar_t *_pTexturePath;
+	char *_pModelPath;
 	ID3D11Resource *_pTexture;
 	ID3D11ShaderResourceView *_pTextureRV;
 

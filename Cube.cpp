@@ -20,9 +20,9 @@ Cube::~Cube()
 	Cleanup();
 }
 
-void Cube::Initialise(ID3D11Device * deviceRef, D3D11_SUBRESOURCE_DATA data, ID3D11DeviceContext * context, ID3D11Buffer * cBuffer)
+void Cube::Initialise(ID3D11Device * deviceRef,  ID3D11DeviceContext * context, ID3D11Buffer * cBuffer)
 {
-	Object::Initialise(deviceRef, data, context, cBuffer);
+	Object::Initialise(deviceRef, context, cBuffer);
 	
 }
 

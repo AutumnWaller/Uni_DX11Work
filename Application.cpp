@@ -68,7 +68,7 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
     }
 
 	// Initialize the world matrix
-	XMStoreFloat4x4(&_world, XMMatrixIdentity());
+	
 
     
 
@@ -151,43 +151,8 @@ HRESULT Application::InitDrawBuffers()
 {
 	HRESULT hr;
 
-	_pCamera = new Camera(XMVECTOR(XMVectorSet(0.0f, 0.0f, -3.0f, 0.0f)), XMVECTOR(XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f)), XMVECTOR(XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f)), XMVECTOR(XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f)));
-	_pCamera2 = new Camera(XMVECTOR(XMVectorSet(0.0f, 0.0f, 3.0f, 0.0f)), XMVECTOR(XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f)), XMVECTOR(XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f)), XMVECTOR(XMVectorSet(0.0f, 0.0f, -2.0f, 0.0f)));
-	_pCurrCamera = _pCamera;
-	//cube = new Cube(L"ChainLink.dds");
-	//cube2 = new Cube(L"ChainLink.dds");
-	//cube3 = new Cube();
-	//cube4 = new Cube();
-	//cube5 = new Cube();
-	//pyramid = new Pyramid(L"Crate_NRM.dds");
-	obj = new Object(L"Textures/Hercules_COLOR.dds");
-
-	objects.emplace_back(obj);
-	//objects.emplace_back(cube);
-	//objects.emplace_back(cube2);
-	//objects.emplace_back(cube3);
-	//objects.emplace_back(cube4);
-	//objects.emplace_back(cube5);
-	//objects.emplace_back(pyramid);
-
-	ZeroMemory(&bd, sizeof(bd));
-	ZeroMemory(&InitData, sizeof(InitData));
-	bd.Usage = D3D11_USAGE_DEFAULT;
-
-	bd.ByteWidth = sizeof(cube);
-	bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	bd.CPUAccessFlags = 0;
+	_pGameManager = new GameManager;
 	
-
-	ZeroMemory(&bd, sizeof(bd));
-	bd.Usage = D3D11_USAGE_DEFAULT;
-	bd.ByteWidth = sizeof(Object) * objects.size();
-	bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
-	bd.CPUAccessFlags = 0;
-
-	ZeroMemory(&InitData, sizeof(InitData));
-
-
 	return S_OK;
 }
 
@@ -371,9 +336,9 @@ HRESULT Application::InitDevice()
 	bd.CPUAccessFlags = 0;
     hr = _pd3dDevice->CreateBuffer(&bd, nullptr, &_pConstantBuffer);
 
-	for (int i = 0; i < objects.size(); i++) {
-		objects[i]->Initialise("Models/Hercules.obj", _pd3dDevice, InitData, _pImmediateContext, _pConstantBuffer);
-	}
+	_pGameManager->Initialise(_pd3dDevice, _pImmediateContext, _pConstantBuffer);
+
+
 
 	
 	D3D11_RASTERIZER_DESC wfDesc;
@@ -440,68 +405,42 @@ void Application::Cleanup()
 	if(_pDepthStencilBuffer) _pDepthStencilBuffer->Release();
 	if(_pSolid) _pSolid->Release();
 	if(_pTransparency) _pTransparency->Release();
-	if (_pCamera) delete _pCamera;
+	if (_pGameManager) delete _pGameManager;
 }
 
 
 void Application::Update()
 {
-	if (GetAsyncKeyState(VK_SPACE)) 
-		_pImmediateContext->RSSetState(_pWireframe);
-	if (GetAsyncKeyState(VK_RETURN))
-		_pImmediateContext->RSSetState(_pSolid);
-	
-	if (GetAsyncKeyState(VK_NUMPAD1)) 
-		_pCurrCamera = _pCamera;
-	else if (GetAsyncKeyState(VK_NUMPAD2)) 
-		_pCurrCamera = _pCamera2;
+	// Update our time
+	static float t = 0.0f;
 
-	if (GetAsyncKeyState(0x57)) 
-		_pCurrCamera->MoveForward(1);
-	if (GetAsyncKeyState(0x53))
-		_pCurrCamera->MoveForward(-1);
+	if (_driverType == D3D_DRIVER_TYPE_REFERENCE)
+	{
+		t += (float)XM_PI * 0.0125f;
+	}
+	else
+	{
+		static DWORD dwTimeStart = 0;
+		DWORD dwTimeCur = GetTickCount();
 
-    // Update our time
-    static float t = 0.0f;
+		if (dwTimeStart == 0)
+			dwTimeStart = dwTimeCur;
 
-    if (_driverType == D3D_DRIVER_TYPE_REFERENCE)
-    {
-        t += (float) XM_PI * 0.0125f;
-    }
-    else
-    {
-        static DWORD dwTimeStart = 0;
-        DWORD dwTimeCur = GetTickCount();
-
-        if (dwTimeStart == 0)
-            dwTimeStart = dwTimeCur;
-
-        t = (dwTimeCur - dwTimeStart) / 1000.0f;
-    }
+		t = (dwTimeCur - dwTimeStart) / 1000.0f;
+	}
 
 	gTime = t;
 
-	objects[0]->ChangeWorld(XMMatrixScaling(1.0f, 1.0f, 1.0f)  * XMMatrixRotationZ(t * 0.25f));
-	//objects[1]->ChangeWorld(XMMatrixScaling(1.0f, 1.0f, 1.0f) * XMMatrixRotationZ(t) * XMMatrixTranslation(2.5f, 0, 0)  * XMMatrixRotationZ(t * 2.0f));
-	//objects[2]->ChangeWorld(XMMatrixScaling(0.2f, 0.2f, 0.2f) * XMMatrixRotationZ(t) * XMMatrixTranslation(1.0f, 0, 0)  * XMMatrixRotationZ(t * 3.0f)  * XMMatrixTranslation(2.5f, 0, 0)  * XMMatrixRotationZ(t * 2.0f));
-	//objects[3]->ChangeWorld(XMMatrixScaling(0.1f, 0.1f, 0.1f) * XMMatrixRotationZ(t) * XMMatrixTranslation(0.5f, 0, 0)  * XMMatrixRotationZ(t * 4.0f) * XMMatrixTranslation(1.0f, 0, 0)  * XMMatrixRotationZ(t * 3.0f)  * XMMatrixTranslation(2.5f, 0, 0)  * XMMatrixRotationZ(t * 2.0f));
-	//objects[4]->ChangeWorld(XMMatrixScaling(0.25f, 0.25f, 0.25f)  * XMMatrixTranslation(1.5f, 0, 0) * XMMatrixRotationZ(-t));
-	//objects[5]->ChangeWorld(XMMatrixScaling(0.25f, 0.25f, 0.25f)  * XMMatrixTranslation(3.0f, 0, 0) * XMMatrixRotationZ(t));
+	if (GetAsyncKeyState(VK_SPACE))
+		_pImmediateContext->RSSetState(_pWireframe);
+	if (GetAsyncKeyState(VK_RETURN))
+		_pImmediateContext->RSSetState(_pSolid);
 
-	for(int i = 0; i < objects.size(); i++)
-		objects[i]->Update(t);
-
-
-
+	_pGameManager->Update(t);
 }
 
 void Application::Draw()
 {
-
-	// Set vertex buffer
-	UINT stride = sizeof(StaticStructs::StandardVertex);
-	UINT offset = 0;
-	_pImmediateContext->IASetVertexBuffers(0, 1, &_pVertexBuffer, &stride, &offset);
 
 
 	_pImmediateContext->VSSetShader(_pVertexShader, nullptr, 0);
@@ -509,20 +448,18 @@ void Application::Draw()
 	_pImmediateContext->PSSetConstantBuffers(0, 1, &_pConstantBuffer);
 	_pImmediateContext->PSSetShader(_pPixelShader, nullptr, 0);
 
-    //
-    // Clear the back buffer
-    //
-    float ClearColor[4] = {0.0f, 0.125f, 0.3f, 1.0f}; // red,green,blue,alpha
-    _pImmediateContext->ClearRenderTargetView(_pRenderTargetView, ClearColor);
+	//
+	// Clear the back buffer
+	//
+	float ClearColor[4] = { 0.0f, 0.125f, 0.3f, 1.0f }; // red,green,blue,alpha
+	_pImmediateContext->ClearRenderTargetView(_pRenderTargetView, ClearColor);
 
 	_pImmediateContext->ClearDepthStencilView(_pDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
-	
 
 
 
-	XMMATRIX world = XMLoadFloat4x4(&_world);
-	XMMATRIX view = XMLoadFloat4x4(&_pCurrCamera->GetViewMatrix());
-	XMMATRIX projection = XMLoadFloat4x4(&_pCurrCamera->GetProjectionMatrix());
+
+
 
 	// "fine-tune" the blending equation
 	float blendFactor[] = { 0.75f, 0.75f, 0.75f, 1.0f };
@@ -530,35 +467,18 @@ void Application::Draw()
 	// Set the default blend state (no blending) for opaque objects
 	_pImmediateContext->OMSetBlendState(0, 0, 0xffffffff);
 
-	// Render opaque objects //
-
-
-
-
-    //
-    // Update variables
-    //
-	StaticStructs::ConstantBuffer cb;
-	cb.mWorld = XMMatrixTranspose(world);
-	cb.mView = XMMatrixTranspose(view);
-	cb.mProjection = XMMatrixTranspose(projection);
-	cb.gTime = gTime;
-	cb.LightVecW = lightDirection;
-	cb.DiffuseLight = diffuseLight;
-	cb.DiffuseMtrl = diffuseMaterial;
-	cb.AmbientLight = ambientLight;
-	cb.AmbientMtrl = ambientMaterial;
-	
-
-	
-	for (int i = 0; i < objects.size(); i++)
-		objects[i]->Draw(world, cb);
+	_pGameManager->Draw();
 
 	// Set the blend state for transparent objects
 	_pImmediateContext->OMSetBlendState(_pTransparency, blendFactor, 0xffffffff);
 
-    //
-    // Present our back buffer to our front buffer
-    //
-    _pSwapChain->Present(0, 0);
+	
+	
+	//
+	// Present our back buffer to our front buffer
+	//
+	_pSwapChain->Present(0, 0);
+
+	
+	
 }

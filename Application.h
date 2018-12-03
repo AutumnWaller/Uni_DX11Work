@@ -5,13 +5,10 @@
 #include <d3dcompiler.h>
 #include <directxmath.h>
 #include <directxcolors.h>
+#include "GameManager.h"
 #include "resource.h"
-#include "Object.h"
-#include "Cube.h"
-#include "Pyramid.h"
 #include "StaticStructs.h"
 #include <DirectXColors.h>
-#include "Camera.h"
 #include <vector>
 #include <WinUser.h>
 
@@ -44,9 +41,7 @@ private:
 	ID3D11Buffer*           _pIndexBufferPyramid;
 	ID3D11Buffer*           _pConstantBuffer;
 
-	XMFLOAT4X4              _world;
-	XMFLOAT4X4              _view;
-	XMFLOAT4X4              _projection;
+
 	ID3D11DepthStencilView* _pDepthStencilView;
 	ID3D11Texture2D* _pDepthStencilBuffer;
 	ID3D11RasterizerState* _pWireframe;
@@ -58,15 +53,11 @@ private:
 	D3D11_BUFFER_DESC bd;
 	D3D11_SUBRESOURCE_DATA InitData;
 private:
-	Camera *_pCamera, *_pCamera2, *_pCurrCamera;
-	Cube *cube;
-	Cube *cube2;
-	Cube *cube3;
-	Cube *cube4;
-	Cube *cube5;
-	Pyramid *pyramid;
-	Object *obj;
+	GameManager *_pGameManager;
 
+	
+	Object *obj;
+	Grid *grid;
 	HRESULT InitWindow(HINSTANCE hInstance, int nCmdShow);
 	HRESULT InitDevice();
 	void Cleanup();
@@ -77,15 +68,7 @@ private:
 	UINT _WindowHeight;
 	UINT _WindowWidth;
 
-	// Light direction from surface (XYZ)
-	XMFLOAT3 lightDirection = XMFLOAT3(0.25f, 0.5f, -1.0f);
-	// Diffuse material properties (RGBA)
-	XMFLOAT4 diffuseMaterial = XMFLOAT4(0.8f, 0.5f, 0.5f, 1.0f);
-	// Diffuse light colour (RGBA)
-	XMFLOAT4 diffuseLight = XMFLOAT4(1.0f, 0.5f, 0.0f, 1.0f);
 
-	XMFLOAT3 ambientLight = XMFLOAT3(0.0f, 0.0f, 0.0f);
-	XMFLOAT3 ambientMaterial = XMFLOAT3(0.0f, 0.0f, 0.0f);
 
 
 
