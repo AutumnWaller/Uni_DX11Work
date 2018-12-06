@@ -39,12 +39,6 @@ void Camera::SetForward(int amountToIncrease)
 
 void Camera::MoveForward(int amount)
 {
-	if(amount > 0)
-		if (_pEye->z < -1)
-			_pEye->z += amount;
-
-	if (amount < 0)
-		if (_pEye->z > -3)
 			_pEye->z += amount;
 
 	LookAt();

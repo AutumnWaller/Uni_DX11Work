@@ -1,5 +1,33 @@
 #include "Object.h"
 
+void Object::CreateBuffers(ID3D11Device *deviceRef)
+{
+	D3D11_BUFFER_DESC bd;
+	ZeroMemory(&bd, sizeof(bd));
+	bd.Usage = D3D11_USAGE_DEFAULT;
+	bd.ByteWidth = sizeof(StaticStructs::StandardVertex) * vertexAmount;
+	bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	bd.CPUAccessFlags = 0;
+
+	D3D11_SUBRESOURCE_DATA InitData;
+	ZeroMemory(&InitData, sizeof(InitData));
+	InitData.pSysMem = _pVertices;
+
+	deviceRef->CreateBuffer(&bd, &InitData, &_pVertexBuffer);
+
+
+	ZeroMemory(&bd, sizeof(bd));
+	bd.Usage = D3D11_USAGE_DEFAULT;
+	bd.ByteWidth = sizeof(WORD) * indexAmount;
+	bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
+	bd.CPUAccessFlags = 0;
+
+	ZeroMemory(&InitData, sizeof(InitData));
+	InitData.pSysMem = _pIndices;
+	deviceRef->CreateBuffer(&bd, &InitData, &_pIndexBuffer);
+
+}
+
 Object::Object(char *modelPath, const wchar_t *texturePath = nullptr)
 {
 	_pVertices = nullptr;
@@ -12,6 +40,7 @@ Object::Object(char *modelPath, const wchar_t *texturePath = nullptr)
 	_pVertexBuffer = nullptr;
 	_pConstantBuffer = nullptr;
 	_pDeviceContext = nullptr;
+	_pPosition = nullptr;
 	_pTexturePath = texturePath;
 	_pModelPath = modelPath;
 
@@ -25,6 +54,7 @@ Object::Object()
 	_pTexturePath = nullptr;
 	_pTextureRV = nullptr;
 
+	_pPosition = nullptr;
 	_pIndexBuffer = nullptr;
 	_pVertexBuffer = nullptr;
 	_pConstantBuffer = nullptr;
@@ -44,34 +74,22 @@ void Object::CalculateNormals()
 	}
 }
 
-
-Object::Object(StaticStructs::StandardVertex *vertices, WORD *indices, int vertexSize, int indexSize, const wchar_t *texturePath = nullptr)
-{
-	_pTexturePath = texturePath;
-	_pVertices = vertices;
-	_pIndices = indices;
-	indexAmount = indexSize;
-	vertexAmount = vertexSize;
-}
-
 Object::~Object()
 {
 	Cleanup();
 }
 
 
-void Object::SetPosition(int x, int y, int z)
+void Object::SetPosition(float x, float y, float z)
 {
-	//_pPosition->x = x;
-	//_pPosition->y = y;
-	//_pPosition->z = z;
+	*_pPosition = {x, y, z};
 	DirectX::XMStoreFloat4x4(&world, XMMatrixTranslation(x, y, z));
 }
 
 void Object::SetRotation(int x, int y, int z)
 {
-	
-	//DirectX::XMStoreFloat4x4(&world, XMMatrixRotationAxis(XMLoadFloat3(position), (x != 0) ? XMMatrixRotationX(x) : y != 0 ? : XMMatrixRotationY(y));
+
+	DirectX::XMStoreFloat4x4(&world, XMMatrixRotationX(x) * XMMatrixRotationY(y) * XMMatrixRotationZ(z));
 }
 
 void Object::SetTexture(const wchar_t *texturePath)
@@ -95,36 +113,13 @@ void Object::Initialise(ID3D11Device *deviceRef, ID3D11DeviceContext *context, I
 	_pDeviceRef = deviceRef;
 	_pDeviceContext = context;
 	_pConstantBuffer = cBuffer;
-
+	_pPosition = new XMFLOAT3(0, 0, 0);
 	if (!_pTexturePath)
 		_pTexturePath = L"Textures/black.dds";
 	if (_pModelPath)
 		LoadModel(_pModelPath);
 	else {
-		D3D11_BUFFER_DESC bd;
-		ZeroMemory(&bd, sizeof(bd));
-		bd.Usage = D3D11_USAGE_DEFAULT;
-		bd.ByteWidth = sizeof(StaticStructs::StandardVertex) * vertexAmount;
-		bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-		bd.CPUAccessFlags = 0;
-
-		D3D11_SUBRESOURCE_DATA InitData;
-		ZeroMemory(&InitData, sizeof(InitData));
-		InitData.pSysMem = _pVertices;
-
-		deviceRef->CreateBuffer(&bd, &InitData, &_pVertexBuffer);
-
-
-		ZeroMemory(&bd, sizeof(bd));
-		bd.Usage = D3D11_USAGE_DEFAULT;
-		bd.ByteWidth = sizeof(WORD) * indexAmount;
-		bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
-		bd.CPUAccessFlags = 0;
-
-		ZeroMemory(&InitData, sizeof(InitData));
-		InitData.pSysMem = _pIndices;
-		deviceRef->CreateBuffer(&bd, &InitData, &_pIndexBuffer);
-
+		CreateBuffers(deviceRef);
 	}
 	CreateDDSTextureFromFile(_pDeviceRef, _pTexturePath, nullptr, &_pTextureRV);
 }
@@ -166,4 +161,5 @@ void Object::Cleanup()
 	if (_pDeviceContext) delete _pDeviceContext;
 	if (_pTexturePath) delete _pTexturePath;
 	if (_pTextureRV) delete _pTextureRV;
+	if (_pPosition) delete _pPosition;
 }
