@@ -13,25 +13,34 @@ GameManager::~GameManager()
 
 void GameManager::Initialise(ID3D11Device *deviceRef, ID3D11DeviceContext *context, ID3D11Buffer *cb)
 {
+
 	XMStoreFloat4x4(&_World, XMMatrixIdentity());
 
 	_pCamera = new Camera(XMVECTOR(XMVectorSet(0.0f, 0.0f, -3.0f, 0.0f)), XMVECTOR(XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f)), XMVECTOR(XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f)), XMVECTOR(XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f)));
 	_pCamera2 = new Camera(XMVECTOR(XMVectorSet(0.0f, 0.0f, 3.0f, 0.0f)), XMVECTOR(XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f)), XMVECTOR(XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f)), XMVECTOR(XMVectorSet(0.0f, 0.0f, -2.0f, 0.0f)));
 	_pCurrCamera = _pCamera;
 	
-	//object = new Object("Models/Hercules.obj", L"Textures/Hercules_COLOR.dds");
-	//gameObjects.emplace_back(object);
-	
-	Cube *cube = new Cube();
-	gameObjects.emplace_back(cube);
 
-	grid = new Grid(0, 0, 0, 5, 5);
+	
+	//Cube *cube = new Cube(nullptr);
+	//gameObjects.emplace_back(cube);
+
+	//Object *car = new Object("Models/car.obj", L"Textures/black.dds");
+	//gameObjects.emplace_back(car);
+	//Object *car2 = new Object("Models/sphere.obj", nullptr);
+	//gameObjects.emplace_back(car2);
+
+	//Object *object = new Object("Models/Hercules.obj", L"Textures/Hercules_COLOR.dds");
+	//gameObjects.emplace_back(object);
+
+	Grid *grid = new Grid();
+	grid->SetSize(5, 5);
 	gameObjects.emplace_back(grid);
 
 	for (int i = 0; i < gameObjects.size(); i++) {
 		gameObjects[i]->Initialise(deviceRef, context, cb);
 	}
-
+	grid->SetTexture(L"Textures/asphalt.dds");
 }
 
 void GameManager::Draw()
@@ -74,10 +83,9 @@ void GameManager::Update(float _Time)
 		_pCurrCamera->MoveForward(-1);
 
 
-
-
-	gameObjects[0]->ChangeWorld(XMMatrixScaling(0.2f, 0.2f, 0.2f)  * XMMatrixRotationZ(time * 0.25f));
-	//objects[1]->ChangeWorld(XMMatrixScaling(1.0f, 1.0f, 1.0f) * XMMatrixRotationZ(t) * XMMatrixTranslation(2.5f, 0, 0)  * XMMatrixRotationZ(t * 2.0f));
+	gameObjects[0]->SetPosition(-1, 1, -1);
+	//gameObjects[0]->ChangeWorld(XMMatrixScaling(0.5f, 0.5f, 0.5f)  * XMMatrixRotationZ(time * 0.25f));
+	//gameObjects[1]->ChangeWorld(XMMatrixScaling(1.0f, 1.0f, 1.0f) * XMMatrixRotationZ(time) * XMMatrixTranslation(2.5f, 0, 0)  * XMMatrixRotationZ(time * 2.0f));
 	//objects[2]->ChangeWorld(XMMatrixScaling(0.2f, 0.2f, 0.2f) * XMMatrixRotationZ(t) * XMMatrixTranslation(1.0f, 0, 0)  * XMMatrixRotationZ(t * 3.0f)  * XMMatrixTranslation(2.5f, 0, 0)  * XMMatrixRotationZ(t * 2.0f));
 	//objects[3]->ChangeWorld(XMMatrixScaling(0.1f, 0.1f, 0.1f) * XMMatrixRotationZ(t) * XMMatrixTranslation(0.5f, 0, 0)  * XMMatrixRotationZ(t * 4.0f) * XMMatrixTranslation(1.0f, 0, 0)  * XMMatrixRotationZ(t * 3.0f)  * XMMatrixTranslation(2.5f, 0, 0)  * XMMatrixRotationZ(t * 2.0f));
 	//objects[4]->ChangeWorld(XMMatrixScaling(0.25f, 0.25f, 0.25f)  * XMMatrixTranslation(1.5f, 0, 0) * XMMatrixRotationZ(-t));

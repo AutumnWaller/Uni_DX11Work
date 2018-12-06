@@ -27,12 +27,10 @@ private:
 
 	D3D11_SUBRESOURCE_DATA data;
 
+
 	std::vector<Object*> gameObjects;
 	Camera *_pCamera, *_pCamera2;
-	Object *object;
-	Grid *grid;
 public:
-	StaticStructs constantBuffer;
 	Camera *_pCurrCamera;
 	GameManager();
 	~GameManager();

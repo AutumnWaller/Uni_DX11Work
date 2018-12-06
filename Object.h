@@ -16,6 +16,7 @@ private:
 	StaticStructs::StandardVertex* GetVertices() { return _pVertices; };
 	WORD* GetIndices() { return _pIndices; };
 	MeshData meshData;
+	XMFLOAT3 *_pPosition;
 public:
 	int vertexAmount;
 	int indexAmount;
@@ -27,7 +28,9 @@ public:
 	Object();
 	~Object();
 
-	void ChangeWorld(DirectX::XMMATRIX matrix);
+	void SetPosition(int x, int y, int z);
+	void SetRotation(int x, int y, int z);
+	void SetTexture(const wchar_t *texturePath);
 	virtual void Initialise(ID3D11Device *deviceRef, ID3D11DeviceContext *context, ID3D11Buffer* cBuffer);
 	void LoadModel(char *filePath);
 	virtual void Draw(DirectX::XMMATRIX appWorld, StaticStructs::ConstantBuffer cb);
@@ -40,20 +43,15 @@ protected:
 
 	const wchar_t *_pTexturePath;
 	char *_pModelPath;
-	ID3D11Resource *_pTexture;
 	ID3D11ShaderResourceView *_pTextureRV;
 
-	DirectX::XMFLOAT4X4 world;
+	XMFLOAT4X4 world;
+	XMFLOAT4X4 currMatrix;
 	ID3D11Buffer* _pIndexBuffer;
 	ID3D11Buffer* _pVertexBuffer;
 	ID3D11Buffer* _pConstantBuffer;
 	ID3D11DeviceContext* _pDeviceContext;
-	ID3D11SamplerState * _pSamplerLinear;
-	ID3D11VertexShader *_pVertexShader;
-	ID3D11PixelShader *_pPixelShader;
 	ID3D11Device *_pDeviceRef;
-	StaticStructs::Vector3f translationOffset;
-	DirectX::XMMATRIX currMatrix;
 	
 };
 

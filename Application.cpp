@@ -35,10 +35,6 @@ Application::Application()
 	_pVertexShader = nullptr;
 	_pPixelShader = nullptr;
 	_pVertexLayout = nullptr;
-	_pVertexBuffer = nullptr;
-	_pVertexBufferPyramid = nullptr;
-	_pIndexBuffer = nullptr;
-	_pIndexBufferPyramid = nullptr;
 	_pConstantBuffer = nullptr;
 	_pTransparency = nullptr;
 }
@@ -140,6 +136,18 @@ HRESULT Application::InitShadersAndInputLayout()
     // Set the input layout
     _pImmediateContext->IASetInputLayout(_pVertexLayout);
 
+
+	D3D11_SAMPLER_DESC sampDesc;
+	ZeroMemory(&sampDesc, sizeof(sampDesc));
+	sampDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+	sampDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+	sampDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+	sampDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+	sampDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
+	sampDesc.MinLOD = 0;
+	sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
+
+	_pd3dDevice->CreateSamplerState(&sampDesc, &_pSamplerLinear);
 	return hr;
 }
 
@@ -151,7 +159,7 @@ HRESULT Application::InitDrawBuffers()
 {
 	HRESULT hr;
 
-	_pGameManager = new GameManager;
+	_pGameManager = new GameManager();
 	
 	return S_OK;
 }
@@ -389,10 +397,6 @@ void Application::Cleanup()
     if (_pImmediateContext) _pImmediateContext->ClearState();
 
     if (_pConstantBuffer) _pConstantBuffer->Release();
-    if (_pVertexBuffer) _pVertexBuffer->Release();
-    if (_pVertexBuffer) _pVertexBufferPyramid->Release();
-    if (_pIndexBuffer) _pIndexBuffer->Release();
-    if (_pIndexBuffer) _pIndexBufferPyramid->Release();
     if (_pVertexLayout) _pVertexLayout->Release();
     if (_pVertexShader) _pVertexShader->Release();
     if (_pPixelShader) _pPixelShader->Release();
@@ -405,6 +409,7 @@ void Application::Cleanup()
 	if(_pDepthStencilBuffer) _pDepthStencilBuffer->Release();
 	if(_pSolid) _pSolid->Release();
 	if(_pTransparency) _pTransparency->Release();
+	if (_pSamplerLinear) _pSamplerLinear->Release();
 	if (_pGameManager) delete _pGameManager;
 }
 
@@ -442,12 +447,11 @@ void Application::Update()
 void Application::Draw()
 {
 
-
 	_pImmediateContext->VSSetShader(_pVertexShader, nullptr, 0);
 	_pImmediateContext->VSSetConstantBuffers(0, 1, &_pConstantBuffer);
 	_pImmediateContext->PSSetConstantBuffers(0, 1, &_pConstantBuffer);
 	_pImmediateContext->PSSetShader(_pPixelShader, nullptr, 0);
-
+	_pImmediateContext->PSSetSamplers(0, 1, &_pSamplerLinear);
 	//
 	// Clear the back buffer
 	//

@@ -58,7 +58,7 @@ VS_OUTPUT VS(float4 Pos : POSITION, float3 NormalL : NORMAL, float2 Tex : TEXCOO
 VS_OUTPUT output = (VS_OUTPUT)0;
     output.Pos = mul( Pos, World );
     output.Pos = mul( output.Pos, View );
-	output.Pos = mul(output.Pos, Projection);
+	output.Pos = mul( output.Pos, Projection);
 	output.Tex = Tex;
     // Convert from local space to world space 
     // W component of vector is 0 as vectors cannot be translated
@@ -79,7 +79,7 @@ VS_OUTPUT output = (VS_OUTPUT)0;
 // Pixel Shader
 //--------------------------------------------------------------------------------------
 float4 PS( VS_OUTPUT input ) : SV_Target
-{
+{ 
 	float4 textureColour = txDiffuse.Sample(samLinear, input.Tex);
 	clip(textureColour.a - 0.95f);
 	return textureColour;

@@ -2,10 +2,10 @@
 
 
 
-Cube::Cube(const wchar_t *name)
+Cube::Cube(const wchar_t *texturePath = nullptr)
 {
 	Object();
-	_pTexturePath = name;
+	_pTexturePath = texturePath;
 	vertexAmount = 24;
 	indexAmount = 36;
 	_pVertices = vertices;
@@ -23,7 +23,6 @@ Cube::~Cube()
 void Cube::Initialise(ID3D11Device * deviceRef,  ID3D11DeviceContext * context, ID3D11Buffer * cBuffer)
 {
 	Object::Initialise(deviceRef, context, cBuffer);
-	
 }
 
 void Cube::Draw(DirectX::XMMATRIX appWorld, StaticStructs::ConstantBuffer cb)
@@ -38,7 +37,5 @@ void Cube::Update(float time)
 
 void Cube::Cleanup()
 {
-	if (indexBuffer) delete indexBuffer;
-	if (vertexBuffer) delete vertexBuffer;
 	Object::Cleanup();
 }

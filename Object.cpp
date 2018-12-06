@@ -1,23 +1,20 @@
 #include "Object.h"
 
-Object::Object(char *modelPath, const wchar_t *texturePath = L"Crate_COLOR.dds")
+Object::Object(char *modelPath, const wchar_t *texturePath = nullptr)
 {
 	_pVertices = nullptr;
 	_pIndices = nullptr;
 
 	_pTexturePath = nullptr;
-	_pTexture = nullptr;
 	_pTextureRV = nullptr;
 
 	_pIndexBuffer = nullptr;
 	_pVertexBuffer = nullptr;
 	_pConstantBuffer = nullptr;
 	_pDeviceContext = nullptr;
-	_pSamplerLinear = nullptr;
-	_pVertexShader = nullptr;
-	_pPixelShader = nullptr;
 	_pTexturePath = texturePath;
 	_pModelPath = modelPath;
+
 }
 
 Object::Object()
@@ -26,16 +23,12 @@ Object::Object()
 	_pIndices = nullptr;
 
 	_pTexturePath = nullptr;
-	_pTexture = nullptr;
 	_pTextureRV = nullptr;
 
 	_pIndexBuffer = nullptr;
 	_pVertexBuffer = nullptr;
 	_pConstantBuffer = nullptr;
 	_pDeviceContext = nullptr;
-	_pSamplerLinear = nullptr;
-	_pVertexShader = nullptr;
-	_pPixelShader = nullptr;
 	_pTexturePath = nullptr;
 	_pModelPath = nullptr;
 }
@@ -52,15 +45,13 @@ void Object::CalculateNormals()
 }
 
 
-Object::Object(StaticStructs::StandardVertex *vertices, WORD *indices, int vertexSize, int indexSize, const wchar_t *texturePath = L"Crate_COLOR.dds")
+Object::Object(StaticStructs::StandardVertex *vertices, WORD *indices, int vertexSize, int indexSize, const wchar_t *texturePath = nullptr)
 {
 	_pTexturePath = texturePath;
 	_pVertices = vertices;
 	_pIndices = indices;
 	indexAmount = indexSize;
 	vertexAmount = vertexSize;
-
-
 }
 
 Object::~Object()
@@ -69,60 +60,25 @@ Object::~Object()
 }
 
 
-void Object::ChangeWorld(DirectX::XMMATRIX matrix)
+void Object::SetPosition(int x, int y, int z)
 {
-	DirectX::XMStoreFloat4x4(&world, matrix);
+	//_pPosition->x = x;
+	//_pPosition->y = y;
+	//_pPosition->z = z;
+	DirectX::XMStoreFloat4x4(&world, XMMatrixTranslation(x, y, z));
 }
 
-//void Object::Initialise(ID3D11Device *deviceRef, ID3D11DeviceContext *context, ID3D11Buffer* cBuffer)
-//{
-//	_pDeviceRef = deviceRef;
-//	_pDeviceContext = context;
-//	_pConstantBuffer = cBuffer;
-//
-//	CreateDDSTextureFromFile(_pDeviceRef, _pTexturePath, nullptr, &_pTextureRV);
-//
-//
-//
-//	D3D11_SAMPLER_DESC sampDesc;
-//	ZeroMemory(&sampDesc, sizeof(sampDesc));
-//	sampDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-//	sampDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
-//	sampDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-//	sampDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
-//	sampDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
-//	sampDesc.MinLOD = 0;
-//	sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
-//
-//	_pDeviceRef->CreateSamplerState(&sampDesc, &_pSamplerLinear);
-//
-//	currMatrix = DirectX::XMMatrixIdentity();
-//
-//	
-//	D3D11_SUBRESOURCE_DATA data;
-//
-//	D3D11_BUFFER_DESC bd;
-//
-//	ZeroMemory(&bd, sizeof(bd));
-//	bd.Usage = D3D11_USAGE_DEFAULT;
-//	bd.ByteWidth = sizeof(StaticStructs::StandardVertex) * meshData.IndexCount;
-//	bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-//	bd.CPUAccessFlags = 0;
-//	bd.MiscFlags = 0;
-//	data.pSysMem = meshData.VertexBuffer;
-//	_pDeviceRef->CreateBuffer(&bd, &data, &_pVertexBuffer);
-//
-//	ZeroMemory(&bd, sizeof(bd));
-//	bd.Usage = D3D11_USAGE_DEFAULT;
-//	bd.ByteWidth = sizeof(unsigned int) * 3 * meshData.IndexCount;
-//	bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
-//	bd.CPUAccessFlags = 0;
-//	bd.MiscFlags = 0;
-//	data.pSysMem = meshData.IndexBuffer;
-//	_pDeviceRef->CreateBuffer(&bd, &data, &_pIndexBuffer);
-//
-//	
-//}
+void Object::SetRotation(int x, int y, int z)
+{
+	
+	//DirectX::XMStoreFloat4x4(&world, XMMatrixRotationAxis(XMLoadFloat3(position), (x != 0) ? XMMatrixRotationX(x) : y != 0 ? : XMMatrixRotationY(y));
+}
+
+void Object::SetTexture(const wchar_t *texturePath)
+{
+	_pTexturePath = texturePath;
+	CreateDDSTextureFromFile(_pDeviceRef, _pTexturePath, nullptr, &_pTextureRV);
+}
 
 void Object::LoadModel(char *filePath)
 {
@@ -134,54 +90,66 @@ void Object::LoadModel(char *filePath)
 	}
 }
 
-void Object::Initialise(ID3D11Device * deviceRef, ID3D11DeviceContext * context, ID3D11Buffer * cBuffer)
+void Object::Initialise(ID3D11Device *deviceRef, ID3D11DeviceContext *context, ID3D11Buffer *cBuffer)
 {
 	_pDeviceRef = deviceRef;
 	_pDeviceContext = context;
 	_pConstantBuffer = cBuffer;
 
 	if (!_pTexturePath)
-		_pTexturePath = L"Crate_COLOR.dds";
+		_pTexturePath = L"Textures/black.dds";
 	if (_pModelPath)
 		LoadModel(_pModelPath);
+	else {
+		D3D11_BUFFER_DESC bd;
+		ZeroMemory(&bd, sizeof(bd));
+		bd.Usage = D3D11_USAGE_DEFAULT;
+		bd.ByteWidth = sizeof(StaticStructs::StandardVertex) * vertexAmount;
+		bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+		bd.CPUAccessFlags = 0;
+
+		D3D11_SUBRESOURCE_DATA InitData;
+		ZeroMemory(&InitData, sizeof(InitData));
+		InitData.pSysMem = _pVertices;
+
+		deviceRef->CreateBuffer(&bd, &InitData, &_pVertexBuffer);
+
+
+		ZeroMemory(&bd, sizeof(bd));
+		bd.Usage = D3D11_USAGE_DEFAULT;
+		bd.ByteWidth = sizeof(WORD) * indexAmount;
+		bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
+		bd.CPUAccessFlags = 0;
+
+		ZeroMemory(&InitData, sizeof(InitData));
+		InitData.pSysMem = _pIndices;
+		deviceRef->CreateBuffer(&bd, &InitData, &_pIndexBuffer);
+
+	}
 	CreateDDSTextureFromFile(_pDeviceRef, _pTexturePath, nullptr, &_pTextureRV);
-
-	D3D11_SAMPLER_DESC sampDesc;
-	ZeroMemory(&sampDesc, sizeof(sampDesc));
-	sampDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-	sampDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
-	sampDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-	sampDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
-	sampDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
-	sampDesc.MinLOD = 0;
-	sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
-
-	_pDeviceRef->CreateSamplerState(&sampDesc, &_pSamplerLinear);
-
-	currMatrix = DirectX::XMMatrixIdentity();
 }
 
 void Object::Draw(DirectX::XMMATRIX appWorld, StaticStructs::ConstantBuffer cb)
 {
-	UINT stride = meshData.VBStride;
+	_pDeviceContext->PSSetShaderResources(0, 1, &_pTextureRV);
+	appWorld = DirectX::XMLoadFloat4x4(&world);
+	cb.mWorld = XMMatrixTranspose(appWorld);
+	_pDeviceContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &cb, 0, 0);
+
+	UINT stride = sizeof(StaticStructs::StandardVertex);
 	UINT offset = 0;
 	_pDeviceContext->IASetVertexBuffers(0, 1, &_pVertexBuffer, &stride, &offset);
-
+	_pDeviceContext->IASetIndexBuffer(_pIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
+	
 	//Per object shader at some point
 	//_pDeviceContext->VSSetShader(_pVertexShader, nullptr, 0);
 	//_pDeviceContext->VSSetConstantBuffers(0, 1, &_pConstantBuffer);
 	//_pDeviceContext->PSSetConstantBuffers(0, 1, &_pConstantBuffer);
 	//_pDeviceContext->PSSetShader(_pPixelShader, nullptr, 0);
 
-	_pDeviceContext->IASetIndexBuffer(_pIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
-	appWorld = DirectX::XMLoadFloat4x4(&world);
-	cb.mWorld = XMMatrixTranspose(appWorld);
-	_pDeviceContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &cb, 0, 0);
-	_pDeviceContext->PSSetSamplers(0, 1, &_pSamplerLinear);
-	_pDeviceContext->PSSetShaderResources(0, 1, &_pTextureRV);
+
+
 	_pDeviceContext->DrawIndexed(indexAmount, 0, 0);
-
-
 }
 
 void Object::Update(float time)
@@ -197,9 +165,5 @@ void Object::Cleanup()
 	if (_pConstantBuffer) delete _pConstantBuffer;
 	if (_pDeviceContext) delete _pDeviceContext;
 	if (_pTexturePath) delete _pTexturePath;
-	if (_pTexture) delete _pTexture;
 	if (_pTextureRV) delete _pTextureRV;
-	if (_pSamplerLinear) delete _pSamplerLinear;
-	if(_pVertexShader) delete _pVertexShader;
-	if(_pPixelShader) delete _pPixelShader;
 }
