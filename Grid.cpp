@@ -4,6 +4,7 @@
 Grid::Grid(int width, int length)
 {
 	Object();
+	LoadHeightmap("Textures/Heightmap.raw", 513, 513);
 	SetSize(width, length);
 }
 
@@ -21,10 +22,10 @@ void Grid::SetSize(int width, int length)
 
 	for (int i = 0; i < width; i++) {
 		for (int j = 0; j < length; j++) {
-			_pVertices[0 + vertIndex] = { XMFLOAT3(0.0f + i, 0.0f, 0.0f + j), XMFLOAT3(0, 1, 0), XMFLOAT2(0, 0) };
-			_pVertices[1 + vertIndex] = { XMFLOAT3(1.0f + i, 0.0f, 0.0f + j), XMFLOAT3(0, 1, 0), XMFLOAT2(1, 0) };
-			_pVertices[2 + vertIndex] = { XMFLOAT3(1.0f + i, 0.0f, 1.0f + j), XMFLOAT3(0, 1, 0), XMFLOAT2(1, 1) };
-			_pVertices[3 + vertIndex] = { XMFLOAT3(0.0f + i, 0.0f, 1.0f + j), XMFLOAT3(0, 1, 0), XMFLOAT2(0, 1) };
+			_pVertices[0 + vertIndex] = { XMFLOAT3(0.0f + i, 0.0f + heightMap[0 + vertIndex], 0.0f + j), XMFLOAT3(0, 1, 0), XMFLOAT2(0, 0) };
+			_pVertices[1 + vertIndex] = { XMFLOAT3(1.0f + i, 0.0f + heightMap[1 + vertIndex], 0.0f + j), XMFLOAT3(0, 1, 0), XMFLOAT2(1, 0) };
+			_pVertices[2 + vertIndex] = { XMFLOAT3(1.0f + i, 0.0f + heightMap[2 + vertIndex], 1.0f + j), XMFLOAT3(0, 1, 0), XMFLOAT2(1, 1) };
+			_pVertices[3 + vertIndex] = { XMFLOAT3(0.0f + i, 0.0f + heightMap[3 + vertIndex], 1.0f + j), XMFLOAT3(0, 1, 0), XMFLOAT2(0, 1) };
 			vertIndex += 4;
 			_pIndices[0 + indIndex] = indPos;
 			_pIndices[1 + indIndex] = indPos + 3;
@@ -39,6 +40,34 @@ void Grid::SetSize(int width, int length)
 	}
 	vertexAmount = (width * length) * 4;
 	indexAmount = (width * length) * 6;
+}
+
+void Grid::LoadHeightmap(char* fileName, int width, int height)
+{
+		// A height for each vertex 
+		std::vector<unsigned char> in(width * height);
+
+		heightMap = new float[width * height];
+
+		// Open the file
+		std::ifstream inFile;
+		inFile.open(fileName, std::ios_base::binary);
+
+		if (inFile)
+		{
+			// Read the RAW bytes
+			inFile.read((char*)&in[0], (std::streamsize)in.size());
+
+			// Done with file.
+			inFile.close();
+		}
+
+		// Copy the array data into a float array and scale it heightmap.resize(heightMapHeight * heightMapWidth, 0);
+
+		for (UINT i = 0; i < height * width; ++i)
+		{
+			heightMap[i] = (in[i] / 255.0f); //Scale if needed here
+		}
 }
 
 void Grid::Initialise(ID3D11Device * deviceRef, ID3D11DeviceContext * context, ID3D11Buffer * cBuffer)

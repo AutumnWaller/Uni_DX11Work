@@ -33,7 +33,7 @@ void GameManager::Initialise(ID3D11Device *deviceRef, ID3D11DeviceContext *conte
 	//Object *object = new Object("Models/Hercules.obj", L"Textures/Hercules_COLOR.dds");
 	//gameObjects.emplace_back(object);
 
-	Grid *grid = new Grid(100, 100);
+	Grid *grid = new Grid(10280, 8240);
 	//grid->SetSize(5, 5);
 	gameObjects.emplace_back(grid);
 
