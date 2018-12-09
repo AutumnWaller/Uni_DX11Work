@@ -33,8 +33,8 @@ void GameManager::Initialise(ID3D11Device *deviceRef, ID3D11DeviceContext *conte
 	//Object *object = new Object("Models/Hercules.obj", L"Textures/Hercules_COLOR.dds");
 	//gameObjects.emplace_back(object);
 
-	Grid *grid = new Grid();
-	grid->SetSize(5, 5);
+	Grid *grid = new Grid(100, 100);
+	//grid->SetSize(5, 5);
 	gameObjects.emplace_back(grid);
 
 	for (int i = 0; i < gameObjects.size(); i++) {
@@ -78,12 +78,12 @@ void GameManager::Update(float _Time)
 		_pCurrCamera = _pCamera2;
 
 	if (GetAsyncKeyState(0x57))
-		_pCurrCamera->MoveForward(1);
+		_pCurrCamera->MoveForward(1 * time);
 	if (GetAsyncKeyState(0x53))
-		_pCurrCamera->MoveForward(-1);
+		_pCurrCamera->MoveForward(-1 * time);
 
 
-	gameObjects[0]->SetPosition(-1, 1, -1);
+	gameObjects[0]->SetPosition(-2, -2, -1);
 	//gameObjects[0]->SetRotation(-1 * time, 1, -1);
 	//gameObjects[0]->ChangeWorld(XMMatrixScaling(0.5f, 0.5f, 0.5f)  * XMMatrixRotationZ(time * 0.25f));
 	//gameObjects[1]->ChangeWorld(XMMatrixScaling(1.0f, 1.0f, 1.0f) * XMMatrixRotationZ(time) * XMMatrixTranslation(2.5f, 0, 0)  * XMMatrixRotationZ(time * 2.0f));

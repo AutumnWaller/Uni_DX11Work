@@ -39,7 +39,7 @@ void Camera::SetForward(int amountToIncrease)
 
 void Camera::MoveForward(int amount)
 {
-			_pEye->z += amount;
+	_pEye->z += amount;
 
 	LookAt();
 }

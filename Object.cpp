@@ -154,8 +154,8 @@ void Object::Update(float time)
 
 void Object::Cleanup()
 {
-	if (_pVertices) delete _pVertices;
-	if (_pIndices) delete _pIndices;
+	if (_pVertices) delete[] _pVertices;
+	if (_pIndices) delete[] _pIndices;
 	if (_pIndexBuffer) delete _pIndexBuffer;
 	if (_pConstantBuffer) delete _pConstantBuffer;
 	if (_pDeviceContext) delete _pDeviceContext;
