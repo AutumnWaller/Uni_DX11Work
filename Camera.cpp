@@ -31,21 +31,47 @@ void Camera::LookAt()
 	DirectX::XMStoreFloat4x4(&view, XMMatrixLookAtLH(XMLoadFloat4(_pEye), XMLoadFloat4(_pAt), XMLoadFloat4(_pUp)));
 }
 
-void Camera::SetForward(int amountToIncrease)
+void Camera::SetForward(int amount)
 {
-	_pForward->z += amountToIncrease;
+	_pForward->z += amount;
+	_pAt->z += amount;
 	LookTo();
 }
 
 void Camera::MoveForward(int amount)
 {
 	_pEye->z += amount;
-
+	_pAt->z += amount;
 	LookAt();
 }
+
+void Camera::MoveRight(int amount)
+{
+	_pEye->x += amount;
+	_pAt->x += amount;
+	LookAt();
+}
+
+void Camera::MoveUp(int amount)
+{
+	_pEye->y += amount;
+	_pAt->y += amount;
+	_pUp->y += amount;
+	LookAt();
+}
+
+void Camera::Rotate(float angle)
+{
+	XMStoreFloat4(_pAt, XMQuaternionRotationAxis(XMLoadFloat4(_pAt), angle));
+	XMStoreFloat4(_pEye, XMQuaternionRotationAxis(XMLoadFloat4(_pEye), angle));
+	XMStoreFloat4(_pUp, XMQuaternionRotationAxis(XMLoadFloat4(_pUp), angle));
+
+}
+
+
 
 
 Camera::~Camera()
 {
-	delete _pEye, _pAt, _pUp;
+	delete _pEye, _pAt, _pUp, _pForward;
 }

@@ -21,6 +21,7 @@ public:
 	~Camera();
 	void LookTo();
 	void LookAt();
+	float speed = 100;
 
 	XMFLOAT4* GetEye() { return _pEye; }
 	XMFLOAT4* GetAt() { return _pAt; }
@@ -29,7 +30,10 @@ public:
 	XMFLOAT4X4 GetViewMatrix() { return view; }
 	XMFLOAT4X4 GetProjectionMatrix() { return projection; }
 
-	void SetForward(int amountToIncrease);
+	void SetForward(int amount);
 	void MoveForward(int amount);
+	void MoveRight(int amount);
+	void MoveUp(int amount);
+	void Rotate(float angle);
 };
 

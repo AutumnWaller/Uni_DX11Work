@@ -63,9 +63,6 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
         return E_FAIL;
     }
 
-	// Initialize the world matrix
-	
-
     
 
 	return S_OK;
@@ -413,11 +410,18 @@ void Application::Cleanup()
 	if (_pGameManager) delete _pGameManager;
 }
 
+float previousTime = 0, time = 0;
+float deltaTime = 0;
 
 void Application::Update()
 {
 	// Update our time
 	static float t = 0.0f;
+	previousTime = time;
+	time = GetTickCount();
+	if (previousTime == 0)
+		previousTime = time;
+	deltaTime = (time - previousTime) / 1000;
 
 	if (_driverType == D3D_DRIVER_TYPE_REFERENCE)
 	{
@@ -441,7 +445,7 @@ void Application::Update()
 	if (GetAsyncKeyState(VK_RETURN))
 		_pImmediateContext->RSSetState(_pSolid);
 
-	_pGameManager->Update(t);
+	_pGameManager->Update(deltaTime);
 }
 
 void Application::Draw()

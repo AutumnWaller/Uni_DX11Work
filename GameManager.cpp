@@ -1,5 +1,5 @@
 #include "GameManager.h"
-
+#include <chrono>
 
 
 GameManager::GameManager()
@@ -30,8 +30,8 @@ void GameManager::Initialise(ID3D11Device *deviceRef, ID3D11DeviceContext *conte
 	//Object *car2 = new Object("Models/sphere.obj", nullptr);
 	//gameObjects.emplace_back(car2);
 
-	//Object *object = new Object("Models/Hercules.obj", L"Textures/Hercules_COLOR.dds");
-	//gameObjects.emplace_back(object);
+	Object *object = new Object("Models/Hercules.obj", L"Textures/Hercules_COLOR.dds");
+	gameObjects.emplace_back(object);
 
 	Grid *grid = new Grid(128, 82);
 	//grid->SetSize(5, 5);
@@ -72,18 +72,10 @@ void GameManager::Update(float _Time)
 {
 	time = _Time;
 
-	if (GetAsyncKeyState(VK_NUMPAD1))
-		_pCurrCamera = _pCamera;
-	else if (GetAsyncKeyState(VK_NUMPAD2))
-		_pCurrCamera = _pCamera2;
-
-	if (GetAsyncKeyState(0x57))
-		_pCurrCamera->MoveForward(1 * time);
-	if (GetAsyncKeyState(0x53))
-		_pCurrCamera->MoveForward(-1 * time);
-
+	Input(time);
 
 	gameObjects[0]->SetPosition(-2, -2, -1);
+	gameObjects[1]->SetPosition(-2, -2, -1);
 	//gameObjects[0]->SetRotation(-1 * time, 1, -1);
 	//gameObjects[0]->ChangeWorld(XMMatrixScaling(0.5f, 0.5f, 0.5f)  * XMMatrixRotationZ(time * 0.25f));
 	//gameObjects[1]->ChangeWorld(XMMatrixScaling(1.0f, 1.0f, 1.0f) * XMMatrixRotationZ(time) * XMMatrixTranslation(2.5f, 0, 0)  * XMMatrixRotationZ(time * 2.0f));
@@ -96,4 +88,29 @@ void GameManager::Update(float _Time)
 		gameObjects[i]->Update(time);
 
 
+}
+
+void GameManager::Input(float deltaTime)
+{
+	if (GetAsyncKeyState(VK_NUMPAD1))
+		_pCurrCamera = _pCamera;
+	else if (GetAsyncKeyState(VK_NUMPAD2))
+		_pCurrCamera = _pCamera2;
+
+	if (GetAsyncKeyState('W'))
+		_pCurrCamera->MoveForward((1 * deltaTime) * _pCurrCamera->speed);
+	if (GetAsyncKeyState('S'))
+		_pCurrCamera->MoveForward((-1 * deltaTime) * _pCurrCamera->speed);
+	if (GetAsyncKeyState('D'))
+		_pCurrCamera->MoveRight((1 * deltaTime) * _pCurrCamera->speed);
+	if (GetAsyncKeyState('A'))
+		_pCurrCamera->MoveRight((-1 * deltaTime) * _pCurrCamera->speed);
+	if (GetAsyncKeyState(VK_SPACE))
+		_pCurrCamera->MoveUp((1 * deltaTime) * _pCurrCamera->speed);
+	if (GetAsyncKeyState(VK_SHIFT))
+		_pCurrCamera->MoveUp((-1 * deltaTime) * _pCurrCamera->speed);
+	if (GetAsyncKeyState('E'))
+		_pCurrCamera->Rotate((1 * deltaTime) * _pCurrCamera->speed);
+	if (GetAsyncKeyState('Q'))
+		_pCurrCamera->Rotate((-1 * deltaTime) * _pCurrCamera->speed);
 }

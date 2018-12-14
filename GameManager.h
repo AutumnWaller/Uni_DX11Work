@@ -12,7 +12,7 @@ private:
 
 	XMFLOAT4X4 _World;
 
-	float time;
+	float time = 0;
 
 	// Light direction from surface (XYZ)
 	XMFLOAT3 lightDirection = XMFLOAT3(0.25f, 0.5f, -1.0f);
@@ -37,6 +37,7 @@ public:
 	void Initialise(ID3D11Device *deviceRef, ID3D11DeviceContext *context, ID3D11Buffer *cb);
 	void Draw();
 	void Update(float _Time);
+	void Input(float deltaTime);
 
 };
 
