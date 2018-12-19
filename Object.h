@@ -22,8 +22,9 @@ public:
 	int vertexAmount;
 	int indexAmount;
 	
-	Object(char *modelPath, const wchar_t *texturePath);
 	Object();
+	Object(char *modelPath, const wchar_t *);
+	Object(XMFLOAT3 *position);
 	~Object();
 
 	void SetPosition(float x, float y, float z);
@@ -36,6 +37,7 @@ public:
 	virtual void Cleanup();
 protected:
 	void CalculateNormals();
+	virtual void Nullify();
 	StaticStructs::StandardVertex *_pVertices;
 	WORD *_pIndices = nullptr;
 

@@ -65,7 +65,6 @@ void Camera::Rotate(float angle)
 	XMStoreFloat4(_pAt, XMQuaternionRotationAxis(XMLoadFloat4(_pAt), angle));
 	XMStoreFloat4(_pEye, XMQuaternionRotationAxis(XMLoadFloat4(_pEye), angle));
 	XMStoreFloat4(_pUp, XMQuaternionRotationAxis(XMLoadFloat4(_pUp), angle));
-
 }
 
 

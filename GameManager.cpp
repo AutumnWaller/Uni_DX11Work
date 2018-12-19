@@ -33,14 +33,15 @@ void GameManager::Initialise(ID3D11Device *deviceRef, ID3D11DeviceContext *conte
 	Object *object = new Object("Models/Hercules.obj", L"Textures/Hercules_COLOR.dds");
 	gameObjects.emplace_back(object);
 
-	Grid *grid = new Grid(128, 82);
+	Grid *grid = new Grid(256, 164);
+	grid->SetPosition(0, 0, 0);
+	grid->SetTexture(L"Textures/asphalt.dds");
 	//grid->SetSize(5, 5);
 	gameObjects.emplace_back(grid);
 
 	for (int i = 0; i < gameObjects.size(); i++) {
 		gameObjects[i]->Initialise(deviceRef, context, cb);
 	}
-	grid->SetTexture(L"Textures/asphalt.dds");
 }
 
 void GameManager::Draw()
@@ -74,7 +75,6 @@ void GameManager::Update(float _Time)
 
 	Input(time);
 
-	gameObjects[0]->SetPosition(-2, -2, -1);
 	gameObjects[1]->SetPosition(-2, -2, -1);
 	//gameObjects[0]->SetRotation(-1 * time, 1, -1);
 	//gameObjects[0]->ChangeWorld(XMMatrixScaling(0.5f, 0.5f, 0.5f)  * XMMatrixRotationZ(time * 0.25f));

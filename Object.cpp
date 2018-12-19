@@ -28,39 +28,41 @@ void Object::CreateBuffers(ID3D11Device *deviceRef)
 
 }
 
-Object::Object(char *modelPath, const wchar_t *texturePath = nullptr)
-{
+void Object::Nullify() {
 	_pVertices = nullptr;
 	_pIndices = nullptr;
 
 	_pTexturePath = nullptr;
 	_pTextureRV = nullptr;
 
+	_pPosition = new XMFLOAT3(0, 0, 0);
+
 	_pIndexBuffer = nullptr;
 	_pVertexBuffer = nullptr;
 	_pConstantBuffer = nullptr;
 	_pDeviceContext = nullptr;
-	_pPosition = nullptr;
-	_pTexturePath = texturePath;
-	_pModelPath = modelPath;
-
+	_pDeviceRef = nullptr;
+	_pTexturePath = nullptr;
+	_pModelPath = nullptr;
 }
+
 
 Object::Object()
 {
-	_pVertices = nullptr;
-	_pIndices = nullptr;
+	Nullify();
+}
 
-	_pTexturePath = nullptr;
-	_pTextureRV = nullptr;
+Object::Object(char *modelPath, const wchar_t *texturePath = nullptr)
+{
+	Nullify();
+	_pTexturePath = texturePath;
+	_pModelPath = modelPath;
+}
 
-	_pPosition = nullptr;
-	_pIndexBuffer = nullptr;
-	_pVertexBuffer = nullptr;
-	_pConstantBuffer = nullptr;
-	_pDeviceContext = nullptr;
-	_pTexturePath = nullptr;
-	_pModelPath = nullptr;
+Object::Object(XMFLOAT3 *position)
+{
+	Nullify();
+	_pPosition = position;
 }
 
 void Object::CalculateNormals()
@@ -83,7 +85,6 @@ Object::~Object()
 void Object::SetPosition(float x, float y, float z)
 {
 	*_pPosition = {x, y, z};
-	DirectX::XMStoreFloat4x4(&world, XMMatrixTranslation(x, y, z));
 }
 
 void Object::SetRotation(int x, int y, int z)
@@ -95,7 +96,6 @@ void Object::SetRotation(int x, int y, int z)
 void Object::SetTexture(const wchar_t *texturePath)
 {
 	_pTexturePath = texturePath;
-	CreateDDSTextureFromFile(_pDeviceRef, _pTexturePath, nullptr, &_pTextureRV);
 }
 
 void Object::LoadModel(char *filePath)
@@ -113,7 +113,6 @@ void Object::Initialise(ID3D11Device *deviceRef, ID3D11DeviceContext *context, I
 	_pDeviceRef = deviceRef;
 	_pDeviceContext = context;
 	_pConstantBuffer = cBuffer;
-	_pPosition = new XMFLOAT3(0, 0, 0);
 	if (!_pTexturePath)
 		_pTexturePath = L"Textures/black.dds";
 	if (_pModelPath)
@@ -149,7 +148,7 @@ void Object::Draw(DirectX::XMMATRIX appWorld, StaticStructs::ConstantBuffer cb)
 
 void Object::Update(float time)
 {
-
+	DirectX::XMStoreFloat4x4(&world, XMMatrixTranslation(_pPosition->x, _pPosition->y, _pPosition->z));
 }
 
 void Object::Cleanup()
@@ -157,9 +156,12 @@ void Object::Cleanup()
 	if (_pVertices) delete[] _pVertices;
 	if (_pIndices) delete[] _pIndices;
 	if (_pIndexBuffer) delete _pIndexBuffer;
+	if (_pVertexBuffer) delete _pVertexBuffer;
 	if (_pConstantBuffer) delete _pConstantBuffer;
 	if (_pDeviceContext) delete _pDeviceContext;
+	if (_pDeviceRef) delete _pDeviceRef;
 	if (_pTexturePath) delete _pTexturePath;
+	if (_pModelPath) delete _pModelPath;
 	if (_pTextureRV) delete _pTextureRV;
 	if (_pPosition) delete _pPosition;
 }

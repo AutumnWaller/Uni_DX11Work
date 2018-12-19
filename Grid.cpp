@@ -4,6 +4,12 @@
 Grid::Grid(int width, int length)
 {
 	Object();
+	SetSize(width, length);
+}
+
+Grid::Grid(int width, int length, char *heightmapFileName)
+{
+	Object();
 	LoadHeightmap("Textures/Heightmap.raw", 513, 513);
 	SetSize(width, length);
 }
@@ -11,6 +17,12 @@ Grid::Grid(int width, int length)
 Grid::~Grid()
 {
 	Cleanup();
+}
+
+void Grid::Nullify()
+{
+	Object::Nullify();
+	_pHeightMap = nullptr;
 }
 
 void Grid::SetSize(int width, int length)
@@ -22,10 +34,10 @@ void Grid::SetSize(int width, int length)
 
 	for (int i = 0; i < width; i++) {
 		for (int j = 0; j < length; j++) {
-			_pVertices[0 + vertIndex] = { XMFLOAT3(0.0f + i, 0.0f + heightMap[0 + vertIndex], 0.0f + j), XMFLOAT3(0, 1, 0), XMFLOAT2(0, 0) };
-			_pVertices[1 + vertIndex] = { XMFLOAT3(1.0f + i, 0.0f + heightMap[1 + vertIndex], 0.0f + j), XMFLOAT3(0, 1, 0), XMFLOAT2(1, 0) };
-			_pVertices[2 + vertIndex] = { XMFLOAT3(1.0f + i, 0.0f + heightMap[2 + vertIndex], 1.0f + j), XMFLOAT3(0, 1, 0), XMFLOAT2(1, 1) };
-			_pVertices[3 + vertIndex] = { XMFLOAT3(0.0f + i, 0.0f + heightMap[3 + vertIndex], 1.0f + j), XMFLOAT3(0, 1, 0), XMFLOAT2(0, 1) };
+			_pVertices[0 + vertIndex] = { XMFLOAT3(0.0f + i, 0.0f, 0.0f + j), XMFLOAT3(0, 1, 0), XMFLOAT2(0, 0) };
+			_pVertices[1 + vertIndex] = { XMFLOAT3(1.0f + i, 0.0f, 0.0f + j), XMFLOAT3(0, 1, 0), XMFLOAT2(1, 0) };
+			_pVertices[2 + vertIndex] = { XMFLOAT3(1.0f + i, 0.0f, 1.0f + j), XMFLOAT3(0, 1, 0), XMFLOAT2(1, 1) };
+			_pVertices[3 + vertIndex] = { XMFLOAT3(0.0f + i, 0.0f, 1.0f + j), XMFLOAT3(0, 1, 0), XMFLOAT2(0, 1) };
 			vertIndex += 4;
 			_pIndices[0 + indIndex] = indPos;
 			_pIndices[1 + indIndex] = indPos + 3;
@@ -47,7 +59,7 @@ void Grid::LoadHeightmap(char* fileName, int width, int height)
 		// A height for each vertex 
 		std::vector<unsigned char> in(width * height);
 
-		heightMap = new float[width * height];
+		_pHeightMap = new float[width * height];
 
 		// Open the file
 		std::ifstream inFile;
@@ -66,7 +78,7 @@ void Grid::LoadHeightmap(char* fileName, int width, int height)
 
 		for (UINT i = 0; i < height * width; ++i)
 		{
-			heightMap[i] = (in[i] / 255.0f); //Scale if needed here
+			_pHeightMap[i] = (in[i] / 255.0f); //Scale if needed here
 		}
 }
 
@@ -89,4 +101,5 @@ void Grid::Update(float time)
 void Grid::Cleanup()
 {
 	Object::Cleanup();
+	if (_pHeightMap) delete[] _pHeightMap;
 }
