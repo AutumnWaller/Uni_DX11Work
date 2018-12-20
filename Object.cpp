@@ -35,14 +35,11 @@ void Object::Nullify() {
 	_pTexturePath = nullptr;
 	_pTextureRV = nullptr;
 
-	_pPosition = new XMFLOAT3(0, 0, 0);
-
 	_pIndexBuffer = nullptr;
 	_pVertexBuffer = nullptr;
 	_pConstantBuffer = nullptr;
 	_pDeviceContext = nullptr;
 	_pDeviceRef = nullptr;
-	_pTexturePath = nullptr;
 	_pModelPath = nullptr;
 }
 
@@ -50,6 +47,7 @@ void Object::Nullify() {
 Object::Object()
 {
 	Nullify();
+	StaticObject();
 }
 
 Object::Object(char *modelPath, const wchar_t *texturePath = nullptr)
@@ -57,12 +55,14 @@ Object::Object(char *modelPath, const wchar_t *texturePath = nullptr)
 	Nullify();
 	_pTexturePath = texturePath;
 	_pModelPath = modelPath;
+	StaticObject();
+
 }
 
-Object::Object(XMFLOAT3 *position)
+Object::Object(float xPos, float yPos, float zPos)
 {
 	Nullify();
-	_pPosition = position;
+	StaticObject(new XMFLOAT3(xPos, yPos, zPos));
 }
 
 void Object::CalculateNormals()
@@ -81,17 +81,6 @@ Object::~Object()
 	Cleanup();
 }
 
-
-void Object::SetPosition(float x, float y, float z)
-{
-	*_pPosition = {x, y, z};
-}
-
-void Object::SetRotation(int x, int y, int z)
-{
-
-	DirectX::XMStoreFloat4x4(&world, XMMatrixRotationX(x) * XMMatrixRotationY(y) * XMMatrixRotationZ(z));
-}
 
 void Object::SetTexture(const wchar_t *texturePath)
 {
@@ -148,11 +137,13 @@ void Object::Draw(DirectX::XMMATRIX appWorld, StaticStructs::ConstantBuffer cb)
 
 void Object::Update(float time)
 {
-	DirectX::XMStoreFloat4x4(&world, XMMatrixTranslation(_pPosition->x, _pPosition->y, _pPosition->z));
+	StaticObject::Update(time);
 }
 
 void Object::Cleanup()
 {
+	StaticObject::Cleanup();
+
 	if (_pVertices) delete[] _pVertices;
 	if (_pIndices) delete[] _pIndices;
 	if (_pIndexBuffer) delete _pIndexBuffer;
@@ -163,5 +154,4 @@ void Object::Cleanup()
 	if (_pTexturePath) delete _pTexturePath;
 	if (_pModelPath) delete _pModelPath;
 	if (_pTextureRV) delete _pTextureRV;
-	if (_pPosition) delete _pPosition;
 }

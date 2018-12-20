@@ -17,9 +17,10 @@ void GameManager::Initialise(ID3D11Device *deviceRef, ID3D11DeviceContext *conte
 	XMStoreFloat4x4(&_World, XMMatrixIdentity());
 
 	_pCamera = new Camera(XMVECTOR(XMVectorSet(0.0f, 0.0f, -3.0f, 0.0f)), XMVECTOR(XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f)), XMVECTOR(XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f)), XMVECTOR(XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f)));
-	_pCamera2 = new Camera(XMVECTOR(XMVectorSet(0.0f, 0.0f, 3.0f, 0.0f)), XMVECTOR(XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f)), XMVECTOR(XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f)), XMVECTOR(XMVectorSet(0.0f, 0.0f, -2.0f, 0.0f)));
+	_pCamera2 = new Camera(XMVECTOR(XMVectorSet(0.0f, 10.0f, 3.0f, 0.0f)), XMVECTOR(XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f)), XMVECTOR(XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f)), XMVECTOR(XMVectorSet(0.0f, 0.0f, -2.0f, 0.0f)));
 	_pCurrCamera = _pCamera;
 	
+	_pCamera->MovePosition(50, 10, 50);
 
 	
 	//Cube *cube = new Cube(nullptr);
@@ -31,6 +32,7 @@ void GameManager::Initialise(ID3D11Device *deviceRef, ID3D11DeviceContext *conte
 	//gameObjects.emplace_back(car2);
 
 	Object *object = new Object("Models/Hercules.obj", L"Textures/Hercules_COLOR.dds");
+	object->SetPosition(5, 0, 0);
 	gameObjects.emplace_back(object);
 
 	Grid *grid = new Grid(256, 164);
@@ -86,7 +88,7 @@ void GameManager::Update(float _Time)
 
 	for (int i = 0; i < gameObjects.size(); i++)
 		gameObjects[i]->Update(time);
-
+	_pCurrCamera->Update(time);
 
 }
 
@@ -98,19 +100,19 @@ void GameManager::Input(float deltaTime)
 		_pCurrCamera = _pCamera2;
 
 	if (GetAsyncKeyState('W'))
-		_pCurrCamera->MoveForward((1 * deltaTime) * _pCurrCamera->speed);
+		_pCurrCamera->MovePosition(0, 0, (1 * deltaTime) * _pCurrCamera->GetMovementSpeed());
 	if (GetAsyncKeyState('S'))
-		_pCurrCamera->MoveForward((-1 * deltaTime) * _pCurrCamera->speed);
+		_pCurrCamera->MovePosition(0, 0, (-1 * deltaTime) * _pCurrCamera->GetMovementSpeed());
 	if (GetAsyncKeyState('D'))
-		_pCurrCamera->MoveRight((1 * deltaTime) * _pCurrCamera->speed);
+		_pCurrCamera->MovePosition((1 * deltaTime) * _pCurrCamera->GetMovementSpeed(), 0, 0);
 	if (GetAsyncKeyState('A'))
-		_pCurrCamera->MoveRight((-1 * deltaTime) * _pCurrCamera->speed);
+		_pCurrCamera->MovePosition((-1 * deltaTime) * _pCurrCamera->GetMovementSpeed(), 0, 0);
 	if (GetAsyncKeyState(VK_SPACE))
-		_pCurrCamera->MoveUp((1 * deltaTime) * _pCurrCamera->speed);
+		_pCurrCamera->MovePosition(0, (1 * deltaTime) * _pCurrCamera->GetMovementSpeed(), 0);
 	if (GetAsyncKeyState(VK_SHIFT))
-		_pCurrCamera->MoveUp((-1 * deltaTime) * _pCurrCamera->speed);
+		_pCurrCamera->MovePosition(0, (-1 * deltaTime) * _pCurrCamera->GetMovementSpeed(), 0);
 	if (GetAsyncKeyState('E'))
-		_pCurrCamera->Rotate((1 * deltaTime) * _pCurrCamera->speed);
+		_pCurrCamera->Rotate((1 * deltaTime) * _pCurrCamera->GetMovementSpeed());
 	if (GetAsyncKeyState('Q'))
-		_pCurrCamera->Rotate((-1 * deltaTime) * _pCurrCamera->speed);
+		_pCurrCamera->Rotate((-1 * deltaTime) * _pCurrCamera->GetMovementSpeed());
 }

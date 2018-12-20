@@ -21,6 +21,7 @@
     <ClInclude Include="OBJLoader.h" />
     <ClInclude Include="Grid.h" />
     <ClInclude Include="GameManager.h" />
+    <ClInclude Include="StaticObject.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
@@ -33,6 +34,7 @@
     <ClCompile Include="OBJLoader.cpp" />
     <ClCompile Include="Grid.cpp" />
     <ClCompile Include="GameManager.cpp" />
+    <ClCompile Include="StaticObject.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CLInclude Include="resource.h">

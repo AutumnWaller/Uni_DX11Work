@@ -16,7 +16,6 @@ Camera::Camera(XMVECTOR _Eye, XMVECTOR _At, XMVECTOR _Up, XMVECTOR _Forward, int
 
 	LookAt();
 	
-
 	// Initialize the projection matrix
 	DirectX::XMStoreFloat4x4(&projection, XMMatrixPerspectiveFovLH(XM_PIDIV2, windowWidth / (FLOAT)windowHeight, 0.01f, 100.0f));
 
@@ -31,35 +30,6 @@ void Camera::LookAt()
 	DirectX::XMStoreFloat4x4(&view, XMMatrixLookAtLH(XMLoadFloat4(_pEye), XMLoadFloat4(_pAt), XMLoadFloat4(_pUp)));
 }
 
-void Camera::SetForward(int amount)
-{
-	_pForward->z += amount;
-	_pAt->z += amount;
-	LookTo();
-}
-
-void Camera::MoveForward(int amount)
-{
-	_pEye->z += amount;
-	_pAt->z += amount;
-	LookAt();
-}
-
-void Camera::MoveRight(int amount)
-{
-	_pEye->x += amount;
-	_pAt->x += amount;
-	LookAt();
-}
-
-void Camera::MoveUp(int amount)
-{
-	_pEye->y += amount;
-	_pAt->y += amount;
-	_pUp->y += amount;
-	LookAt();
-}
-
 void Camera::Rotate(float angle)
 {
 	XMStoreFloat4(_pAt, XMQuaternionRotationAxis(XMLoadFloat4(_pAt), angle));
@@ -67,8 +37,26 @@ void Camera::Rotate(float angle)
 	XMStoreFloat4(_pUp, XMQuaternionRotationAxis(XMLoadFloat4(_pUp), angle));
 }
 
+void Camera::SetPosition(float x, float y, float z)
+{
+	_pAt->x = x, _pAt->y = y, _pAt->z = z;
+	_pEye->x = x, _pEye->y = y + 1, _pEye->z = z;
+	StaticObject::SetPosition(_pAt->x, _pAt->y, _pAt->z);
+	LookAt();
+}
 
+void Camera::MovePosition(float x, float y, float z)
+{
+	_pAt->x += x, _pAt->y += y, _pAt->z += z;
+	_pEye->x += x, _pEye->y += y, _pEye->z += z;
+	StaticObject::MovePosition(x, y, z);
+	LookAt();
+}
 
+void Camera::Update(float time)
+{
+	StaticObject::Update(time);
+}
 
 Camera::~Camera()
 {

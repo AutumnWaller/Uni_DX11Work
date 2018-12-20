@@ -385,6 +385,7 @@
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="OBJLoader.cpp" />
     <ClCompile Include="Pyramid.cpp" />
+    <ClCompile Include="StaticObject.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DX11 Framework.fx" />
@@ -400,6 +401,7 @@
     <ClInclude Include="OBJLoader.h" />
     <ClInclude Include="Pyramid.h" />
     <CLInclude Include="resource.h" />
+    <ClInclude Include="StaticObject.h" />
     <ClInclude Include="StaticStructs.h" />
     <ResourceCompile Include="DX11 Framework.rc" />
   </ItemGroup>

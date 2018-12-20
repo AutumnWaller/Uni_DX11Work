@@ -1,15 +1,17 @@
 #pragma once
 #include <windows.h>
 #include <d3d11_1.h>
+#include "StaticObject.h"
 #include <d3dcompiler.h>
 #include <directxmath.h>
 #include <directxcolors.h>
 
 using namespace DirectX;
 
-class Camera
+class Camera : public StaticObject
 {
 private:
+	float movementSpeed = 100;
 	XMFLOAT4X4 view;
 	XMFLOAT4X4 projection;
 	XMFLOAT4 *_pEye;
@@ -21,8 +23,8 @@ public:
 	~Camera();
 	void LookTo();
 	void LookAt();
-	float speed = 100;
 
+	float GetMovementSpeed() { return movementSpeed; }
 	XMFLOAT4* GetEye() { return _pEye; }
 	XMFLOAT4* GetAt() { return _pAt; }
 	XMFLOAT4* GetUp() { return _pUp; }
@@ -30,10 +32,10 @@ public:
 	XMFLOAT4X4 GetViewMatrix() { return view; }
 	XMFLOAT4X4 GetProjectionMatrix() { return projection; }
 
-	void SetForward(int amount);
-	void MoveForward(int amount);
-	void MoveRight(int amount);
-	void MoveUp(int amount);
 	void Rotate(float angle);
+
+	virtual void SetPosition(float x, float y, float z) override;
+	virtual void MovePosition(float x, float y, float z) override;
+	virtual void Update(float time) override;
 };
 
