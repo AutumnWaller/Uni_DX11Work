@@ -30,6 +30,7 @@ private:
 
 	std::vector<Object*> gameObjects;
 	Camera *_pCamera, *_pCamera2;
+	Object *car;
 public:
 	Camera *_pCurrCamera;
 	GameManager();
@@ -38,6 +39,5 @@ public:
 	void Draw();
 	void Update(float _Time);
 	void Input(float deltaTime);
-
 };
 

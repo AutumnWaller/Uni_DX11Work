@@ -27,17 +27,16 @@ void Grid::Nullify()
 
 void Grid::SetSize(int width, int length)
 {
-	_pVertices = new StaticStructs::StandardVertex[((width * length) * 4) + 1];
+	_pVertices = new StaticStructs::StandardVertex[((width * length) * 4)];
 	_pIndices = new WORD[(width * length) * 6];
 
 	int vertIndex = 0, indIndex = 0, indPos = 0;
-
 	for (int i = 0; i < width; i++) {
 		for (int j = 0; j < length; j++) {
-			_pVertices[0 + vertIndex] = { XMFLOAT3(0.0f + i, 0.0f, 0.0f + j), XMFLOAT3(0, 1, 0), XMFLOAT2(0, 0) };
-			_pVertices[1 + vertIndex] = { XMFLOAT3(1.0f + i, 0.0f, 0.0f + j), XMFLOAT3(0, 1, 0), XMFLOAT2(1, 0) };
-			_pVertices[2 + vertIndex] = { XMFLOAT3(1.0f + i, 0.0f, 1.0f + j), XMFLOAT3(0, 1, 0), XMFLOAT2(1, 1) };
-			_pVertices[3 + vertIndex] = { XMFLOAT3(0.0f + i, 0.0f, 1.0f + j), XMFLOAT3(0, 1, 0), XMFLOAT2(0, 1) };
+			_pVertices[0 + vertIndex] = { XMFLOAT3(0.0f + (j + 2), 0.0f, 0.0f + (i + 2)), XMFLOAT3(0, 1, 0), XMFLOAT2(0, 0) };
+			_pVertices[1 + vertIndex] = { XMFLOAT3(1.0f + (j + 2), 0.0f, 0.0f + (i + 2)), XMFLOAT3(0, 1, 0), XMFLOAT2(1, 0) };
+			_pVertices[2 + vertIndex] = { XMFLOAT3(1.0f + (j + 2), 0.0f, 1.0f + (i + 2)), XMFLOAT3(0, 1, 0), XMFLOAT2(1, 1) };
+			_pVertices[3 + vertIndex] = { XMFLOAT3(0.0f + (j + 2), 0.0f, 1.0f + (i + 2)), XMFLOAT3(0, 1, 0), XMFLOAT2(0, 1) };
 			vertIndex += 4;
 			_pIndices[0 + indIndex] = indPos;
 			_pIndices[1 + indIndex] = indPos + 3;
@@ -50,6 +49,7 @@ void Grid::SetSize(int width, int length)
 		}
 
 	}
+
 	vertexAmount = (width * length) * 4;
 	indexAmount = (width * length) * 6;
 }

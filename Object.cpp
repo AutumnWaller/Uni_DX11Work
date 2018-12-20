@@ -130,8 +130,6 @@ void Object::Draw(DirectX::XMMATRIX appWorld, StaticStructs::ConstantBuffer cb)
 	//_pDeviceContext->PSSetConstantBuffers(0, 1, &_pConstantBuffer);
 	//_pDeviceContext->PSSetShader(_pPixelShader, nullptr, 0);
 
-
-
 	_pDeviceContext->DrawIndexed(indexAmount, 0, 0);
 }
 

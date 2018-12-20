@@ -1,5 +1,6 @@
 #pragma once
 #include <windows.h>
+#include "Object.h"
 #include <d3d11_1.h>
 #include "StaticObject.h"
 #include <d3dcompiler.h>
@@ -18,6 +19,7 @@ private:
 	XMFLOAT4 *_pAt;
 	XMFLOAT4 *_pUp;
 	XMFLOAT4 *_pForward;
+	Object *_pTarget;
 public:
 	Camera(XMVECTOR _Eye, XMVECTOR _At, XMVECTOR _Up, XMVECTOR _Forward, int windowWidth = 1280, int windowHeight = 720);
 	~Camera();
@@ -31,6 +33,8 @@ public:
 	XMFLOAT4* GetForward() { return _pForward; }
 	XMFLOAT4X4 GetViewMatrix() { return view; }
 	XMFLOAT4X4 GetProjectionMatrix() { return projection; }
+
+	void FollowObject(Object *object);
 
 	void Rotate(float angle);
 

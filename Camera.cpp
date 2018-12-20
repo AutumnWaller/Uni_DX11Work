@@ -30,17 +30,30 @@ void Camera::LookAt()
 	DirectX::XMStoreFloat4x4(&view, XMMatrixLookAtLH(XMLoadFloat4(_pEye), XMLoadFloat4(_pAt), XMLoadFloat4(_pUp)));
 }
 
+
+
+void Camera::FollowObject(Object *object)
+{
+	_pTarget = object;
+}
+
 void Camera::Rotate(float angle)
 {
-	XMStoreFloat4(_pAt, XMQuaternionRotationAxis(XMLoadFloat4(_pAt), angle));
-	XMStoreFloat4(_pEye, XMQuaternionRotationAxis(XMLoadFloat4(_pEye), angle));
-	XMStoreFloat4(_pUp, XMQuaternionRotationAxis(XMLoadFloat4(_pUp), angle));
+
+	FXMVECTOR rotation;
+	XMMatrixRotationAxis(rotation, angle);
+
+	//if (angle > 0)
+	//	_pAt->x = _pAt->y, _pAt->y = _pAt->z, _pAt->z = _pAt->w;
+	//else
+	//	_pAt->z = _pAt->y, _pAt->y = _pAt->x, _pAt->x = _pAt->w;
+	//XMStoreFloat4x4(&view, XMMatrixRotationAxis(XMLoadFloat4(_pAt), XMConvertToRadians(angle)));
 }
 
 void Camera::SetPosition(float x, float y, float z)
 {
 	_pAt->x = x, _pAt->y = y, _pAt->z = z;
-	_pEye->x = x, _pEye->y = y + 1, _pEye->z = z;
+	_pEye->x = x, _pEye->y = _pAt->y + 1, _pEye->z = _pAt->z - 3;
 	StaticObject::SetPosition(_pAt->x, _pAt->y, _pAt->z);
 	LookAt();
 }
@@ -55,10 +68,16 @@ void Camera::MovePosition(float x, float y, float z)
 
 void Camera::Update(float time)
 {
+
 	StaticObject::Update(time);
+	if (_pTarget) {
+		XMFLOAT3 *tPos = _pTarget->GetPosition();
+		SetPosition(tPos->x, tPos->y + _pUp->y, tPos->z);
+	}
 }
 
 Camera::~Camera()
 {
 	delete _pEye, _pAt, _pUp, _pForward;
+	delete _pTarget;
 }

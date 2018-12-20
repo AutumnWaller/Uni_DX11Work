@@ -9,6 +9,9 @@ GameManager::GameManager()
 
 GameManager::~GameManager()
 {
+	gameObjects.~vector();
+	delete _pCurrCamera, _pCamera, _pCamera2;
+	delete car;
 }
 
 void GameManager::Initialise(ID3D11Device *deviceRef, ID3D11DeviceContext *context, ID3D11Buffer *cb)
@@ -35,11 +38,17 @@ void GameManager::Initialise(ID3D11Device *deviceRef, ID3D11DeviceContext *conte
 	object->SetPosition(5, 0, 0);
 	gameObjects.emplace_back(object);
 
-	Grid *grid = new Grid(256, 164);
+	Grid *grid = new Grid(100, 100);
 	grid->SetPosition(0, 0, 0);
 	grid->SetTexture(L"Textures/asphalt.dds");
 	//grid->SetSize(5, 5);
 	gameObjects.emplace_back(grid);
+
+	car = new Object("Models/Car.obj", L"Textures/black.dds");
+	car->SetScale(0.01f, 0.01f, 0.01f);
+	car->SetPosition(20, 1, 20);
+	_pCurrCamera->FollowObject(car);
+	gameObjects.emplace_back(car);
 
 	for (int i = 0; i < gameObjects.size(); i++) {
 		gameObjects[i]->Initialise(deviceRef, context, cb);
@@ -77,7 +86,6 @@ void GameManager::Update(float _Time)
 
 	Input(time);
 
-	gameObjects[1]->SetPosition(-2, -2, -1);
 	//gameObjects[0]->SetRotation(-1 * time, 1, -1);
 	//gameObjects[0]->ChangeWorld(XMMatrixScaling(0.5f, 0.5f, 0.5f)  * XMMatrixRotationZ(time * 0.25f));
 	//gameObjects[1]->ChangeWorld(XMMatrixScaling(1.0f, 1.0f, 1.0f) * XMMatrixRotationZ(time) * XMMatrixTranslation(2.5f, 0, 0)  * XMMatrixRotationZ(time * 2.0f));
@@ -100,19 +108,20 @@ void GameManager::Input(float deltaTime)
 		_pCurrCamera = _pCamera2;
 
 	if (GetAsyncKeyState('W'))
-		_pCurrCamera->MovePosition(0, 0, (1 * deltaTime) * _pCurrCamera->GetMovementSpeed());
+		car->MovePosition(0, 0, (1 * deltaTime) * _pCurrCamera->GetMovementSpeed());
 	if (GetAsyncKeyState('S'))
-		_pCurrCamera->MovePosition(0, 0, (-1 * deltaTime) * _pCurrCamera->GetMovementSpeed());
+		car->MovePosition(0, 0, (-1 * deltaTime) * _pCurrCamera->GetMovementSpeed());
 	if (GetAsyncKeyState('D'))
-		_pCurrCamera->MovePosition((1 * deltaTime) * _pCurrCamera->GetMovementSpeed(), 0, 0);
+		car->MovePosition((1 * deltaTime) * _pCurrCamera->GetMovementSpeed(), 0, 0);
 	if (GetAsyncKeyState('A'))
-		_pCurrCamera->MovePosition((-1 * deltaTime) * _pCurrCamera->GetMovementSpeed(), 0, 0);
+		car->MovePosition((-1 * deltaTime) * _pCurrCamera->GetMovementSpeed(), 0, 0);
 	if (GetAsyncKeyState(VK_SPACE))
 		_pCurrCamera->MovePosition(0, (1 * deltaTime) * _pCurrCamera->GetMovementSpeed(), 0);
 	if (GetAsyncKeyState(VK_SHIFT))
 		_pCurrCamera->MovePosition(0, (-1 * deltaTime) * _pCurrCamera->GetMovementSpeed(), 0);
 	if (GetAsyncKeyState('E'))
-		_pCurrCamera->Rotate((1 * deltaTime) * _pCurrCamera->GetMovementSpeed());
+		_pCurrCamera->MoveRotation((1 * deltaTime), 0, 0);
 	if (GetAsyncKeyState('Q'))
-		_pCurrCamera->Rotate((-1 * deltaTime) * _pCurrCamera->GetMovementSpeed());
+		_pCurrCamera->MoveRotation((-1 * deltaTime), 0, 0);
+
 }
