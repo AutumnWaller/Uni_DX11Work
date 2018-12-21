@@ -79,5 +79,4 @@ void Camera::Update(float time)
 Camera::~Camera()
 {
 	delete _pEye, _pAt, _pUp, _pForward;
-	delete _pTarget;
 }

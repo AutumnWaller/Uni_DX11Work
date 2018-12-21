@@ -140,16 +140,6 @@ void Object::Update(float time)
 
 void Object::Cleanup()
 {
+	if (_pTextureRV) _pTextureRV->Release();
 	StaticObject::Cleanup();
-
-	if (_pVertices) delete[] _pVertices;
-	if (_pIndices) delete[] _pIndices;
-	if (_pIndexBuffer) delete _pIndexBuffer;
-	if (_pVertexBuffer) delete _pVertexBuffer;
-	if (_pConstantBuffer) delete _pConstantBuffer;
-	if (_pDeviceContext) delete _pDeviceContext;
-	if (_pDeviceRef) delete _pDeviceRef;
-	if (_pTexturePath) delete _pTexturePath;
-	if (_pModelPath) delete _pModelPath;
-	if (_pTextureRV) delete _pTextureRV;
 }

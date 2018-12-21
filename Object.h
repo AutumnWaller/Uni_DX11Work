@@ -35,7 +35,7 @@ protected:
 	virtual void Nullify();
 	virtual void Cleanup() override;
 	StaticStructs::StandardVertex *_pVertices;
-	WORD *_pIndices = nullptr;
+	WORD *_pIndices;
 
 	const wchar_t *_pTexturePath;
 	char *_pModelPath;

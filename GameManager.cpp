@@ -1,5 +1,4 @@
 #include "GameManager.h"
-#include <chrono>
 
 
 GameManager::GameManager()
@@ -10,7 +9,7 @@ GameManager::GameManager()
 GameManager::~GameManager()
 {
 	gameObjects.~vector();
-	delete _pCurrCamera, _pCamera, _pCamera2;
+	delete _pCamera, _pCamera2;
 	delete car;
 }
 
