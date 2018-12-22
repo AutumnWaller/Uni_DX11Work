@@ -73,6 +73,7 @@ void Camera::Update(float time)
 	if (_pTarget) {
 		XMFLOAT3 *tPos = _pTarget->GetPosition();
 		SetPosition(tPos->x, tPos->y + _pUp->y, tPos->z);
+		DirectX::XMStoreFloat4x4(&view, XMMatrixLookAtLH(XMLoadFloat4(_pEye), XMLoadFloat3(_pTarget->GetPosition()), XMLoadFloat4(_pUp)));
 	}
 }
 

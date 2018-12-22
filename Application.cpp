@@ -417,10 +417,7 @@ void Application::Update()
 {
 	// Update our time
 	static float t = 0.0f;
-	previousTime = time;
 	time = GetTickCount();
-	if (previousTime == 0)
-		previousTime = time;
 	deltaTime = (time - previousTime) / 1000;
 
 	if (_driverType == D3D_DRIVER_TYPE_REFERENCE)
@@ -446,6 +443,8 @@ void Application::Update()
 		_pImmediateContext->RSSetState(_pSolid);
 
 	_pGameManager->Update(deltaTime);
+	previousTime = time;
+
 }
 
 void Application::Draw()

@@ -9,7 +9,7 @@ GameManager::GameManager()
 GameManager::~GameManager()
 {
 	gameObjects.~vector();
-	delete _pCamera, _pCamera2;
+	delete _pCameraThirdPerson, _pCameraFront;
 	delete car;
 }
 
@@ -18,11 +18,9 @@ void GameManager::Initialise(ID3D11Device *deviceRef, ID3D11DeviceContext *conte
 
 	XMStoreFloat4x4(&_World, XMMatrixIdentity());
 
-	_pCamera = new Camera(XMVECTOR(XMVectorSet(0.0f, 0.0f, -3.0f, 0.0f)), XMVECTOR(XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f)), XMVECTOR(XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f)), XMVECTOR(XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f)));
-	_pCamera2 = new Camera(XMVECTOR(XMVectorSet(0.0f, 10.0f, 3.0f, 0.0f)), XMVECTOR(XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f)), XMVECTOR(XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f)), XMVECTOR(XMVectorSet(0.0f, 0.0f, -2.0f, 0.0f)));
-	_pCurrCamera = _pCamera;
-	
-	_pCamera->MovePosition(50, 10, 50);
+	_pCameraThirdPerson = new Camera(XMVECTOR(XMVectorSet(0.0f, 0.0f, -3.0f, 0.0f)), XMVECTOR(XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f)), XMVECTOR(XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f)), XMVECTOR(XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f)));
+	_pCameraFront = new Camera(XMVECTOR(XMVectorSet(0.0f, 10.0f, 3.0f, 0.0f)), XMVECTOR(XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f)), XMVECTOR(XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f)), XMVECTOR(XMVectorSet(0.0f, 0.0f, -2.0f, 0.0f)));
+	_pCurrCamera = _pCameraThirdPerson;
 
 	
 	//Cube *cube = new Cube(nullptr);
@@ -43,9 +41,10 @@ void GameManager::Initialise(ID3D11Device *deviceRef, ID3D11DeviceContext *conte
 	//grid->SetSize(5, 5);
 	gameObjects.emplace_back(grid);
 
-	car = new Object("Models/Car.obj", L"Textures/black.dds");
+	car = new Car();
 	car->SetScale(0.01f, 0.01f, 0.01f);
 	car->SetPosition(20, 1, 20);
+	_pCameraFront->FollowObject(car);
 	_pCurrCamera->FollowObject(car);
 	gameObjects.emplace_back(car);
 
@@ -79,11 +78,10 @@ void GameManager::Draw()
 	
 }
 
+
 void GameManager::Update(float _Time)
 {
-	time = _Time;
-
-	Input(time);
+	Input(_Time);
 
 	//gameObjects[0]->SetRotation(-1 * time, 1, -1);
 	//gameObjects[0]->ChangeWorld(XMMatrixScaling(0.5f, 0.5f, 0.5f)  * XMMatrixRotationZ(time * 0.25f));
@@ -94,26 +92,26 @@ void GameManager::Update(float _Time)
 	//objects[5]->ChangeWorld(XMMatrixScaling(0.25f, 0.25f, 0.25f)  * XMMatrixTranslation(3.0f, 0, 0) * XMMatrixRotationZ(t));
 
 	for (int i = 0; i < gameObjects.size(); i++)
-		gameObjects[i]->Update(time);
-	_pCurrCamera->Update(time);
+		gameObjects[i]->Update(_Time);
+	_pCurrCamera->Update(_Time);
 
 }
 
 void GameManager::Input(float deltaTime)
 {
 	if (GetAsyncKeyState(VK_NUMPAD1))
-		_pCurrCamera = _pCamera;
+		_pCurrCamera = _pCameraThirdPerson;
 	else if (GetAsyncKeyState(VK_NUMPAD2))
-		_pCurrCamera = _pCamera2;
+		_pCurrCamera = _pCameraFront;
 
 	if (GetAsyncKeyState('W'))
-		car->MovePosition(0, 0, (1 * deltaTime) * _pCurrCamera->GetMovementSpeed());
+		car->MovePosition(car->GetForward()->x * (deltaTime * car->GetVelocity()), car->GetForward()->y * (deltaTime * car->GetVelocity()), car->GetForward()->z * (deltaTime * car->GetVelocity()));
 	if (GetAsyncKeyState('S'))
-		car->MovePosition(0, 0, (-1 * deltaTime) * _pCurrCamera->GetMovementSpeed());
+		car->MovePosition(car->GetForward()->x * (-deltaTime * car->GetVelocity()), car->GetForward()->y * (-deltaTime * car->GetVelocity()), car->GetForward()->z * (-deltaTime * car->GetVelocity()));
 	if (GetAsyncKeyState('D'))
-		car->MovePosition((1 * deltaTime) * _pCurrCamera->GetMovementSpeed(), 0, 0);
+		car->TurnRight(5 * deltaTime);
 	if (GetAsyncKeyState('A'))
-		car->MovePosition((-1 * deltaTime) * _pCurrCamera->GetMovementSpeed(), 0, 0);
+		//car->TurnLeft();
 	if (GetAsyncKeyState(VK_SPACE))
 		_pCurrCamera->MovePosition(0, (1 * deltaTime) * _pCurrCamera->GetMovementSpeed(), 0);
 	if (GetAsyncKeyState(VK_SHIFT))

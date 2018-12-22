@@ -377,6 +377,7 @@
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Car.cpp" />
     <ClCompile Include="Cube.cpp" />
     <ClCompile Include="DDSTextureLoader.cpp" />
     <ClCompile Include="DX11 Framework.cpp" />
@@ -393,6 +394,7 @@
   <ItemGroup>
     <ClInclude Include="Application.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="Car.h" />
     <ClInclude Include="Cube.h" />
     <ClInclude Include="DDSTextureLoader.h" />
     <ClInclude Include="GameManager.h" />

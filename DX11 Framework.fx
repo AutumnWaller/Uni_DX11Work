@@ -66,7 +66,11 @@ VS_OUTPUT output = (VS_OUTPUT)0;
     normalW = normalize(normalW);
 
     float diffuseAmount = max(dot(LightVecW, normalW), 0.0f);
-    output.Color.rgb = (diffuseAmount * ((DiffuseMtrl + AmbientMtrl) * (DiffuseLight + AmbientLight))).rgb;
+    
+	float3 diffuse = diffuseAmount * (DiffuseMtrl * DiffuseLight);
+	float3 ambient = AmbientMtrl * AmbientLight;
+	
+	output.Color.rgb = diffuse + ambient;
     output.Color.a = DiffuseMtrl.a;
 
     return output;
@@ -80,7 +84,7 @@ VS_OUTPUT output = (VS_OUTPUT)0;
 //--------------------------------------------------------------------------------------
 float4 PS( VS_OUTPUT input ) : SV_Target
 { 
-	float4 textureColour = txDiffuse.Sample(samLinear, input.Tex);
+	float4 textureColour = input.Color + txDiffuse.Sample(samLinear, input.Tex);
 	clip(textureColour.a - 0.95f);
 	return textureColour;
 }
