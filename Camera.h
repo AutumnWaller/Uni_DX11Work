@@ -1,4 +1,5 @@
 #pragma once
+#include "MathsFunctions.h"
 #include <windows.h>
 #include "Object.h"
 #include <d3d11_1.h>
@@ -8,7 +9,6 @@
 #include <directxcolors.h>
 
 using namespace DirectX;
-
 class Camera : public StaticObject
 {
 private:
@@ -30,16 +30,15 @@ public:
 	XMFLOAT4* GetEye() { return _pEye; }
 	XMFLOAT4* GetAt() { return _pAt; }
 	XMFLOAT4* GetUp() { return _pUp; }
-	XMFLOAT4* GetForward() { return _pForward; }
+	XMFLOAT4* GetForward4() { return _pForward; }
 	XMFLOAT4X4 GetViewMatrix() { return view; }
 	XMFLOAT4X4 GetProjectionMatrix() { return projection; }
 
 	void FollowObject(Object *object);
-
-	void Rotate(float angle);
-
+	XMMATRIX Rotate();
 	virtual void SetPosition(float x, float y, float z) override;
 	virtual void MovePosition(float x, float y, float z) override;
+	virtual void SetRotation(float x, float y, float z) override;
 	virtual void Update(float time) override;
 };
 

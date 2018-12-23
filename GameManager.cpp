@@ -1,6 +1,8 @@
 #include "GameManager.h"
 
 
+
+
 GameManager::GameManager()
 {
 }
@@ -21,10 +23,6 @@ void GameManager::Initialise(ID3D11Device *deviceRef, ID3D11DeviceContext *conte
 	_pCameraThirdPerson = new Camera(XMVECTOR(XMVectorSet(0.0f, 0.0f, -3.0f, 0.0f)), XMVECTOR(XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f)), XMVECTOR(XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f)), XMVECTOR(XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f)));
 	_pCameraFront = new Camera(XMVECTOR(XMVectorSet(0.0f, 10.0f, 3.0f, 0.0f)), XMVECTOR(XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f)), XMVECTOR(XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f)), XMVECTOR(XMVectorSet(0.0f, 0.0f, -2.0f, 0.0f)));
 	_pCurrCamera = _pCameraThirdPerson;
-
-	
-	//Cube *cube = new Cube(nullptr);
-	//gameObjects.emplace_back(cube);
 
 	//Object *car = new Object("Models/car.obj", L"Textures/black.dds");
 	//gameObjects.emplace_back(car);
@@ -90,11 +88,10 @@ void GameManager::Update(float _Time)
 	//objects[3]->ChangeWorld(XMMatrixScaling(0.1f, 0.1f, 0.1f) * XMMatrixRotationZ(t) * XMMatrixTranslation(0.5f, 0, 0)  * XMMatrixRotationZ(t * 4.0f) * XMMatrixTranslation(1.0f, 0, 0)  * XMMatrixRotationZ(t * 3.0f)  * XMMatrixTranslation(2.5f, 0, 0)  * XMMatrixRotationZ(t * 2.0f));
 	//objects[4]->ChangeWorld(XMMatrixScaling(0.25f, 0.25f, 0.25f)  * XMMatrixTranslation(1.5f, 0, 0) * XMMatrixRotationZ(-t));
 	//objects[5]->ChangeWorld(XMMatrixScaling(0.25f, 0.25f, 0.25f)  * XMMatrixTranslation(3.0f, 0, 0) * XMMatrixRotationZ(t));
-
 	for (int i = 0; i < gameObjects.size(); i++)
 		gameObjects[i]->Update(_Time);
 	_pCurrCamera->Update(_Time);
-
+	
 }
 
 void GameManager::Input(float deltaTime)
@@ -109,9 +106,9 @@ void GameManager::Input(float deltaTime)
 	if (GetAsyncKeyState('S'))
 		car->MovePosition(car->GetForward()->x * (-deltaTime * car->GetVelocity()), car->GetForward()->y * (-deltaTime * car->GetVelocity()), car->GetForward()->z * (-deltaTime * car->GetVelocity()));
 	if (GetAsyncKeyState('D'))
-		car->TurnRight(5 * deltaTime);
+		car->Turn(5 * deltaTime);
 	if (GetAsyncKeyState('A'))
-		//car->TurnLeft();
+		car->Turn(-5 * deltaTime);
 	if (GetAsyncKeyState(VK_SPACE))
 		_pCurrCamera->MovePosition(0, (1 * deltaTime) * _pCurrCamera->GetMovementSpeed(), 0);
 	if (GetAsyncKeyState(VK_SHIFT))

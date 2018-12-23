@@ -12,8 +12,6 @@ public:
 	void SetVelocity(float amount);
 	float GetVelocity() { return velocity; };
 
-	void TurnRight(float amount);
-	void TurnLeft(float amount);
 	virtual void Update(float deltaTime) override;
 	Car();
 	~Car();

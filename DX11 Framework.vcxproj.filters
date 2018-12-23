@@ -23,6 +23,7 @@
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="StaticObject.h" />
     <ClInclude Include="Car.h" />
+    <ClInclude Include="MathsFunctions.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
@@ -37,6 +38,7 @@
     <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="StaticObject.cpp" />
     <ClCompile Include="Car.cpp" />
+    <ClCompile Include="MathsFunctions.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CLInclude Include="resource.h">

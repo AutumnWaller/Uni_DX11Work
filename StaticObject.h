@@ -1,6 +1,7 @@
 #pragma once
 
 #include <d3d11.h>
+#include "MathsFunctions.h"
 #include <DirectXMath.h>
 
 using namespace DirectX;
@@ -22,12 +23,18 @@ public:
 	virtual void MovePosition(XMFLOAT3 xyz);
 
 	virtual void SetScale(float x, float y, float z);
-	void SetRotation(float x, float y, float z);
-	void MoveRotation(float x, float y, float z);
 
-	void SetForward(float x, float y, float z);
-	void MoveForward(float x, float y, float z);
+	virtual void SetRotation(float x, float y, float z);
+	virtual void SetRotation(XMFLOAT3 xyz);
+	virtual void MoveRotation(float x, float y, float z);
+	XMFLOAT3 *GetRotation() { return _pRotation; }
+
+	virtual void SetForward(float x, float y, float z);
+	virtual void MoveForward(float x, float y, float z);
 	XMFLOAT3 *GetForward() { return _pForward; };
+
+
+	virtual void Turn(float amount);
 
 	void Initialise();
 protected:

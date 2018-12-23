@@ -22,7 +22,7 @@ Camera::Camera(XMVECTOR _Eye, XMVECTOR _At, XMVECTOR _Up, XMVECTOR _Forward, int
 }
 
 void Camera::LookTo() {
-	DirectX::XMStoreFloat4x4(&view, XMMatrixLookToLH(XMLoadFloat4(_pEye), XMLoadFloat4(_pForward), XMLoadFloat4(_pUp)));
+	DirectX::XMStoreFloat4x4(&view, XMMatrixLookToLH(XMLoadFloat4(_pEye), XMLoadFloat4(_pAt), XMLoadFloat4(_pUp)));
 }
 
 void Camera::LookAt()
@@ -37,17 +37,13 @@ void Camera::FollowObject(Object *object)
 	_pTarget = object;
 }
 
-void Camera::Rotate(float angle)
+XMMATRIX Camera::Rotate()
 {
+	XMMATRIX viewMat = XMLoadFloat4x4(&view);
+	XMMATRIX iViewMat = XMMatrixInverse(&XMMatrixDeterminant(viewMat), viewMat);
+	XMVECTOR posVec = XMLoadFloat3(&MathsFunctions::AddFloats(*_pTarget->GetPosition(), *_pTarget->GetForward()));
 
-	FXMVECTOR rotation;
-	XMMatrixRotationAxis(rotation, angle);
-
-	//if (angle > 0)
-	//	_pAt->x = _pAt->y, _pAt->y = _pAt->z, _pAt->z = _pAt->w;
-	//else
-	//	_pAt->z = _pAt->y, _pAt->y = _pAt->x, _pAt->x = _pAt->w;
-	//XMStoreFloat4x4(&view, XMMatrixRotationAxis(XMLoadFloat4(_pAt), XMConvertToRadians(angle)));
+	return XMMatrixRotationAxis(posVec, GetRotation()->y * _pTarget->GetRotation()->y);
 }
 
 void Camera::SetPosition(float x, float y, float z)
@@ -66,15 +62,26 @@ void Camera::MovePosition(float x, float y, float z)
 	LookAt();
 }
 
+void Camera::SetRotation(float x, float y, float z)
+{
+}
+
 void Camera::Update(float time)
 {
 
-	StaticObject::Update(time);
 	if (_pTarget) {
-		XMFLOAT3 *tPos = _pTarget->GetPosition();
-		SetPosition(tPos->x, tPos->y + _pUp->y, tPos->z);
-		DirectX::XMStoreFloat4x4(&view, XMMatrixLookAtLH(XMLoadFloat4(_pEye), XMLoadFloat3(_pTarget->GetPosition()), XMLoadFloat4(_pUp)));
+		XMFLOAT3 *_pTFor = _pTarget->GetForward();
+		XMFLOAT3 *_pTPos = _pTarget->GetPosition();
+		XMFLOAT3 *_pTRot = _pTarget->GetRotation();
+
+		XMVECTOR *tPos = &XMLoadFloat3(_pTPos);
+
+		XMVECTOR *tFor = &XMLoadFloat3(_pTFor);
+		XMVECTOR *tRot = &XMLoadFloat3(_pTRot);
+		SetPosition(_pTPos->x + _pTFor->x, _pTPos->y + _pUp->y + _pTPos->y , _pTPos->z + _pTFor->z);
+		SetRotation(_pTRot->x, _pTRot->y, _pTRot->z);
 	}
+
 }
 
 Camera::~Camera()

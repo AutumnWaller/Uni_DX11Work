@@ -383,6 +383,7 @@
     <ClCompile Include="DX11 Framework.cpp" />
     <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="Grid.cpp" />
+    <ClCompile Include="MathsFunctions.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="OBJLoader.cpp" />
     <ClCompile Include="Pyramid.cpp" />
@@ -399,6 +400,7 @@
     <ClInclude Include="DDSTextureLoader.h" />
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="Grid.h" />
+    <ClInclude Include="MathsFunctions.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="OBJLoader.h" />
     <ClInclude Include="Pyramid.h" />

@@ -1,7 +1,5 @@
 #include "StaticObject.h"
 
-
-
 StaticObject::StaticObject(XMFLOAT3 *position)
 {
 	Initialise();
@@ -48,6 +46,11 @@ void StaticObject::SetRotation(float x, float y, float z)
 	*_pRotation = { x, y, z };
 }
 
+void StaticObject::SetRotation(XMFLOAT3 xyz)
+{
+	*_pRotation = { xyz };
+}
+
 void StaticObject::MoveRotation(float x, float y, float z)
 {
 	*_pRotation = { _pRotation->x += x, _pRotation->y += y, _pRotation->z += z };
@@ -61,6 +64,24 @@ void StaticObject::SetForward(float x, float y, float z)
 void StaticObject::MoveForward(float x, float y, float z)
 {
 	*_pForward = { _pForward->x + x, _pForward->y + y, _pForward->z + z };
+}
+
+void StaticObject::Turn(float amount)
+{
+	if (amount == 0)
+		return;
+	if (amount > 0) {
+		if (_pRotation->y >= XM_PI * 2)
+			_pRotation->y = 0;
+	}
+	else if (amount < 0) {
+		if (_pRotation->y <= -(XM_PI * 2))
+			_pRotation->y = 0;
+	}
+
+	MoveRotation(0, amount, 0);
+	float rot = _pRotation->y;
+	SetForward(MathsFunctions::Normalise(sin(rot)), 0, MathsFunctions::Normalise(cos(rot)));
 }
 
 void StaticObject::Initialise()
