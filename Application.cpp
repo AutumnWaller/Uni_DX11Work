@@ -410,15 +410,13 @@ void Application::Cleanup()
 	if (_pGameManager) delete _pGameManager;
 }
 
-float previousTime = 0, time = 0;
 float deltaTime = 0;
 
 void Application::Update()
 {
 	// Update our time
 	static float t = 0.0f;
-	time = GetTickCount();
-	deltaTime = (time - previousTime) / 1000;
+	static float prevTime = t;
 
 	if (_driverType == D3D_DRIVER_TYPE_REFERENCE)
 	{
@@ -434,8 +432,10 @@ void Application::Update()
 
 		t = (dwTimeCur - dwTimeStart) / 1000.0f;
 	}
+	deltaTime = (t - prevTime);
+	prevTime = t;
 
-	gTime = t;
+	gTime = deltaTime;
 
 	if (GetAsyncKeyState(VK_SPACE))
 		_pImmediateContext->RSSetState(_pWireframe);
@@ -443,7 +443,6 @@ void Application::Update()
 		_pImmediateContext->RSSetState(_pSolid);
 
 	_pGameManager->Update(deltaTime);
-	previousTime = time;
 
 }
 

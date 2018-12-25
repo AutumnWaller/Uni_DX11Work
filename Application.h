@@ -50,10 +50,6 @@ private:
 	D3D11_SUBRESOURCE_DATA InitData;
 private:
 	GameManager *_pGameManager;
-
-	
-	Object *obj;
-	Grid *grid;
 	HRESULT InitWindow(HINSTANCE hInstance, int nCmdShow);
 	HRESULT InitDevice();
 	void Cleanup();
@@ -74,8 +70,6 @@ public:
 	~Application();
 
 	HRESULT Initialise(HINSTANCE hInstance, int nCmdShow);
-
-	std::vector<Object*> objects;
 
 	void Update();
 	void Draw();

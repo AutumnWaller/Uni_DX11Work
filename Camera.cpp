@@ -78,8 +78,15 @@ void Camera::Update(float time)
 
 		XMVECTOR *tFor = &XMLoadFloat3(_pTFor);
 		XMVECTOR *tRot = &XMLoadFloat3(_pTRot);
-		SetPosition(_pTPos->x + _pTFor->x, _pTPos->y + _pUp->y + _pTPos->y , _pTPos->z + _pTFor->z);
+		SetPosition(_pTPos->x - _pTFor->x, _pTPos->y + (_pUp->y), _pTPos->z - _pTFor->z);
 		SetRotation(_pTRot->x, _pTRot->y, _pTRot->z);
+
+		//XMStoreFloat4x4(&world,XMMatrixTranspose( XMMatrixScaling(_pScale->x, _pScale->y, _pScale->z) * XMMatrixRotationX(_pTRot->x) * XMMatrixRotationY(_pTRot->y) * XMMatrixRotationZ(_pTRot->z)* XMMatrixRotationX(_pRotation->x) * XMMatrixRotationY(_pRotation->y) * XMMatrixRotationZ(_pRotation->z) * XMMatrixTranslation(_pPosition->x, _pPosition->y, _pPosition->z) ) );
+		
+		XMStoreFloat4x4(&view, XMMatrixLookAtLH(XMLoadFloat4(_pEye), XMLoadFloat4(_pAt), XMLoadFloat4(_pUp)));
+
+
+
 	}
 
 }
