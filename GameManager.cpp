@@ -80,6 +80,7 @@ void GameManager::Draw()
 void GameManager::Update(float _Time)
 {
 	Input(_Time);
+	car->Drive(_Time);
 
 	//gameObjects[0]->SetRotation(-1 * time, 1, -1);
 	//gameObjects[0]->ChangeWorld(XMMatrixScaling(0.5f, 0.5f, 0.5f)  * XMMatrixRotationZ(time * 0.25f));
@@ -91,7 +92,6 @@ void GameManager::Update(float _Time)
 	for (int i = 0; i < gameObjects.size(); i++)
 		gameObjects[i]->Update(_Time);
 	_pCurrCamera->Update(_Time);
-	
 }
 
 void GameManager::Input(float deltaTime)
@@ -101,14 +101,19 @@ void GameManager::Input(float deltaTime)
 	else if (GetAsyncKeyState(VK_NUMPAD2))
 		_pCurrCamera = _pCameraFront;
 
-	if (GetAsyncKeyState('W'))
-		car->MovePosition(car->GetForward()->x * (deltaTime * car->GetVelocity()), car->GetForward()->y * (deltaTime * car->GetVelocity()), car->GetForward()->z * (deltaTime * car->GetVelocity()));
-	if (GetAsyncKeyState('S'))
-		car->MovePosition(car->GetForward()->x * (-deltaTime * car->GetVelocity()), car->GetForward()->y * (-deltaTime * car->GetVelocity()), car->GetForward()->z * (-deltaTime * car->GetVelocity()));
+	if (GetAsyncKeyState('W')) {
+		car->Accelerate(deltaTime);
+	}
+	else if (GetAsyncKeyState('S')) {
+		car->Accelerate(-deltaTime);
+	}else
+		car->Decelerate(deltaTime);
+
+
 	if (GetAsyncKeyState('D'))
-		car->Turn(5 * deltaTime);
+		car->Turn(deltaTime);
 	if (GetAsyncKeyState('A'))
-		car->Turn(-5 * deltaTime);
+		car->Turn(-deltaTime);
 	if (GetAsyncKeyState(VK_SPACE))
 		_pCurrCamera->MovePosition(0, (1 * deltaTime) * _pCurrCamera->GetMovementSpeed(), 0);
 	if (GetAsyncKeyState(VK_SHIFT))

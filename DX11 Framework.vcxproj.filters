@@ -24,6 +24,7 @@
     <ClInclude Include="StaticObject.h" />
     <ClInclude Include="Car.h" />
     <ClInclude Include="MathsFunctions.h" />
+    <ClInclude Include="AppTime.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
@@ -39,6 +40,7 @@
     <ClCompile Include="StaticObject.cpp" />
     <ClCompile Include="Car.cpp" />
     <ClCompile Include="MathsFunctions.cpp" />
+    <ClCompile Include="AppTime.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CLInclude Include="resource.h">

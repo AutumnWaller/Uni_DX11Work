@@ -11,13 +11,9 @@
 #include <DirectXColors.h>
 #include <vector>
 #include <WinUser.h>
+#include "AppTime.h"
 
 using namespace DirectX;
-
-
-
-
-
 
 class Object;
 

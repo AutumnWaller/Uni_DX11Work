@@ -388,6 +388,7 @@
     <ClCompile Include="OBJLoader.cpp" />
     <ClCompile Include="Pyramid.cpp" />
     <ClCompile Include="StaticObject.cpp" />
+    <ClCompile Include="AppTime.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DX11 Framework.fx" />
@@ -407,6 +408,7 @@
     <CLInclude Include="resource.h" />
     <ClInclude Include="StaticObject.h" />
     <ClInclude Include="StaticStructs.h" />
+    <ClInclude Include="AppTime.h" />
     <ResourceCompile Include="DX11 Framework.rc" />
   </ItemGroup>
   <ItemGroup>

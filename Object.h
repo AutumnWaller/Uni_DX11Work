@@ -30,6 +30,7 @@ public:
 	virtual void Initialise(ID3D11Device *deviceRef, ID3D11DeviceContext *context, ID3D11Buffer* cBuffer);
 	virtual void Draw(DirectX::XMMATRIX appWorld, StaticStructs::ConstantBuffer cb);
 	virtual void Update(float time) override;
+	virtual void Turn(float amount) override;
 protected:
 	void CalculateNormals();
 	virtual void Nullify();

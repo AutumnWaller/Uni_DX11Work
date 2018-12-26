@@ -138,6 +138,11 @@ void Object::Update(float time)
 	StaticObject::Update(time);
 }
 
+void Object::Turn(float amount)
+{
+	StaticObject::Turn(amount);
+}
+
 void Object::Cleanup()
 {
 	if (_pTextureRV) _pTextureRV->Release();

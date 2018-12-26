@@ -410,30 +410,9 @@ void Application::Cleanup()
 	if (_pGameManager) delete _pGameManager;
 }
 
-float deltaTime = 0;
-
 void Application::Update()
 {
-	// Update our time
-	static float t = 0.0f;
-	static float prevTime = t;
-
-	if (_driverType == D3D_DRIVER_TYPE_REFERENCE)
-	{
-		t += (float)XM_PI * 0.0125f;
-	}
-	else
-	{
-		static DWORD dwTimeStart = 0;
-		DWORD dwTimeCur = GetTickCount();
-
-		if (dwTimeStart == 0)
-			dwTimeStart = dwTimeCur;
-
-		t = (dwTimeCur - dwTimeStart) / 1000.0f;
-	}
-	deltaTime = (t - prevTime);
-	prevTime = t;
+	float deltaTime = AppTime::DeltaTime();
 
 	gTime = deltaTime;
 

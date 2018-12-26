@@ -16,6 +16,11 @@ StaticObject::~StaticObject()
 	Cleanup();
 }
 
+static float timer = 0;
+
+
+
+
 void StaticObject::SetPosition(float x, float y, float z)
 {
 	*_pPosition = { x, y, z };

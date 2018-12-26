@@ -13,6 +13,7 @@ public:
 	StaticObject();
 	~StaticObject();
 
+
 	virtual void Update(float time);
 
 	XMFLOAT3 *GetPosition() { return _pPosition; };
@@ -40,6 +41,8 @@ public:
 protected:
 
 	virtual void Cleanup();
+
+	float turnSpeed = 1; 
 
 	XMFLOAT4X4 world;
 	XMFLOAT3 *_pPosition;

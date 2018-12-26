@@ -1,17 +1,20 @@
 #pragma once
 #include "Object.h"
-class Car :
-	public Object
+#include "AppTime.h"
+class Car : public Object
 {
 private:
-	float velocity = 5;
-	float maxVelocity = 60;
-
-	float acceleration = 1;
-public:
 	void SetVelocity(float amount);
-	float GetVelocity() { return velocity; };
 
+	float velocity = 0;
+	float maxVelocity = 20;
+
+	float acceleration = 2.0f;
+public:
+	virtual void Turn(float amount) override;
+	void Drive(float deltaTime);
+	void Accelerate(float deltaTime);
+	void Decelerate(float deltaTime);
 	virtual void Update(float deltaTime) override;
 	Car();
 	~Car();
