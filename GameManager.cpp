@@ -101,7 +101,12 @@ void GameManager::Input(float deltaTime)
 	else if (GetAsyncKeyState(VK_NUMPAD2))
 		_pCurrCamera = _pCameraFront;
 
-	if (GetAsyncKeyState('W')) {
+
+	if (GetAsyncKeyState('D'))
+		car->Turn(deltaTime);
+	else if (GetAsyncKeyState('A'))
+		car->Turn(-deltaTime);
+	else if (GetAsyncKeyState('W')) {
 		car->Accelerate(deltaTime);
 	}
 	else if (GetAsyncKeyState('S')) {
@@ -110,10 +115,7 @@ void GameManager::Input(float deltaTime)
 		car->Decelerate(deltaTime);
 
 
-	if (GetAsyncKeyState('D'))
-		car->Turn(deltaTime);
-	if (GetAsyncKeyState('A'))
-		car->Turn(-deltaTime);
+	
 	if (GetAsyncKeyState(VK_SPACE))
 		_pCurrCamera->MovePosition(0, (1 * deltaTime) * _pCurrCamera->GetMovementSpeed(), 0);
 	if (GetAsyncKeyState(VK_SHIFT))
