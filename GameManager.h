@@ -17,21 +17,24 @@ private:
 	float time = 0;
 
 	// Light direction from surface (XYZ)
-	XMFLOAT3 lightDirection = XMFLOAT3(-3.0f, 10.0f, 0.0f);
+	XMFLOAT3 lightDirection = XMFLOAT3(0.25f, 0.5f, -1.0f);
 
 	// Diffuse material properties (RGBA)
-	XMFLOAT4 diffuseMaterial = XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
+	XMFLOAT4 diffuseMaterial = XMFLOAT4(0.8f, 0.5f, 0.5f, 1.0f);
 	// Diffuse light colour (RGBA)
 
-	XMFLOAT4 diffuseLight = XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
-	XMFLOAT3 ambientLight = XMFLOAT3(0.0f, 0.0f, 0.0f);
-	XMFLOAT3 ambientMaterial = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	XMFLOAT4 diffuseLight = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	XMFLOAT3 ambientLight = XMFLOAT3(0.2f, 0.2f, 0.2f);
+	XMFLOAT3 ambientMaterial = XMFLOAT3(0.2f, 0.2f, 0.2f);
+
+	XMFLOAT4 specularLight = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
+	XMFLOAT4 specularMaterial = XMFLOAT4(0.8f, 0.8f, 0.8f, 1.0f);
 
 	D3D11_SUBRESOURCE_DATA data;
 
 
 	std::vector<Object*> gameObjects;
-	Camera *_pCameraThirdPerson, *_pCameraFront;
+	Camera *_pCameraThirdPerson, *_pCameraFront, *_pCameraTop;
 	Car *car;
 public:
 	Camera *_pCurrCamera;

@@ -20,9 +20,12 @@ void GameManager::Initialise(ID3D11Device *deviceRef, ID3D11DeviceContext *conte
 
 	XMStoreFloat4x4(&_World, XMMatrixIdentity());
 
-	_pCameraThirdPerson = new Camera(XMVECTOR(XMVectorSet(0.0f, 0.0f, -3.0f, 0.0f)), XMVECTOR(XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f)), XMVECTOR(XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f)), XMVECTOR(XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f)));
-	_pCameraFront = new Camera(XMVECTOR(XMVectorSet(0.0f, 10.0f, 3.0f, 0.0f)), XMVECTOR(XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f)), XMVECTOR(XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f)), XMVECTOR(XMVectorSet(0.0f, 0.0f, -2.0f, 0.0f)));
-	_pCurrCamera = _pCameraThirdPerson;
+	_pCameraThirdPerson = new Camera(XMVECTOR(XMVectorSet(0.0f, 0.0f, -3.0f, 0.0f)), XMVECTOR(XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f)));
+	_pCameraFront = new Camera(XMVECTOR(XMVectorSet(0.0f, 10.0f, 3.0f, 0.0f)), XMVECTOR(XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f)));
+	//_pCameraTop = new Camera(XMVECTOR(XMVectorSet(0.0f, 10.0f, 3.0f, 0.0f)), XMVECTOR(XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f)));
+	
+	_pCurrCamera = _pCameraFront;
+
 
 	//Object *car = new Object("Models/car.obj", L"Textures/black.dds");
 	//gameObjects.emplace_back(car);
@@ -43,7 +46,7 @@ void GameManager::Initialise(ID3D11Device *deviceRef, ID3D11DeviceContext *conte
 	car->SetScale(0.01f, 0.01f, 0.01f);
 	car->SetPosition(20, 1, 20);
 	_pCameraFront->FollowObject(car);
-	_pCurrCamera->FollowObject(car);
+	//_pCurrCamera->FollowObject(car);
 	gameObjects.emplace_back(car);
 
 	for (int i = 0; i < gameObjects.size(); i++) {
@@ -68,8 +71,10 @@ void GameManager::Draw()
 	cb.DiffuseMtrl = diffuseMaterial;
 	cb.AmbientLight = ambientLight;
 	cb.AmbientMtrl = ambientMaterial;
-
-
+	cb.cameraEye = *_pCurrCamera->GetEye();
+	cb.specularPower = 10.0f;
+	cb.specularLight = specularLight;
+	cb.specularMtrl = specularMaterial;
 	for (int i = 0; i < gameObjects.size(); i++)
 		gameObjects[i]->Draw(world, cb);
 
@@ -122,7 +127,8 @@ void GameManager::Input(float deltaTime)
 		_pCurrCamera->MovePosition(0, (-1 * deltaTime) * _pCurrCamera->GetMovementSpeed(), 0);
 	if (GetAsyncKeyState('E'))
 		_pCurrCamera->MoveRotation((1 * deltaTime), 0, 0);
+
 	if (GetAsyncKeyState('Q'))
-		_pCurrCamera->MoveRotation((-1 * deltaTime), 0, 0);
+		car->Boost(deltaTime);
 
 }

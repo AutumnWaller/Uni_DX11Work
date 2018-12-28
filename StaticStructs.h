@@ -30,6 +30,11 @@ public:
 		
 		XMFLOAT3 AmbientMtrl;
 		XMFLOAT3 AmbientLight;
+		XMFLOAT4 cameraEye;
+		float specularPower = 2;
+
+		XMFLOAT4 specularMtrl;
+		XMFLOAT4 specularLight;
 
 	};
 

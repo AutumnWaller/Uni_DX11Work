@@ -4,8 +4,11 @@
 
 void Car::Turn(float amount)
 {
-	if (velocity != 0)
+	if (velocity != 0) {
 		Object::Turn(amount * turnSpeed);
+		if (velocity > maxVelocity)
+			Decelerate(amount);
+	}
 }
 
 void Car::Drive(float deltaTime)
@@ -13,16 +16,31 @@ void Car::Drive(float deltaTime)
 	MovePosition(_pForward->x * velocity * deltaTime, _pForward->y * velocity * deltaTime, _pForward->z * velocity * deltaTime);
 }
 
+void Car::ChargeBoost()
+{
+	boostAmount = 100;
+}
+
+void Car::Boost(float deltaTime)
+{
+	if (boostAmount > 0) {
+		boostAmount -= (boostTimer * deltaTime);
+		if (velocity < maxBoostVelocity) {
+			AppTime::Timer(deltaTime, 0.2f, velocity, boostAcceleration);
+		}
+	}
+}
+
 void Car::Accelerate(float deltaTime)
 {
 	if (deltaTime > 0) {
 		if (velocity < maxVelocity) {
-			AppTime::Timer(deltaTime, 0.5f, velocity, acceleration);
+			AppTime::Timer(deltaTime, 0.1f, velocity, acceleration);
 		}
 	}
 	else if (deltaTime < 0) {
 		if (velocity > -maxVelocity) {
-			AppTime::Timer(-deltaTime, 0.5f, velocity, -acceleration);
+			AppTime::Timer(-deltaTime, 0.1f, velocity, -acceleration);
 		}
 	}
 }

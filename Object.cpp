@@ -72,7 +72,7 @@ void Object::CalculateNormals()
 		XMVECTOR v1 = XMLoadFloat3(&XMFLOAT3((float)_pIndices[i], (float)_pIndices[i + 1], (float)_pIndices[i + 2]));
 		XMVECTOR v2 = XMLoadFloat3(&XMFLOAT3((float)_pIndices[i + 3], (float)_pIndices[i + 4], (float)_pIndices[i + 5]));
 		XMVECTOR v3 = XMLoadFloat3(&XMFLOAT3((float)_pIndices[i + 6], (float)_pIndices[i + 7], (float)_pIndices[i + 8]));
-		XMStoreFloat3(&_pVertices[i].Normal, XMVector3Cross(XMVectorSubtract(v1, v2), XMVectorSubtract(v3, v1)));
+		XMStoreFloat3(&_pVertices[i].Normal, XMVector3Normalize(XMVector3Cross(XMVectorSubtract(v1, v2), XMVectorSubtract(v3, v1))));
 	}
 }
 

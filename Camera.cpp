@@ -3,16 +3,17 @@
 
 
 
-Camera::Camera(XMVECTOR _Eye, XMVECTOR _At, XMVECTOR _Up, XMVECTOR _Forward, int windowWidth, int windowHeight)
+Camera::Camera(XMVECTOR _Eye, XMVECTOR _At, int windowWidth, int windowHeight)
 {
 	_pEye = new XMFLOAT4();
 	_pAt = new XMFLOAT4();
-	_pUp = new XMFLOAT4();
-	_pForward = new XMFLOAT4();
+	_pUp = new XMFLOAT4(0, 1, 0, 0);
+	_pForward = new XMFLOAT4(0, 0, 1, 0);
 	DirectX::XMStoreFloat4(_pEye, _Eye);
 	DirectX::XMStoreFloat4(_pAt, _At);
-	DirectX::XMStoreFloat4(_pUp, _Up);
-	DirectX::XMStoreFloat4(_pForward, _Forward);
+	DirectX::XMStoreFloat4(_pUp, XMLoadFloat4(new XMFLOAT4(0, 1, 0, 0)));
+	DirectX::XMStoreFloat4(_pForward, XMLoadFloat4(new XMFLOAT4(0, 0, 1, 0)));
+	DirectX::XMStoreFloat3(StaticObject::_pForward, XMLoadFloat3(new XMFLOAT3(0, 0, 1)));
 
 	LookAt();
 	

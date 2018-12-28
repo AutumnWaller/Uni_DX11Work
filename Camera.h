@@ -21,7 +21,7 @@ private:
 	XMFLOAT4 *_pForward;
 	Object *_pTarget;
 public:
-	Camera(XMVECTOR _Eye, XMVECTOR _At, XMVECTOR _Up, XMVECTOR _Forward, int windowWidth = 1280, int windowHeight = 720);
+	Camera(XMVECTOR _Eye, XMVECTOR _At, int windowWidth = 1280, int windowHeight = 720);
 	~Camera();
 	void LookTo();
 	void LookAt();
