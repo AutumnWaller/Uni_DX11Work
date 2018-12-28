@@ -25,6 +25,7 @@
     <ClInclude Include="Car.h" />
     <ClInclude Include="MathsFunctions.h" />
     <ClInclude Include="AppTime.h" />
+    <ClInclude Include="Dome.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
@@ -41,6 +42,7 @@
     <ClCompile Include="Car.cpp" />
     <ClCompile Include="MathsFunctions.cpp" />
     <ClCompile Include="AppTime.cpp" />
+    <ClCompile Include="Dome.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CLInclude Include="resource.h">

@@ -36,8 +36,7 @@ private:
 
 	ID3D11DepthStencilView* _pDepthStencilView;
 	ID3D11Texture2D* _pDepthStencilBuffer;
-	ID3D11RasterizerState* _pWireframe;
-	ID3D11RasterizerState* _pSolid;
+
 	ID3D11BlendState* _pTransparency;
 
 	PBYTE kbState;

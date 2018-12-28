@@ -5,6 +5,7 @@
 #include "Grid.h"
 #include "Cube.h"
 #include "Car.h"
+#include "Dome.h"
 
 using namespace DirectX;
 
@@ -36,6 +37,19 @@ private:
 	std::vector<Object*> gameObjects;
 	Camera *_pCameraThirdPerson, *_pCameraFront, *_pCameraTop;
 	Car *car;
+	ID3D11RasterizerState* _pWireframe;
+	ID3D11RasterizerState* _pSolid;
+	ID3D11RasterizerState* _pSolidFrontCull;
+	ID3D11RasterizerState* _pCurrRasteriserState;
+	ID3D11RasterizerState* _pPrevRasteriserState;
+	ID3D11BlendState *_pTransparency;
+
+	ID3D11DeviceContext *_pDContext;
+
+	StaticStructs::ConstantBuffer cb;
+
+
+	void LoadConstantBuffer();
 public:
 	Camera *_pCurrCamera;
 	GameManager();

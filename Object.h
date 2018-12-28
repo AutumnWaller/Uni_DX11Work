@@ -21,9 +21,11 @@ public:
 	int indexAmount;
 	
 	Object();
-	Object(char *modelPath, const wchar_t *texturePath);
+	Object(char *modelPath, bool _InvertTexCoords, const wchar_t *texturePath);
 	Object(float xPos, float yPos, float zPos);
 	~Object();
+
+	StaticStructs::ObjectType GetObjectType() { return type; }
 
 	void SetTexture(const wchar_t *texturePath);
 	void LoadModel(char *filePath);
@@ -47,6 +49,8 @@ protected:
 	ID3D11Buffer* _pConstantBuffer;
 	ID3D11DeviceContext* _pDeviceContext;
 	ID3D11Device *_pDeviceRef;
-	
+	bool invertTexCoords = true;
+	StaticStructs::ObjectType type = StaticStructs::OBJECT;
+
 };
 

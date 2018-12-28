@@ -343,43 +343,6 @@ HRESULT Application::InitDevice()
 
 
 
-	
-	D3D11_RASTERIZER_DESC wfDesc;
-	ZeroMemory(&wfDesc, sizeof(D3D11_RASTERIZER_DESC));
-	wfDesc.FillMode = D3D11_FILL_WIREFRAME;
-	wfDesc.CullMode = D3D11_CULL_NONE;
-	hr = _pd3dDevice->CreateRasterizerState(&wfDesc, &_pWireframe);
-
-	D3D11_RASTERIZER_DESC solidDesc;
-	ZeroMemory(&solidDesc, sizeof(D3D11_RASTERIZER_DESC));
-	solidDesc.FillMode = D3D11_FILL_SOLID;
-	solidDesc.CullMode = D3D11_CULL_BACK;
-	hr = _pd3dDevice->CreateRasterizerState(&solidDesc, &_pSolid);
-
-	
-
-
-
-	D3D11_BLEND_DESC blendDesc;
-	ZeroMemory(&blendDesc, sizeof(blendDesc));
-
-	D3D11_RENDER_TARGET_BLEND_DESC rtbd;
-	ZeroMemory(&rtbd, sizeof(rtbd));
-
-	rtbd.BlendEnable = true;
-	rtbd.SrcBlend = D3D11_BLEND_SRC_COLOR;
-	rtbd.DestBlend = D3D11_BLEND_BLEND_FACTOR;
-	rtbd.BlendOp = D3D11_BLEND_OP_ADD;
-	rtbd.SrcBlendAlpha = D3D11_BLEND_ONE;
-	rtbd.DestBlendAlpha = D3D11_BLEND_ZERO;
-	rtbd.BlendOpAlpha = D3D11_BLEND_OP_ADD;
-	rtbd.RenderTargetWriteMask = D3D10_COLOR_WRITE_ENABLE_ALL;
-
-	blendDesc.AlphaToCoverageEnable = false;
-	blendDesc.RenderTarget[0] = rtbd;
-
-	_pd3dDevice->CreateBlendState(&blendDesc, &_pTransparency);
-
 
     if (FAILED(hr))
         return hr;
@@ -399,10 +362,8 @@ void Application::Cleanup()
     if (_pSwapChain) _pSwapChain->Release();
     if (_pImmediateContext) _pImmediateContext->Release();
     if (_pd3dDevice) _pd3dDevice->Release();
-	if (_pWireframe) _pWireframe->Release();
 	if(_pDepthStencilView) _pDepthStencilView->Release();
 	if(_pDepthStencilBuffer) _pDepthStencilBuffer->Release();
-	if(_pSolid) _pSolid->Release();
 	if(_pTransparency) _pTransparency->Release();
 	if (_pSamplerLinear) _pSamplerLinear->Release();
 	if (_pGameManager) delete _pGameManager;
@@ -414,10 +375,7 @@ void Application::Update()
 
 	gTime = deltaTime;
 
-	if (GetAsyncKeyState(VK_SPACE))
-		_pImmediateContext->RSSetState(_pWireframe);
-	if (GetAsyncKeyState(VK_RETURN))
-		_pImmediateContext->RSSetState(_pSolid);
+
 
 	_pGameManager->Update(deltaTime);
 
@@ -445,17 +403,13 @@ void Application::Draw()
 
 
 	// "fine-tune" the blending equation
-	float blendFactor[] = { 0.75f, 0.75f, 0.75f, 1.0f };
 
 	// Set the default blend state (no blending) for opaque objects
-	_pImmediateContext->OMSetBlendState(0, 0, 0xffffffff);
 
 	_pGameManager->Draw();
 
 	// Set the blend state for transparent objects
-	_pImmediateContext->OMSetBlendState(_pTransparency, blendFactor, 0xffffffff);
 
-	
 	
 	//
 	// Present our back buffer to our front buffer

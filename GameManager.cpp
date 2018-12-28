@@ -3,6 +3,21 @@
 
 
 
+
+void GameManager::LoadConstantBuffer()
+{
+	cb.gTime = time;
+	cb.LightVecW = lightDirection;
+	cb.DiffuseLight = diffuseLight;
+	cb.DiffuseMtrl = diffuseMaterial;
+	cb.AmbientLight = ambientLight;
+	cb.AmbientMtrl = ambientMaterial;
+	cb.cameraEye = *_pCurrCamera->GetEye();
+	cb.specularPower = 10.0f;
+	cb.specularLight = specularLight;
+	cb.specularMtrl = specularMaterial;
+}
+
 GameManager::GameManager()
 {
 }
@@ -17,6 +32,48 @@ GameManager::~GameManager()
 
 void GameManager::Initialise(ID3D11Device *deviceRef, ID3D11DeviceContext *context, ID3D11Buffer *cb)
 {
+	_pDContext = context;
+
+	D3D11_RASTERIZER_DESC wfDesc;
+	ZeroMemory(&wfDesc, sizeof(D3D11_RASTERIZER_DESC));
+	wfDesc.FillMode = D3D11_FILL_WIREFRAME;
+	wfDesc.CullMode = D3D11_CULL_NONE;
+	deviceRef->CreateRasterizerState(&wfDesc, &_pWireframe);
+
+	D3D11_RASTERIZER_DESC solidDesc;
+	ZeroMemory(&solidDesc, sizeof(D3D11_RASTERIZER_DESC));
+	solidDesc.FillMode = D3D11_FILL_SOLID;
+	solidDesc.CullMode = D3D11_CULL_BACK;
+	deviceRef->CreateRasterizerState(&solidDesc, &_pSolid);
+
+	_pCurrRasteriserState = _pSolid;
+
+
+	D3D11_RASTERIZER_DESC solidFrontCullDesc;
+	ZeroMemory(&solidFrontCullDesc, sizeof(D3D11_RASTERIZER_DESC));
+	solidFrontCullDesc.FillMode = D3D11_FILL_SOLID;
+	solidFrontCullDesc.CullMode = D3D11_CULL_FRONT;
+	deviceRef->CreateRasterizerState(&solidFrontCullDesc, &_pSolidFrontCull);
+
+	D3D11_BLEND_DESC blendDesc;
+	ZeroMemory(&blendDesc, sizeof(blendDesc));
+
+	D3D11_RENDER_TARGET_BLEND_DESC rtbd;
+	ZeroMemory(&rtbd, sizeof(rtbd));
+
+	rtbd.BlendEnable = true;
+	rtbd.SrcBlend = D3D11_BLEND_SRC_COLOR;
+	rtbd.DestBlend = D3D11_BLEND_BLEND_FACTOR;
+	rtbd.BlendOp = D3D11_BLEND_OP_ADD;
+	rtbd.SrcBlendAlpha = D3D11_BLEND_ONE;
+	rtbd.DestBlendAlpha = D3D11_BLEND_ZERO;
+	rtbd.BlendOpAlpha = D3D11_BLEND_OP_ADD;
+	rtbd.RenderTargetWriteMask = D3D10_COLOR_WRITE_ENABLE_ALL;
+
+	blendDesc.AlphaToCoverageEnable = false;
+	blendDesc.RenderTarget[0] = rtbd;
+
+	deviceRef->CreateBlendState(&blendDesc, &_pTransparency);
 
 	XMStoreFloat4x4(&_World, XMMatrixIdentity());
 
@@ -37,12 +94,17 @@ void GameManager::Initialise(ID3D11Device *deviceRef, ID3D11DeviceContext *conte
 	//cube->SetScale(10, 10, 10);
 	//gameObjects.emplace_back(cube);
 
-	Object *object = new Object("Models/Hercules.obj", L"Textures/Hercules_COLOR.dds");
+	Object *object = new Object("Models/Hercules.obj", true, L"Textures/Hercules_COLOR.dds");
 	object->SetPosition(5, 0, 0);
 	gameObjects.emplace_back(object);
 
+	Dome *dome = new Dome();
+	dome->SetPosition(52, 50, 52);
+	dome->SetScale(50, 50, 50);
+	gameObjects.emplace_back(dome);
+
 	Grid *grid = new Grid(100, 100);
-	grid->SetPosition(0, 0, 0);
+	grid->SetPosition(0, 1, 0);
 	grid->SetTexture(L"Textures/asphalt.dds");
 	//grid->SetSize(5, 5);
 	gameObjects.emplace_back(grid);
@@ -55,37 +117,37 @@ void GameManager::Initialise(ID3D11Device *deviceRef, ID3D11DeviceContext *conte
 	gameObjects.emplace_back(car);
 
 	for (int i = 0; i < gameObjects.size(); i++) {
-		gameObjects[i]->Initialise(deviceRef, context, cb);
+		gameObjects[i]->Initialise(deviceRef, _pDContext, cb);
 	}
 }
 
 void GameManager::Draw()
 {
+	LoadConstantBuffer();
 	XMMATRIX world = XMLoadFloat4x4(&_World);
 	XMMATRIX view = XMLoadFloat4x4(&_pCurrCamera->GetViewMatrix());
 	XMMATRIX projection = XMLoadFloat4x4(&_pCurrCamera->GetProjectionMatrix());
-
-	
-	StaticStructs::ConstantBuffer cb;
 	cb.mWorld = XMMatrixTranspose(world);
 	cb.mView = XMMatrixTranspose(view);
 	cb.mProjection = XMMatrixTranspose(projection);
-	cb.gTime = time;
-	cb.LightVecW = lightDirection;
-	cb.DiffuseLight = diffuseLight;
-	cb.DiffuseMtrl = diffuseMaterial;
-	cb.AmbientLight = ambientLight;
-	cb.AmbientMtrl = ambientMaterial;
-	cb.cameraEye = *_pCurrCamera->GetEye();
-	cb.specularPower = 10.0f;
-	cb.specularLight = specularLight;
-	cb.specularMtrl = specularMaterial;
-	for (int i = 0; i < gameObjects.size(); i++)
+
+	float blendFactor[] = { 0.75f, 0.75f, 0.75f, 1.0f };
+
+	for (int i = 0; i < gameObjects.size(); i++) {
+		_pPrevRasteriserState = _pCurrRasteriserState;
+		if (gameObjects[i]->GetObjectType() == StaticStructs::DOME) {
+			_pCurrRasteriserState = _pSolidFrontCull;
+			_pDContext->OMSetBlendState(_pTransparency, blendFactor, 0xffffffff);
+		}else
+			_pDContext->OMSetBlendState(0, 0, 0xffffffff);
+		_pDContext->RSSetState(_pCurrRasteriserState);
 		gameObjects[i]->Draw(world, cb);
+		if (_pCurrRasteriserState == _pSolidFrontCull)
+			_pCurrRasteriserState = _pPrevRasteriserState;
+	}
 
 	
 }
-
 
 void GameManager::Update(float _Time)
 {
@@ -101,11 +163,18 @@ void GameManager::Update(float _Time)
 	//objects[5]->ChangeWorld(XMMatrixScaling(0.25f, 0.25f, 0.25f)  * XMMatrixTranslation(3.0f, 0, 0) * XMMatrixRotationZ(t));
 	for (int i = 0; i < gameObjects.size(); i++)
 		gameObjects[i]->Update(_Time);
+	_pDContext->RSSetState(_pCurrRasteriserState);
 	_pCurrCamera->Update(_Time);
 }
 
 void GameManager::Input(float deltaTime)
 {
+
+	if (GetAsyncKeyState(VK_SPACE))
+		_pCurrRasteriserState = _pWireframe;
+	if (GetAsyncKeyState(VK_RETURN))
+		_pCurrRasteriserState = _pSolid;
+
 	if (GetAsyncKeyState(VK_NUMPAD1))
 		_pCurrCamera = _pCameraThirdPerson;
 	else if (GetAsyncKeyState(VK_NUMPAD2))

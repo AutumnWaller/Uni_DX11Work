@@ -44,4 +44,12 @@ public:
 		float z;
 	};
 
+	static enum ObjectType {
+		OBJECT,
+		GRID,
+		DOME,
+		CUBE,
+		PYRAMID
+	};
+
 };

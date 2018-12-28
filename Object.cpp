@@ -50,10 +50,11 @@ Object::Object()
 	StaticObject();
 }
 
-Object::Object(char *modelPath, const wchar_t *texturePath = nullptr)
+Object::Object(char *modelPath, bool _InvertTexCoords = true, const wchar_t *texturePath = nullptr)
 {
 	Nullify();
 	_pTexturePath = texturePath;
+	invertTexCoords = _InvertTexCoords;
 	_pModelPath = modelPath;
 	StaticObject();
 
@@ -89,11 +90,10 @@ void Object::SetTexture(const wchar_t *texturePath)
 void Object::LoadModel(char *filePath)
 {
 	if (_pDeviceRef) {
-		meshData = OBJLoader::Load(filePath, _pDeviceRef);
+		meshData = OBJLoader::Load(filePath, _pDeviceRef, invertTexCoords);
 		_pVertexBuffer = meshData.VertexBuffer;
 		_pIndexBuffer = meshData.IndexBuffer;
 		indexAmount = meshData.IndexCount;
-		
 	}
 }
 
