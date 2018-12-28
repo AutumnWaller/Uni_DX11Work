@@ -125,7 +125,7 @@ HRESULT Application::InitShadersAndInputLayout()
                                         pVSBlob->GetBufferSize(), &_pVertexLayout);
 	pVSBlob->Release();
 	
-	pVSBlob->Release();
+	pPSBlob->Release();
 
 	if (FAILED(hr))
         return hr;
@@ -185,7 +185,7 @@ HRESULT Application::InitWindow(HINSTANCE hInstance, int nCmdShow)
     _hInst = hInstance;
     RECT rc = {0, 0, 1280, 720};
     AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, FALSE);
-    _hWnd = CreateWindow(L"TutorialWindowClass", L"DX11 Framework", WS_OVERLAPPEDWINDOW,
+    _hWnd = CreateWindow(L"TutorialWindowClass", L"Rocket Ball", WS_OVERLAPPEDWINDOW,
                          CW_USEDEFAULT, CW_USEDEFAULT, rc.right - rc.left, rc.bottom - rc.top, nullptr, nullptr, hInstance,
                          nullptr);
     if (!_hWnd)
