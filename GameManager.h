@@ -20,7 +20,7 @@ private:
 	XMFLOAT3 lightDirection = XMFLOAT3(0.25f, 0.5f, -1.0f);
 
 	// Diffuse material properties (RGBA)
-	XMFLOAT4 diffuseMaterial = XMFLOAT4(0.8f, 0.5f, 0.5f, 1.0f);
+	XMFLOAT4 diffuseMaterial = XMFLOAT4(1.0f, 1.0f, 1.0f, 0.1f);
 	// Diffuse light colour (RGBA)
 
 	XMFLOAT4 diffuseLight = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);

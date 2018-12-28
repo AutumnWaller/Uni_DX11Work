@@ -124,8 +124,6 @@ HRESULT Application::InitShadersAndInputLayout()
 	hr = _pd3dDevice->CreateInputLayout(layout, numElements, pVSBlob->GetBufferPointer(),
                                         pVSBlob->GetBufferSize(), &_pVertexLayout);
 	pVSBlob->Release();
-	
-	pPSBlob->Release();
 
 	if (FAILED(hr))
         return hr;

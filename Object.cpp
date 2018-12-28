@@ -67,12 +67,11 @@ Object::Object(float xPos, float yPos, float zPos)
 
 void Object::CalculateNormals()
 {
-	for (int i = 0; i < vertexAmount; i+=3) {
+	for (int i = 0; i < vertexAmount; i++) {
 
-		XMVECTOR v1 = XMLoadFloat3(&XMFLOAT3((float)_pIndices[i], (float)_pIndices[i + 1], (float)_pIndices[i + 2]));
-		XMVECTOR v2 = XMLoadFloat3(&XMFLOAT3((float)_pIndices[i + 3], (float)_pIndices[i + 4], (float)_pIndices[i + 5]));
-		XMVECTOR v3 = XMLoadFloat3(&XMFLOAT3((float)_pIndices[i + 6], (float)_pIndices[i + 7], (float)_pIndices[i + 8]));
-		XMStoreFloat3(&_pVertices[i].Normal, XMVector3Normalize(XMVector3Cross(XMVectorSubtract(v1, v2), XMVectorSubtract(v3, v1))));
+		XMVECTOR v1 = XMVectorSubtract(XMLoadFloat3(&_pVertices[i + 1].Pos), XMLoadFloat3(&_pVertices[i].Pos));
+		XMVECTOR v2 = XMVectorSubtract(XMLoadFloat3(&_pVertices[i + 2].Pos), XMLoadFloat3(&_pVertices[i].Pos));
+		XMStoreFloat3(&_pVertices[i].Normal, XMVector3Normalize(XMVector3Cross(v1, v2)));
 	}
 }
 
@@ -94,6 +93,7 @@ void Object::LoadModel(char *filePath)
 		_pVertexBuffer = meshData.VertexBuffer;
 		_pIndexBuffer = meshData.IndexBuffer;
 		indexAmount = meshData.IndexCount;
+		
 	}
 }
 
@@ -110,6 +110,7 @@ void Object::Initialise(ID3D11Device *deviceRef, ID3D11DeviceContext *context, I
 		CreateBuffers(deviceRef);
 	}
 	CreateDDSTextureFromFile(_pDeviceRef, _pTexturePath, nullptr, &_pTextureRV);
+
 }
 
 void Object::Draw(DirectX::XMMATRIX appWorld, StaticStructs::ConstantBuffer cb)

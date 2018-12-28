@@ -32,6 +32,11 @@ void GameManager::Initialise(ID3D11Device *deviceRef, ID3D11DeviceContext *conte
 	//Object *car2 = new Object("Models/sphere.obj", nullptr);
 	//gameObjects.emplace_back(car2);
 
+	//Object *cube = new Cube(L"Textures/black.dds");
+	//cube->SetPosition(5, 0, 5);
+	//cube->SetScale(10, 10, 10);
+	//gameObjects.emplace_back(cube);
+
 	Object *object = new Object("Models/Hercules.obj", L"Textures/Hercules_COLOR.dds");
 	object->SetPosition(5, 0, 0);
 	gameObjects.emplace_back(object);
