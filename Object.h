@@ -50,7 +50,7 @@ protected:
 	ID3D11DeviceContext* _pDeviceContext;
 	ID3D11Device *_pDeviceRef;
 	bool invertTexCoords = true;
-	StaticStructs::ObjectType type = StaticStructs::OBJECT;
+	StaticStructs::ObjectType type;
 
 };
 

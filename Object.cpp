@@ -41,6 +41,7 @@ void Object::Nullify() {
 	_pDeviceContext = nullptr;
 	_pDeviceRef = nullptr;
 	_pModelPath = nullptr;
+
 }
 
 

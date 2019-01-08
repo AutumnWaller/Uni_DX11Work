@@ -7,6 +7,7 @@ protected:
 public:
 	void SetSize(int _Width, int _Length);
 
+	Grid();
 	Grid(int width, int length);
 	Grid(int width, int length, char *heightmapFileName);
 	~Grid();

@@ -77,6 +77,11 @@ void GameManager::Initialise(ID3D11Device *deviceRef, ID3D11DeviceContext *conte
 
 	XMStoreFloat4x4(&_World, XMMatrixIdentity());
 
+	FileManager* fm = new FileManager();
+	fm->ConvertToData("Data/StartingPositions.rbd", &gameObjects);
+	delete fm;
+	fm = nullptr;
+
 	_pCameraThirdPerson = new Camera(XMVECTOR(XMVectorSet(0.0f, 0.0f, -3.0f, 0.0f)), XMVECTOR(XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f)));
 	_pCameraFront = new Camera(XMVECTOR(XMVectorSet(0.0f, 10.0f, 3.0f, 0.0f)), XMVECTOR(XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f)));
 	//_pCameraTop = new Camera(XMVECTOR(XMVectorSet(0.0f, 10.0f, 3.0f, 0.0f)), XMVECTOR(XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f)));
@@ -84,41 +89,25 @@ void GameManager::Initialise(ID3D11Device *deviceRef, ID3D11DeviceContext *conte
 	_pCurrCamera = _pCameraFront;
 
 
-	//Object *car = new Object("Models/car.obj", L"Textures/black.dds");
-	//gameObjects.emplace_back(car);
-	//Object *car2 = new Object("Models/sphere.obj", nullptr);
-	//gameObjects.emplace_back(car2);
-
-	//Object *cube = new Cube(L"Textures/black.dds");
-	//cube->SetPosition(5, 0, 5);
-	//cube->SetScale(10, 10, 10);
-	//gameObjects.emplace_back(cube);
-
 	Object *object = new Object("Models/Hercules.obj", true, L"Textures/Hercules_COLOR.dds");
 	object->SetPosition(5, 0, 0);
 	gameObjects.emplace_back(object);
 
-	Dome *dome = new Dome();
-	dome->SetPosition(52, 50, 52);
-	dome->SetScale(50, 50, 50);
-	gameObjects.emplace_back(dome);
-
 	Grid *grid = new Grid(100, 100);
 	grid->SetPosition(0, 1, 0);
 	grid->SetTexture(L"Textures/asphalt.dds");
-	//grid->SetSize(5, 5);
 	gameObjects.emplace_back(grid);
 
-	car = new Car();
-	car->SetScale(0.01f, 0.01f, 0.01f);
-	car->SetPosition(20, 1, 20);
-	_pCameraFront->FollowObject(car);
-	//_pCurrCamera->FollowObject(car);
-	gameObjects.emplace_back(car);
 
 	for (int i = 0; i < gameObjects.size(); i++) {
+		if (gameObjects[i]->GetObjectType() == StaticStructs::CAR)
+			car = (Car*)gameObjects[i];
 		gameObjects[i]->Initialise(deviceRef, _pDContext, cb);
 	}
+
+	_pCurrCamera->FollowObject(car);
+
+
 }
 
 void GameManager::Draw()
@@ -152,7 +141,6 @@ void GameManager::Draw()
 void GameManager::Update(float _Time)
 {
 	Input(_Time);
-	car->Drive(_Time);
 
 	//gameObjects[0]->SetRotation(-1 * time, 1, -1);
 	//gameObjects[0]->ChangeWorld(XMMatrixScaling(0.5f, 0.5f, 0.5f)  * XMMatrixRotationZ(time * 0.25f));

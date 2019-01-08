@@ -49,7 +49,9 @@ public:
 		GRID,
 		DOME,
 		CUBE,
-		PYRAMID
+		PYRAMID,
+		BALL,
+		CAR
 	};
 
 };

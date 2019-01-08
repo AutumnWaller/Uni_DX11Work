@@ -1,6 +1,13 @@
 #include "Grid.h"
 
 
+Grid::Grid()
+{
+	Object();
+	if (!_pTexturePath)
+		_pTexturePath = L"Textures/asphalt.dds";
+}
+
 Grid::Grid(int width, int length)
 {
 	Object();

@@ -69,6 +69,8 @@ void Car::Update(float deltaTime)
 	{
 		turnSpeed = 2;
 	}
+	Drive(deltaTime);
+
 	Object::Update(deltaTime);
 }
 
@@ -76,6 +78,7 @@ Car::Car()
 {
 	_pModelPath = "Models/Car.obj";
 	_pTexturePath = L"Textures/black.dds";
+	type = StaticStructs::CAR;
 	Object();
 }
 

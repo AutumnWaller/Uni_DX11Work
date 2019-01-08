@@ -26,6 +26,8 @@
     <ClInclude Include="MathsFunctions.h" />
     <ClInclude Include="AppTime.h" />
     <ClInclude Include="Dome.h" />
+    <ClInclude Include="Ball.h" />
+    <ClInclude Include="FileManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
@@ -43,6 +45,8 @@
     <ClCompile Include="MathsFunctions.cpp" />
     <ClCompile Include="AppTime.cpp" />
     <ClCompile Include="Dome.cpp" />
+    <ClCompile Include="Ball.cpp" />
+    <ClCompile Include="FileManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CLInclude Include="resource.h">

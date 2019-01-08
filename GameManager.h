@@ -4,8 +4,10 @@
 #include "Camera.h"
 #include "Grid.h"
 #include "Cube.h"
+#include "Ball.h"
 #include "Car.h"
 #include "Dome.h"
+#include "FileManager.h"
 
 using namespace DirectX;
 
@@ -21,15 +23,15 @@ private:
 	XMFLOAT3 lightDirection = XMFLOAT3(0.25f, 0.5f, -1.0f);
 
 	// Diffuse material properties (RGBA)
-	XMFLOAT4 diffuseMaterial = XMFLOAT4(1.0f, 1.0f, 1.0f, 0.1f);
+	XMFLOAT4 diffuseMaterial = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
 	// Diffuse light colour (RGBA)
 
 	XMFLOAT4 diffuseLight = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	XMFLOAT3 ambientLight = XMFLOAT3(0.2f, 0.2f, 0.2f);
-	XMFLOAT3 ambientMaterial = XMFLOAT3(0.2f, 0.2f, 0.2f);
+	XMFLOAT3 ambientLight = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	XMFLOAT3 ambientMaterial = XMFLOAT3(0.0f, 0.0f, 0.0f);
 
-	XMFLOAT4 specularLight = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
-	XMFLOAT4 specularMaterial = XMFLOAT4(0.8f, 0.8f, 0.8f, 1.0f);
+	XMFLOAT4 specularLight = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	XMFLOAT4 specularMaterial = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 
 	D3D11_SUBRESOURCE_DATA data;
 
