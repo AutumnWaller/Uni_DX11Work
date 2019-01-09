@@ -15,97 +15,165 @@
     <Filter Include="Utility">
       <UniqueIdentifier>{45879f30-29ef-4498-9b19-64d480d2734a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Base Classes">
+      <UniqueIdentifier>{d417ada7-0341-4620-b36a-14688baa28d0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Cameras">
+      <UniqueIdentifier>{bf490ba1-27df-46a2-b57e-60e31b4627b3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Base Classes\Headers">
+      <UniqueIdentifier>{7367fd30-1f94-4b50-8360-de06088cadf8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Base Classes\Source">
+      <UniqueIdentifier>{b4182d0d-71db-48d3-8859-e36d27d1ef97}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Cameras\Headers">
+      <UniqueIdentifier>{cbdf9eda-f019-4f18-9d38-731aef1c1818}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Cameras\Source">
+      <UniqueIdentifier>{e25b6619-3f81-47ca-b774-86a245982294}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Objects\Headers">
+      <UniqueIdentifier>{9ffc0f3d-96e9-4a99-9587-05b88cd3b9e9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Objects\Source">
+      <UniqueIdentifier>{c54808ee-96de-4252-a057-23a788a88dd4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utility\Headers">
+      <UniqueIdentifier>{9ffa4674-a38a-4f08-b0aa-d18c86d0566a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utility\Source">
+      <UniqueIdentifier>{706e4a4b-e206-480d-b56d-92d77c861349}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Application.h" />
-    <ClInclude Include="StaticStructs.h" />
-    <ClInclude Include="Camera.h" />
-    <ClInclude Include="GameManager.h" />
-    <ClInclude Include="StaticObject.h" />
-    <ClInclude Include="MathsFunctions.h">
-      <Filter>Utility</Filter>
+    <ClInclude Include="Application.h">
+      <Filter>Base Classes\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="GameManager.h">
+      <Filter>Base Classes\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="StaticObject.h">
+      <Filter>Base Classes\Headers</Filter>
     </ClInclude>
     <ClInclude Include="AppTime.h">
-      <Filter>Utility</Filter>
-    </ClInclude>
-    <ClInclude Include="Ball.h">
-      <Filter>Objects</Filter>
-    </ClInclude>
-    <ClInclude Include="Car.h">
-      <Filter>Objects</Filter>
-    </ClInclude>
-    <ClInclude Include="Cube.h">
-      <Filter>Objects</Filter>
-    </ClInclude>
-    <ClInclude Include="Dome.h">
-      <Filter>Objects</Filter>
-    </ClInclude>
-    <ClInclude Include="Grid.h">
-      <Filter>Objects</Filter>
-    </ClInclude>
-    <ClInclude Include="Object.h">
-      <Filter>Objects</Filter>
-    </ClInclude>
-    <ClInclude Include="Pyramid.h">
-      <Filter>Objects</Filter>
-    </ClInclude>
-    <ClInclude Include="OBJLoader.h">
-      <Filter>Utility</Filter>
-    </ClInclude>
-    <ClInclude Include="Shader.h">
-      <Filter>Utility</Filter>
-    </ClInclude>
-    <ClInclude Include="FileManager.h">
-      <Filter>Utility</Filter>
+      <Filter>Utility\Headers</Filter>
     </ClInclude>
     <ClInclude Include="DDSTextureLoader.h">
-      <Filter>Utility</Filter>
+      <Filter>Utility\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="FileManager.h">
+      <Filter>Utility\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="MathsFunctions.h">
+      <Filter>Utility\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="OBJLoader.h">
+      <Filter>Utility\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Shader.h">
+      <Filter>Utility\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="StaticStructs.h">
+      <Filter>Utility\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Ball.h">
+      <Filter>Objects\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Car.h">
+      <Filter>Objects\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Cube.h">
+      <Filter>Objects\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Dome.h">
+      <Filter>Objects\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Grid.h">
+      <Filter>Objects\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Object.h">
+      <Filter>Objects\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Pyramid.h">
+      <Filter>Objects\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Skybox.h">
+      <Filter>Objects\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Cameras\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdPersonCamera.h">
+      <Filter>Cameras\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="BumperCamera.h">
+      <Filter>Cameras\Headers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Application.cpp" />
-    <ClCompile Include="DX11 Framework.cpp" />
-    <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="GameManager.cpp" />
-    <ClCompile Include="StaticObject.cpp" />
-    <ClCompile Include="MathsFunctions.cpp">
-      <Filter>Utility</Filter>
+    <ClCompile Include="Application.cpp">
+      <Filter>Base Classes\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="DX11 Framework.cpp">
+      <Filter>Base Classes\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="GameManager.cpp">
+      <Filter>Base Classes\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="StaticObject.cpp">
+      <Filter>Base Classes\Source</Filter>
     </ClCompile>
     <ClCompile Include="AppTime.cpp">
-      <Filter>Utility</Filter>
-    </ClCompile>
-    <ClCompile Include="Ball.cpp">
-      <Filter>Objects</Filter>
-    </ClCompile>
-    <ClCompile Include="Car.cpp">
-      <Filter>Objects</Filter>
-    </ClCompile>
-    <ClCompile Include="Cube.cpp">
-      <Filter>Objects</Filter>
-    </ClCompile>
-    <ClCompile Include="Dome.cpp">
-      <Filter>Objects</Filter>
-    </ClCompile>
-    <ClCompile Include="Grid.cpp">
-      <Filter>Objects</Filter>
-    </ClCompile>
-    <ClCompile Include="Object.cpp">
-      <Filter>Objects</Filter>
-    </ClCompile>
-    <ClCompile Include="Pyramid.cpp">
-      <Filter>Objects</Filter>
-    </ClCompile>
-    <ClCompile Include="OBJLoader.cpp">
-      <Filter>Utility</Filter>
-    </ClCompile>
-    <ClCompile Include="Shader.cpp">
-      <Filter>Utility</Filter>
-    </ClCompile>
-    <ClCompile Include="FileManager.cpp">
-      <Filter>Utility</Filter>
+      <Filter>Utility\Source</Filter>
     </ClCompile>
     <ClCompile Include="DDSTextureLoader.cpp">
-      <Filter>Utility</Filter>
+      <Filter>Utility\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="FileManager.cpp">
+      <Filter>Utility\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="MathsFunctions.cpp">
+      <Filter>Utility\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="OBJLoader.cpp">
+      <Filter>Utility\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Shader.cpp">
+      <Filter>Utility\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Ball.cpp">
+      <Filter>Objects\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Car.cpp">
+      <Filter>Objects\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Cube.cpp">
+      <Filter>Objects\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Dome.cpp">
+      <Filter>Objects\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Grid.cpp">
+      <Filter>Objects\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Object.cpp">
+      <Filter>Objects\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Pyramid.cpp">
+      <Filter>Objects\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Skybox.cpp">
+      <Filter>Objects\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Cameras\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdPersonCamera.cpp">
+      <Filter>Cameras\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="BumperCamera.cpp">
+      <Filter>Cameras\Source</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

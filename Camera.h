@@ -2,16 +2,13 @@
 #include "MathsFunctions.h"
 #include <windows.h>
 #include "Object.h"
-#include <d3d11_1.h>
 #include "StaticObject.h"
 #include <d3dcompiler.h>
-#include <directxmath.h>
 #include <directxcolors.h>
 
-using namespace DirectX;
 class Camera : public StaticObject
 {
-private:
+protected:
 	float movementSpeed = 100;
 	XMFLOAT4X4 view;
 	XMFLOAT4X4 projection;
@@ -21,7 +18,7 @@ private:
 	XMFLOAT4 *_pForward;
 	Object *_pTarget;
 public:
-	Camera(XMVECTOR _Eye, XMVECTOR _At, int windowWidth = 1280, int windowHeight = 720);
+	Camera(XMVECTOR _Eye = XMVECTOR{0, 0, 0}, XMVECTOR _At = XMVECTOR{ 1, 1, 1 }, int windowWidth = 1280, int windowHeight = 720);
 	~Camera();
 	void LookTo();
 	void LookAt();
@@ -35,7 +32,6 @@ public:
 	XMFLOAT4X4 GetProjectionMatrix() { return projection; }
 
 	void FollowObject(Object *object);
-	XMMATRIX Rotate();
 	virtual void SetPosition(float x, float y, float z) override;
 	virtual void MovePosition(float x, float y, float z) override;
 	virtual void SetRotation(float x, float y, float z) override;

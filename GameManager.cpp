@@ -29,7 +29,7 @@ GameManager::~GameManager()
 	gameObjects.~vector();
 
 	if (_pCameraThirdPerson)delete _pCameraThirdPerson;
-	if (_pCameraFront) delete _pCameraFront;
+	if (_pCameraBumper) delete _pCameraBumper;
 	if (car) delete car;
 	if (fm) delete fm;
 
@@ -68,13 +68,6 @@ void GameManager::Initialise(ID3D11Device *deviceRef, ID3D11DeviceContext *conte
 	fm->ConvertRBD("Data/StartingPositions.rbd", &gameObjects);
 	
 
-	_pCameraThirdPerson = new Camera(XMVECTOR(XMVectorSet(0.0f, 0.0f, -3.0f, 0.0f)), XMVECTOR(XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f)));
-	_pCameraFront = new Camera(XMVECTOR(XMVectorSet(0.0f, 10.0f, 3.0f, 0.0f)), XMVECTOR(XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f)));
-	_pCameraTop = new Camera(XMVECTOR(XMVectorSet(0.0f, 50.0f, 3.0f, 0.0f)), XMVECTOR(XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f)));
-	
-	_pCurrCamera = _pCameraThirdPerson;
-
-
 	Object *object = new Object("Models/Hercules.obj", true, L"Textures/Hercules_COLOR.dds");
 	object->SetPosition(5, 0, 0);
 	gameObjects.emplace_back(object);
@@ -84,9 +77,12 @@ void GameManager::Initialise(ID3D11Device *deviceRef, ID3D11DeviceContext *conte
 			car = (Car*)gameObjects[i];
 		gameObjects[i]->Initialise(_pDeviceRef, _pDContext, _pConstantBuffer);
 	}
-	if(_pCurrCamera == _pCameraThirdPerson)
-		_pCameraThirdPerson->FollowObject(car);
 
+	//Eye is position, at is the target
+	_pCameraThirdPerson = new ThirdPersonCamera(car);
+	_pCameraBumper = new BumperCamera(car);
+	_pCameraTop = new Camera(XMVECTOR(XMVectorSet(50.0f, 60.0f, 40.0f, 0.0f)), XMVECTOR(XMVectorSet(50.0f, 0.0f, 50.0f, 0.0f)));
+	_pCurrCamera = _pCameraTop;
 
 }
 
@@ -146,13 +142,14 @@ HRESULT GameManager::CreateRasterizers()
 	solidFrontCullDesc.CullMode = D3D11_CULL_FRONT;
 	hr = _pDeviceRef->CreateRasterizerState(&solidFrontCullDesc, &_pSolidFrontCull);
 	
+	if (hr == E_FAIL)
+		MessageBox(nullptr, L"Rasterizer failure", L"Error", MB_OK);
+
 	D3D11_RASTERIZER_DESC solidNoCullDesc;
 	ZeroMemory(&solidNoCullDesc, sizeof(D3D11_RASTERIZER_DESC));
 	solidNoCullDesc.FillMode = D3D11_FILL_SOLID;
 	solidNoCullDesc.CullMode = D3D11_CULL_NONE;
 	hr = _pDeviceRef->CreateRasterizerState(&solidNoCullDesc, &_pSolidNoCull);
-
-
 
 	if (hr == E_FAIL)
 		MessageBox(nullptr, L"Rasterizer failure", L"Error", MB_OK);
@@ -256,18 +253,21 @@ void GameManager::Update(float _Time)
 void GameManager::Input(float deltaTime)
 {
 
-	if (GetAsyncKeyState(VK_SPACE))
+	if (GetAsyncKeyState(0x31)) //1
 		_pCurrRasteriserState = _pWireframe;
-	if (GetAsyncKeyState(VK_RETURN))
+	if (GetAsyncKeyState(0x32)) //2
 		_pCurrRasteriserState = _pSolid;
 
-	if (GetAsyncKeyState(VK_NUMPAD1))
+	if (GetAsyncKeyState(VK_NUMPAD2))
 		_pCurrCamera = _pCameraThirdPerson;
-	else if (GetAsyncKeyState(VK_NUMPAD2))
-		_pCurrCamera = _pCameraFront;
+	else if (GetAsyncKeyState(VK_NUMPAD8))
+		_pCurrCamera = _pCameraBumper;
+	else if(GetAsyncKeyState(VK_NUMPAD5))
+		_pCurrCamera = _pCameraTop;
 
 
-	if (GetAsyncKeyState('D'))
+
+	if (GetAsyncKeyState('D')) 
 		car->Turn(deltaTime);
 	else if (GetAsyncKeyState('A'))
 		car->Turn(-deltaTime);

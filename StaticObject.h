@@ -37,7 +37,7 @@ public:
 
 	virtual void Turn(float amount);
 
-	void Initialise();
+	virtual void Initialise();
 protected:
 
 	virtual void Cleanup();

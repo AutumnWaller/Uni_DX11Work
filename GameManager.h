@@ -2,6 +2,8 @@
 
 #include "Object.h"
 #include "Camera.h"
+#include "ThirdPersonCamera.h"
+#include "BumperCamera.h"
 #include "Grid.h"
 #include "Cube.h"
 #include "Ball.h"
@@ -9,6 +11,7 @@
 #include "Dome.h"
 #include "FileManager.h"
 #include "Shader.h"
+
 
 using namespace DirectX;
 
@@ -38,7 +41,9 @@ private:
 
 
 	std::vector<Object*> gameObjects;
-	Camera *_pCameraThirdPerson, *_pCameraFront, *_pCameraTop;
+	Camera *_pCameraTop;
+	BumperCamera *_pCameraBumper;
+	ThirdPersonCamera *_pCameraThirdPerson;
 	Car *car;
 	ID3D11RasterizerState* _pWireframe;
 	ID3D11RasterizerState* _pSolid;
