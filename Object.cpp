@@ -92,6 +92,7 @@ void Object::LoadModel(char *filePath)
 {
 	if (_pDeviceRef) {
 		meshData = OBJLoader::Load(filePath, _pDeviceRef, invertTexCoords);
+		vertexAmount = meshData.VertexCount;
 		_pVertexBuffer = meshData.VertexBuffer;
 		_pIndexBuffer = meshData.IndexBuffer;
 		indexAmount = meshData.IndexCount;

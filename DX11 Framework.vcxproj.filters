@@ -9,44 +9,104 @@
       <UniqueIdentifier>{2c3d4c8c-5d1a-459a-a05a-a4e4b608a44e}</UniqueIdentifier>
       <Extensions>fx;fxh;hlsl</Extensions>
     </Filter>
+    <Filter Include="Objects">
+      <UniqueIdentifier>{462523f4-7943-424e-aafe-e151f33e14fb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utility">
+      <UniqueIdentifier>{45879f30-29ef-4498-9b19-64d480d2734a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
-    <ClInclude Include="Object.h" />
-    <ClInclude Include="Cube.h" />
-    <ClInclude Include="Pyramid.h" />
     <ClInclude Include="StaticStructs.h" />
-    <ClInclude Include="DDSTextureLoader.h" />
     <ClInclude Include="Camera.h" />
-    <ClInclude Include="OBJLoader.h" />
-    <ClInclude Include="Grid.h" />
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="StaticObject.h" />
-    <ClInclude Include="Car.h" />
-    <ClInclude Include="MathsFunctions.h" />
-    <ClInclude Include="AppTime.h" />
-    <ClInclude Include="Dome.h" />
-    <ClInclude Include="Ball.h" />
-    <ClInclude Include="FileManager.h" />
+    <ClInclude Include="MathsFunctions.h">
+      <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="AppTime.h">
+      <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Ball.h">
+      <Filter>Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Car.h">
+      <Filter>Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Cube.h">
+      <Filter>Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Dome.h">
+      <Filter>Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Grid.h">
+      <Filter>Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Object.h">
+      <Filter>Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Pyramid.h">
+      <Filter>Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="OBJLoader.h">
+      <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Shader.h">
+      <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="FileManager.h">
+      <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="DDSTextureLoader.h">
+      <Filter>Utility</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="DX11 Framework.cpp" />
-    <ClCompile Include="Object.cpp" />
-    <ClCompile Include="Cube.cpp" />
-    <ClCompile Include="Pyramid.cpp" />
-    <ClCompile Include="DDSTextureLoader.cpp" />
     <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="OBJLoader.cpp" />
-    <ClCompile Include="Grid.cpp" />
     <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="StaticObject.cpp" />
-    <ClCompile Include="Car.cpp" />
-    <ClCompile Include="MathsFunctions.cpp" />
-    <ClCompile Include="AppTime.cpp" />
-    <ClCompile Include="Dome.cpp" />
-    <ClCompile Include="Ball.cpp" />
-    <ClCompile Include="FileManager.cpp" />
+    <ClCompile Include="MathsFunctions.cpp">
+      <Filter>Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="AppTime.cpp">
+      <Filter>Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="Ball.cpp">
+      <Filter>Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Car.cpp">
+      <Filter>Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Cube.cpp">
+      <Filter>Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Dome.cpp">
+      <Filter>Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Grid.cpp">
+      <Filter>Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Object.cpp">
+      <Filter>Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Pyramid.cpp">
+      <Filter>Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="OBJLoader.cpp">
+      <Filter>Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="Shader.cpp">
+      <Filter>Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="FileManager.cpp">
+      <Filter>Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="DDSTextureLoader.cpp">
+      <Filter>Utility</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CLInclude Include="resource.h">
@@ -62,5 +122,10 @@
     <ResourceCompile Include="DX11 Framework.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Shaders\TextureTiling.fx">
+      <Filter>Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

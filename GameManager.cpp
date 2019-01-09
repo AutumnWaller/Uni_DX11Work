@@ -6,16 +6,16 @@
 
 void GameManager::LoadConstantBuffer()
 {
-	cb.gTime = time;
-	cb.LightVecW = lightDirection;
-	cb.DiffuseLight = diffuseLight;
-	cb.DiffuseMtrl = diffuseMaterial;
-	cb.AmbientLight = ambientLight;
-	cb.AmbientMtrl = ambientMaterial;
-	cb.cameraEye = *_pCurrCamera->GetEye();
-	cb.specularPower = 10.0f;
-	cb.specularLight = specularLight;
-	cb.specularMtrl = specularMaterial;
+	cbData.gTime = time;
+	cbData.LightVecW = lightDirection;
+	cbData.DiffuseLight = diffuseLight;
+	cbData.DiffuseMtrl = diffuseMaterial;
+	cbData.AmbientLight = ambientLight;
+	cbData.AmbientMtrl = ambientMaterial;
+	cbData.cameraEye = *_pCurrCamera->GetEye();
+	cbData.specularPower = 10.0f;
+	cbData.specularLight = specularLight;
+	cbData.specularMtrl = specularMaterial;
 }
 
 GameManager::GameManager()
@@ -26,25 +26,32 @@ GameManager::GameManager()
 GameManager::~GameManager()
 {
 	gameObjects.~vector();
-	delete _pCameraThirdPerson, _pCameraFront;
-	delete car;
+	if (_pCameraThirdPerson)delete _pCameraThirdPerson;
+	if(_pCameraFront) delete _pCameraFront;
+	if(car) delete car;
+	if (_pVertexShader)_pVertexShader->Release();
+	if (_pVertexLayout) _pVertexLayout->Release();
+	if (_pPixelShader) _pPixelShader->Release();
 }
 
-void GameManager::Initialise(ID3D11Device *deviceRef, ID3D11DeviceContext *context, ID3D11Buffer *cb)
+void GameManager::Initialise(ID3D11Device *deviceRef, ID3D11DeviceContext *context, ID3D11Buffer *constantBuffer)
 {
 	_pDContext = context;
+	_pDeviceRef = deviceRef;
+	_pConstantBuffer = constantBuffer;
+	CompileShaders();
 
 	D3D11_RASTERIZER_DESC wfDesc;
 	ZeroMemory(&wfDesc, sizeof(D3D11_RASTERIZER_DESC));
 	wfDesc.FillMode = D3D11_FILL_WIREFRAME;
 	wfDesc.CullMode = D3D11_CULL_NONE;
-	deviceRef->CreateRasterizerState(&wfDesc, &_pWireframe);
+	_pDeviceRef->CreateRasterizerState(&wfDesc, &_pWireframe);
 
 	D3D11_RASTERIZER_DESC solidDesc;
 	ZeroMemory(&solidDesc, sizeof(D3D11_RASTERIZER_DESC));
 	solidDesc.FillMode = D3D11_FILL_SOLID;
 	solidDesc.CullMode = D3D11_CULL_BACK;
-	deviceRef->CreateRasterizerState(&solidDesc, &_pSolid);
+	_pDeviceRef->CreateRasterizerState(&solidDesc, &_pSolid);
 
 	_pCurrRasteriserState = _pSolid;
 
@@ -53,7 +60,7 @@ void GameManager::Initialise(ID3D11Device *deviceRef, ID3D11DeviceContext *conte
 	ZeroMemory(&solidFrontCullDesc, sizeof(D3D11_RASTERIZER_DESC));
 	solidFrontCullDesc.FillMode = D3D11_FILL_SOLID;
 	solidFrontCullDesc.CullMode = D3D11_CULL_FRONT;
-	deviceRef->CreateRasterizerState(&solidFrontCullDesc, &_pSolidFrontCull);
+	_pDeviceRef->CreateRasterizerState(&solidFrontCullDesc, &_pSolidFrontCull);
 
 	D3D11_BLEND_DESC blendDesc;
 	ZeroMemory(&blendDesc, sizeof(blendDesc));
@@ -73,7 +80,7 @@ void GameManager::Initialise(ID3D11Device *deviceRef, ID3D11DeviceContext *conte
 	blendDesc.AlphaToCoverageEnable = false;
 	blendDesc.RenderTarget[0] = rtbd;
 
-	deviceRef->CreateBlendState(&blendDesc, &_pTransparency);
+	_pDeviceRef->CreateBlendState(&blendDesc, &_pTransparency);
 
 	XMStoreFloat4x4(&_World, XMMatrixIdentity());
 
@@ -93,16 +100,16 @@ void GameManager::Initialise(ID3D11Device *deviceRef, ID3D11DeviceContext *conte
 	object->SetPosition(5, 0, 0);
 	gameObjects.emplace_back(object);
 
-	Grid *grid = new Grid(100, 100);
-	grid->SetPosition(0, 1, 0);
-	grid->SetTexture(L"Textures/asphalt.dds");
-	gameObjects.emplace_back(grid);
+	//Grid *grid = new Grid(100, 100);
+	//grid->SetPosition(0, 1, 0);
+	//grid->SetTexture(L"Textures/asphalt.dds");
+	//gameObjects.emplace_back(grid);
 
 
 	for (int i = 0; i < gameObjects.size(); i++) {
 		if (gameObjects[i]->GetObjectType() == StaticStructs::CAR)
 			car = (Car*)gameObjects[i];
-		gameObjects[i]->Initialise(deviceRef, _pDContext, cb);
+		gameObjects[i]->Initialise(_pDeviceRef, _pDContext, _pConstantBuffer);
 	}
 
 	_pCurrCamera->FollowObject(car);
@@ -110,15 +117,85 @@ void GameManager::Initialise(ID3D11Device *deviceRef, ID3D11DeviceContext *conte
 
 }
 
+HRESULT GameManager::CompileShaders()
+{
+	HRESULT hr;
+
+	// Compile the vertex shader
+	ID3DBlob* pVSBlob = nullptr;
+	hr = Shader::CompileShaderFromFile(L"DX11 Framework.fx", "VS", "vs_4_0", &pVSBlob);
+
+	if (FAILED(hr))
+	{
+		MessageBox(nullptr,
+			L"The FX file cannot be compiled.  Please run this executable from the directory that contains the FX file.", L"Error", MB_OK);
+		return hr;
+	}
+
+	// Create the vertex shader
+	hr = _pDeviceRef->CreateVertexShader(pVSBlob->GetBufferPointer(), pVSBlob->GetBufferSize(), nullptr, &_pVertexShader);
+
+	if (FAILED(hr))
+	{
+		pVSBlob->Release();
+		return hr;
+	}
+
+	// Compile the pixel shader
+	ID3DBlob* pPSBlob = nullptr;
+	hr = Shader::CompileShaderFromFile(L"DX11 Framework.fx", "PS", "ps_4_0", &pPSBlob);
+
+	if (FAILED(hr))
+	{
+		MessageBox(nullptr,
+			L"The FX file cannot be compiled.  Please run this executable from the directory that contains the FX file.", L"Error", MB_OK);
+		return hr;
+	}
+
+	// Create the pixel shader
+	hr = _pDeviceRef->CreatePixelShader(pPSBlob->GetBufferPointer(), pPSBlob->GetBufferSize(), nullptr, &_pPixelShader);
+	pPSBlob->Release();
+
+	if (FAILED(hr))
+		return hr;
+
+	// Define the input layout
+	D3D11_INPUT_ELEMENT_DESC layout[] =
+	{
+		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	};
+
+	UINT numElements = ARRAYSIZE(layout);
+
+	// Create the input layout
+	hr = _pDeviceRef->CreateInputLayout(layout, numElements, pVSBlob->GetBufferPointer(),
+		pVSBlob->GetBufferSize(), &_pVertexLayout);
+	pVSBlob->Release();
+
+	if (FAILED(hr))
+		return hr;
+
+	// Set the input layout
+	_pDContext->IASetInputLayout(_pVertexLayout);
+
+}
+
 void GameManager::Draw()
 {
 	LoadConstantBuffer();
+	_pDContext->PSSetShader(_pPixelShader, nullptr, 0);
+	_pDContext->VSSetShader(_pVertexShader, nullptr, 0);
+	_pDContext->VSSetConstantBuffers(0, 1, &_pConstantBuffer);
+	_pDContext->PSSetConstantBuffers(0, 1, &_pConstantBuffer);
+
 	XMMATRIX world = XMLoadFloat4x4(&_World);
 	XMMATRIX view = XMLoadFloat4x4(&_pCurrCamera->GetViewMatrix());
 	XMMATRIX projection = XMLoadFloat4x4(&_pCurrCamera->GetProjectionMatrix());
-	cb.mWorld = XMMatrixTranspose(world);
-	cb.mView = XMMatrixTranspose(view);
-	cb.mProjection = XMMatrixTranspose(projection);
+	cbData.mWorld = XMMatrixTranspose(world);
+	cbData.mView = XMMatrixTranspose(view);
+	cbData.mProjection = XMMatrixTranspose(projection);
 
 	float blendFactor[] = { 0.75f, 0.75f, 0.75f, 1.0f };
 
@@ -130,7 +207,7 @@ void GameManager::Draw()
 		}else
 			_pDContext->OMSetBlendState(0, 0, 0xffffffff);
 		_pDContext->RSSetState(_pCurrRasteriserState);
-		gameObjects[i]->Draw(world, cb);
+		gameObjects[i]->Draw(world, cbData);
 		if (_pCurrRasteriserState == _pSolidFrontCull)
 			_pCurrRasteriserState = _pPrevRasteriserState;
 	}

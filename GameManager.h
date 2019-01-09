@@ -8,6 +8,7 @@
 #include "Car.h"
 #include "Dome.h"
 #include "FileManager.h"
+#include "Shader.h"
 
 using namespace DirectX;
 
@@ -46,9 +47,15 @@ private:
 	ID3D11RasterizerState* _pPrevRasteriserState;
 	ID3D11BlendState *_pTransparency;
 
-	ID3D11DeviceContext *_pDContext;
+	ID3D11Buffer* _pConstantBuffer;
+	ID3D11InputLayout *_pVertexLayout;
+	ID3D11VertexShader *_pVertexShader;
+	ID3D11PixelShader *_pPixelShader;
 
-	StaticStructs::ConstantBuffer cb;
+	ID3D11DeviceContext *_pDContext;
+	ID3D11Device *_pDeviceRef;
+
+	StaticStructs::ConstantBuffer cbData;
 
 
 	void LoadConstantBuffer();
@@ -56,7 +63,8 @@ public:
 	Camera *_pCurrCamera;
 	GameManager();
 	~GameManager();
-	void Initialise(ID3D11Device *deviceRef, ID3D11DeviceContext *context, ID3D11Buffer *cb);
+	void Initialise(ID3D11Device *deviceRef, ID3D11DeviceContext *context, ID3D11Buffer *constantBuffer);
+	HRESULT CompileShaders();
 	void Draw();
 	void Update(float _Time);
 	void Input(float deltaTime);

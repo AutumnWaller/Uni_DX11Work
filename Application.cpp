@@ -32,9 +32,6 @@ Application::Application()
 	_pImmediateContext = nullptr;
 	_pSwapChain = nullptr;
 	_pRenderTargetView = nullptr;
-	_pVertexShader = nullptr;
-	_pPixelShader = nullptr;
-	_pVertexLayout = nullptr;
 	_pConstantBuffer = nullptr;
 	_pTransparency = nullptr;
 }
@@ -72,66 +69,6 @@ HRESULT Application::InitShadersAndInputLayout()
 {
 	HRESULT hr;
 
-    // Compile the vertex shader
-    ID3DBlob* pVSBlob = nullptr;
-    hr = CompileShaderFromFile(L"DX11 Framework.fx", "VS", "vs_4_0", &pVSBlob);
-
-    if (FAILED(hr))
-    {
-        MessageBox(nullptr,
-                   L"The FX file cannot be compiled.  Please run this executable from the directory that contains the FX file.", L"Error", MB_OK);
-        return hr;
-    }
-
-	// Create the vertex shader
-	hr = _pd3dDevice->CreateVertexShader(pVSBlob->GetBufferPointer(), pVSBlob->GetBufferSize(), nullptr, &_pVertexShader);
-
-	if (FAILED(hr))
-	{	
-		pVSBlob->Release();
-        return hr;
-	}
-
-	// Compile the pixel shader
-	ID3DBlob* pPSBlob = nullptr;
-    hr = CompileShaderFromFile(L"DX11 Framework.fx", "PS", "ps_4_0", &pPSBlob);
-
-    if (FAILED(hr))
-    {
-        MessageBox(nullptr,
-                   L"The FX file cannot be compiled.  Please run this executable from the directory that contains the FX file.", L"Error", MB_OK);
-        return hr;
-    }
-
-	// Create the pixel shader
-	hr = _pd3dDevice->CreatePixelShader(pPSBlob->GetBufferPointer(), pPSBlob->GetBufferSize(), nullptr, &_pPixelShader);
-	pPSBlob->Release();
-
-    if (FAILED(hr))
-        return hr;
-
-    // Define the input layout
-    D3D11_INPUT_ELEMENT_DESC layout[] =
-    {
-        { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	};
-
-	UINT numElements = ARRAYSIZE(layout);
-
-    // Create the input layout
-	hr = _pd3dDevice->CreateInputLayout(layout, numElements, pVSBlob->GetBufferPointer(),
-                                        pVSBlob->GetBufferSize(), &_pVertexLayout);
-	pVSBlob->Release();
-
-	if (FAILED(hr))
-        return hr;
-
-    // Set the input layout
-    _pImmediateContext->IASetInputLayout(_pVertexLayout);
-
-
 	D3D11_SAMPLER_DESC sampDesc;
 	ZeroMemory(&sampDesc, sizeof(sampDesc));
 	sampDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
@@ -142,7 +79,10 @@ HRESULT Application::InitShadersAndInputLayout()
 	sampDesc.MinLOD = 0;
 	sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
 
-	_pd3dDevice->CreateSamplerState(&sampDesc, &_pSamplerLinear);
+	if (!_pd3dDevice->CreateSamplerState(&sampDesc, &_pSamplerLinear))
+		hr = E_FAIL;
+	else
+		hr = S_OK;
 	return hr;
 }
 
@@ -194,37 +134,7 @@ HRESULT Application::InitWindow(HINSTANCE hInstance, int nCmdShow)
     return S_OK;
 }
 
-HRESULT Application::CompileShaderFromFile(WCHAR* szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel, ID3DBlob** ppBlobOut)
-{
-    HRESULT hr = S_OK;
 
-    DWORD dwShaderFlags = D3DCOMPILE_ENABLE_STRICTNESS;
-#if defined(DEBUG) || defined(_DEBUG)
-    // Set the D3DCOMPILE_DEBUG flag to embed debug information in the shaders.
-    // Setting this flag improves the shader debugging experience, but still allows 
-    // the shaders to be optimized and to run exactly the way they will run in 
-    // the release configuration of this program.
-    dwShaderFlags |= D3DCOMPILE_DEBUG;
-#endif
-
-    ID3DBlob* pErrorBlob;
-    hr = D3DCompileFromFile(szFileName, nullptr, nullptr, szEntryPoint, szShaderModel, 
-        dwShaderFlags, 0, ppBlobOut, &pErrorBlob);
-
-    if (FAILED(hr))
-    {
-        if (pErrorBlob != nullptr)
-            OutputDebugStringA((char*)pErrorBlob->GetBufferPointer());
-
-        if (pErrorBlob) pErrorBlob->Release();
-
-        return hr;
-    }
-
-    if (pErrorBlob) pErrorBlob->Release();
-
-    return S_OK;
-}
 
 HRESULT Application::InitDevice()
 {
@@ -353,11 +263,6 @@ HRESULT Application::InitDevice()
 void Application::Cleanup()
 {
     if (_pImmediateContext) _pImmediateContext->ClearState();
-
-    if (_pConstantBuffer) _pConstantBuffer->Release();
-    if (_pVertexLayout) _pVertexLayout->Release();
-    if (_pVertexShader) _pVertexShader->Release();
-    if (_pPixelShader) _pPixelShader->Release();
     if (_pRenderTargetView) _pRenderTargetView->Release();
     if (_pSwapChain) _pSwapChain->Release();
     if (_pImmediateContext) _pImmediateContext->Release();
@@ -366,6 +271,7 @@ void Application::Cleanup()
 	if(_pDepthStencilBuffer) _pDepthStencilBuffer->Release();
 	if(_pTransparency) _pTransparency->Release();
 	if (_pSamplerLinear) _pSamplerLinear->Release();
+	if (_pConstantBuffer) _pConstantBuffer->Release();
 	if (_pGameManager) delete _pGameManager;
 }
 
@@ -384,10 +290,7 @@ void Application::Update()
 void Application::Draw()
 {
 
-	_pImmediateContext->VSSetShader(_pVertexShader, nullptr, 0);
-	_pImmediateContext->VSSetConstantBuffers(0, 1, &_pConstantBuffer);
-	_pImmediateContext->PSSetConstantBuffers(0, 1, &_pConstantBuffer);
-	_pImmediateContext->PSSetShader(_pPixelShader, nullptr, 0);
+	
 	_pImmediateContext->PSSetSamplers(0, 1, &_pSamplerLinear);
 	//
 	// Clear the back buffer

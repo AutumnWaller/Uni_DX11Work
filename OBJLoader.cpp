@@ -250,6 +250,7 @@ MeshData OBJLoader::Load(char* filename, ID3D11Device* _pd3dDevice, bool invertT
 			ZeroMemory(&InitData, sizeof(InitData));
 			InitData.pSysMem = indicesArray;
 			_pd3dDevice->CreateBuffer(&bd, &InitData, &indexBuffer);
+			meshData.VertexCount = meshVertices.size();
 
 			meshData.IndexCount = meshIndices.size();
 			meshData.IndexBuffer = indexBuffer;
@@ -312,6 +313,9 @@ MeshData OBJLoader::Load(char* filename, ID3D11Device* _pd3dDevice, bool invertT
 
 		meshData.IndexCount = numIndices;
 		meshData.IndexBuffer = indexBuffer;
+
+		meshData.VertexCount = numVertices;
+
 
 		//This data has now been sent over to the GPU so we can delete this CPU-side stuff
 		delete [] indices;
