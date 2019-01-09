@@ -78,7 +78,7 @@ HRESULT Shader::InitialiseShaders(ID3D11Device *device, std::vector<ID3D11Vertex
 			return hr;
 
 
-
+		
 		UINT numElements = 3;
 
 		// Create the input layout

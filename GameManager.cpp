@@ -30,9 +30,9 @@ GameManager::~GameManager()
 	if (_pCameraThirdPerson)delete _pCameraThirdPerson;
 	if(_pCameraFront) delete _pCameraFront;
 	if(car) delete car;
-	//if (_pVertexShader)_pVertexShader->Release();
+	if (_pVertexShaders) for each(ID3D11VertexShader* shader in *_pVertexShaders)shader->Release();
 	//if (_pVertexLayout) _pVertexLayout->Release();
-	//if (_pPixelShader) _pPixelShader->Release();
+	if (_pPixelShaders) for each(ID3D11PixelShader* shader in *_pPixelShaders)shader->Release();
 	if (fm) delete fm;
 }
 
@@ -41,6 +41,9 @@ void GameManager::Initialise(ID3D11Device *deviceRef, ID3D11DeviceContext *conte
 	_pDContext = context;
 	_pDeviceRef = deviceRef;
 	_pConstantBuffer = constantBuffer;
+	_pVertexShaders = new vector<ID3D11VertexShader*>();
+	_pPixelShaders = new vector<ID3D11PixelShader*>();
+	_pVertexLayouts = new vector<ID3D11InputLayout*>();
 	CompileShaders();
 
 	D3D11_RASTERIZER_DESC wfDesc;
@@ -129,6 +132,16 @@ HRESULT GameManager::CompileShaders()
 	};
 	std::vector<std::string> strings;
 	fm->ConvertRBS("Data/ShaderPaths.rbs", &strings);
+	for(int i = 0; i < strings.size(); i++)
+	{
+		ID3D11VertexShader* vs;
+		ID3D11PixelShader* ps;
+		ID3D11InputLayout* il;
+
+		_pVertexShaders->emplace_back(vs);
+		_pPixelShaders->emplace_back(ps);
+		_pVertexLayouts->emplace_back(il);
+	}
 	Shader::InitialiseShaders(_pDeviceRef, _pVertexShaders, _pPixelShaders, layout, _pVertexLayouts, strings);
 
 	// Set the input layout
@@ -139,8 +152,8 @@ HRESULT GameManager::CompileShaders()
 void GameManager::Draw()
 {
 	LoadConstantBuffer();
-	//_pDContext->PSSetShader(_pPixelShader, nullptr, 0);
-	//_pDContext->VSSetShader(_pVertexShader, nullptr, 0);
+	_pDContext->PSSetShader(_pPixelShaders->at(0), nullptr, 0);
+	_pDContext->VSSetShader(_pVertexShaders->at(0), nullptr, 0);
 	_pDContext->VSSetConstantBuffers(0, 1, &_pConstantBuffer);
 	_pDContext->PSSetConstantBuffers(0, 1, &_pConstantBuffer);
 
