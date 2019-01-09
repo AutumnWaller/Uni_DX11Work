@@ -33,6 +33,7 @@ GameManager::~GameManager()
 	if (_pVertexShaders) for each(ID3D11VertexShader* shader in *_pVertexShaders)shader->Release();
 	//if (_pVertexLayout) _pVertexLayout->Release();
 	if (_pPixelShaders) for each(ID3D11PixelShader* shader in *_pPixelShaders)shader->Release();
+	if (_pSamplerLinear) _pSamplerLinear->Release();
 	if (fm) delete fm;
 }
 
@@ -44,48 +45,14 @@ void GameManager::Initialise(ID3D11Device *deviceRef, ID3D11DeviceContext *conte
 	_pVertexShaders = new vector<ID3D11VertexShader*>();
 	_pPixelShaders = new vector<ID3D11PixelShader*>();
 	_pVertexLayouts = new vector<ID3D11InputLayout*>();
+
+	
+
 	CompileShaders();
 
-	D3D11_RASTERIZER_DESC wfDesc;
-	ZeroMemory(&wfDesc, sizeof(D3D11_RASTERIZER_DESC));
-	wfDesc.FillMode = D3D11_FILL_WIREFRAME;
-	wfDesc.CullMode = D3D11_CULL_NONE;
-	_pDeviceRef->CreateRasterizerState(&wfDesc, &_pWireframe);
+	
 
-	D3D11_RASTERIZER_DESC solidDesc;
-	ZeroMemory(&solidDesc, sizeof(D3D11_RASTERIZER_DESC));
-	solidDesc.FillMode = D3D11_FILL_SOLID;
-	solidDesc.CullMode = D3D11_CULL_BACK;
-	_pDeviceRef->CreateRasterizerState(&solidDesc, &_pSolid);
-
-	_pCurrRasteriserState = _pSolid;
-
-
-	D3D11_RASTERIZER_DESC solidFrontCullDesc;
-	ZeroMemory(&solidFrontCullDesc, sizeof(D3D11_RASTERIZER_DESC));
-	solidFrontCullDesc.FillMode = D3D11_FILL_SOLID;
-	solidFrontCullDesc.CullMode = D3D11_CULL_FRONT;
-	_pDeviceRef->CreateRasterizerState(&solidFrontCullDesc, &_pSolidFrontCull);
-
-	D3D11_BLEND_DESC blendDesc;
-	ZeroMemory(&blendDesc, sizeof(blendDesc));
-
-	D3D11_RENDER_TARGET_BLEND_DESC rtbd;
-	ZeroMemory(&rtbd, sizeof(rtbd));
-
-	rtbd.BlendEnable = true;
-	rtbd.SrcBlend = D3D11_BLEND_SRC_COLOR;
-	rtbd.DestBlend = D3D11_BLEND_BLEND_FACTOR;
-	rtbd.BlendOp = D3D11_BLEND_OP_ADD;
-	rtbd.SrcBlendAlpha = D3D11_BLEND_ONE;
-	rtbd.DestBlendAlpha = D3D11_BLEND_ZERO;
-	rtbd.BlendOpAlpha = D3D11_BLEND_OP_ADD;
-	rtbd.RenderTargetWriteMask = D3D10_COLOR_WRITE_ENABLE_ALL;
-
-	blendDesc.AlphaToCoverageEnable = false;
-	blendDesc.RenderTarget[0] = rtbd;
-
-	_pDeviceRef->CreateBlendState(&blendDesc, &_pTransparency);
+	
 
 	XMStoreFloat4x4(&_World, XMMatrixIdentity());
 
@@ -122,7 +89,8 @@ void GameManager::Initialise(ID3D11Device *deviceRef, ID3D11DeviceContext *conte
 
 HRESULT GameManager::CompileShaders()
 {
-
+	CreateSampleAndBlend();
+	CreateRasterizers();
 	// Define the input layout
 	D3D11_INPUT_ELEMENT_DESC layout[] =
 	{
@@ -144,16 +112,93 @@ HRESULT GameManager::CompileShaders()
 	}
 	Shader::InitialiseShaders(_pDeviceRef, _pVertexShaders, _pPixelShaders, layout, _pVertexLayouts, strings);
 
-	// Set the input layout
-	//_pDContext->IASetInputLayout(_pVertexLayout);
 	return S_OK;
+}
+
+HRESULT GameManager::CreateRasterizers()
+{
+	HRESULT hr;
+	D3D11_RASTERIZER_DESC wfDesc;
+	ZeroMemory(&wfDesc, sizeof(D3D11_RASTERIZER_DESC));
+	wfDesc.FillMode = D3D11_FILL_WIREFRAME;
+	wfDesc.CullMode = D3D11_CULL_NONE;
+	hr = _pDeviceRef->CreateRasterizerState(&wfDesc, &_pWireframe);
+	if (hr == E_FAIL)
+		MessageBox(nullptr, L"Rasterizer failure", L"Error", MB_OK);
+
+	D3D11_RASTERIZER_DESC solidDesc;
+	ZeroMemory(&solidDesc, sizeof(D3D11_RASTERIZER_DESC));
+	solidDesc.FillMode = D3D11_FILL_SOLID;
+	solidDesc.CullMode = D3D11_CULL_BACK;
+	hr = _pDeviceRef->CreateRasterizerState(&solidDesc, &_pSolid);
+
+	_pCurrRasteriserState = _pSolid;
+
+	if (hr == E_FAIL)
+		MessageBox(nullptr, L"Rasterizer failure", L"Error", MB_OK);
+
+	D3D11_RASTERIZER_DESC solidFrontCullDesc;
+	ZeroMemory(&solidFrontCullDesc, sizeof(D3D11_RASTERIZER_DESC));
+	solidFrontCullDesc.FillMode = D3D11_FILL_SOLID;
+	solidFrontCullDesc.CullMode = D3D11_CULL_FRONT;
+	hr = _pDeviceRef->CreateRasterizerState(&solidFrontCullDesc, &_pSolidFrontCull);
+
+	if (hr == E_FAIL)
+		MessageBox(nullptr, L"Rasterizer failure", L"Error", MB_OK);
+	return hr;
+}
+
+HRESULT GameManager::CreateSampleAndBlend()
+{
+	HRESULT hr;
+	D3D11_SAMPLER_DESC sampDesc;
+	ZeroMemory(&sampDesc, sizeof(sampDesc));
+	sampDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+	sampDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+	sampDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+	sampDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+	sampDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
+	sampDesc.MinLOD = 0;
+	sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
+
+	hr = _pDeviceRef->CreateSamplerState(&sampDesc, &_pSamplerLinear);
+	if (hr == E_FAIL)
+		MessageBox(nullptr, L"Sampler failure", L"Error", MB_OK);
+
+	D3D11_BLEND_DESC blendDesc;
+	ZeroMemory(&blendDesc, sizeof(blendDesc));
+
+	D3D11_RENDER_TARGET_BLEND_DESC rtbd;
+	ZeroMemory(&rtbd, sizeof(rtbd));
+
+	rtbd.BlendEnable = true;
+	rtbd.SrcBlend = D3D11_BLEND_SRC_COLOR;
+	rtbd.DestBlend = D3D11_BLEND_BLEND_FACTOR;
+	rtbd.BlendOp = D3D11_BLEND_OP_ADD;
+	rtbd.SrcBlendAlpha = D3D11_BLEND_ONE;
+	rtbd.DestBlendAlpha = D3D11_BLEND_ZERO;
+	rtbd.BlendOpAlpha = D3D11_BLEND_OP_ADD;
+	rtbd.RenderTargetWriteMask = D3D10_COLOR_WRITE_ENABLE_ALL;
+
+	blendDesc.AlphaToCoverageEnable = false;
+	blendDesc.RenderTarget[0] = rtbd;
+
+	hr = _pDeviceRef->CreateBlendState(&blendDesc, &_pTransparency);
+	if (hr == E_FAIL)
+		MessageBox(nullptr, L"Blend State failure", L"Error", MB_OK);
+	return hr;
 }
 
 void GameManager::Draw()
 {
+	HRESULT hr;
 	LoadConstantBuffer();
+	_pDContext->PSSetSamplers(0, 1, &_pSamplerLinear);
+
 	_pDContext->PSSetShader(_pPixelShaders->at(0), nullptr, 0);
 	_pDContext->VSSetShader(_pVertexShaders->at(0), nullptr, 0);
+	_pDContext->IASetInputLayout(_pVertexLayouts->at(0));
+
 	_pDContext->VSSetConstantBuffers(0, 1, &_pConstantBuffer);
 	_pDContext->PSSetConstantBuffers(0, 1, &_pConstantBuffer);
 

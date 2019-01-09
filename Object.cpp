@@ -126,12 +126,6 @@ void Object::Draw(DirectX::XMMATRIX appWorld, StaticStructs::ConstantBuffer cb)
 	UINT offset = 0;
 	_pDeviceContext->IASetVertexBuffers(0, 1, &_pVertexBuffer, &stride, &offset);
 	_pDeviceContext->IASetIndexBuffer(_pIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
-	
-	//Per object shader at some point
-	//_pDeviceContext->VSSetShader(_pVertexShader, nullptr, 0);
-
-	//_pDeviceContext->PSSetShader(_pPixelShader, nullptr, 0);
-
 	_pDeviceContext->DrawIndexed(indexAmount, 0, 0);
 }
 

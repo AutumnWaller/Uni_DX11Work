@@ -45,6 +45,7 @@ private:
 	ID3D11RasterizerState* _pSolidFrontCull;
 	ID3D11RasterizerState* _pCurrRasteriserState;
 	ID3D11RasterizerState* _pPrevRasteriserState;
+	ID3D11SamplerState*		_pSamplerLinear;
 	ID3D11BlendState *_pTransparency;
 
 	ID3D11Buffer* _pConstantBuffer;
@@ -67,6 +68,8 @@ public:
 	~GameManager();
 	void Initialise(ID3D11Device *deviceRef, ID3D11DeviceContext *context, ID3D11Buffer *constantBuffer);
 	HRESULT CompileShaders();
+	HRESULT CreateRasterizers();
+	HRESULT CreateSampleAndBlend();
 	void Draw();
 	void Update(float _Time);
 	void Input(float deltaTime);
