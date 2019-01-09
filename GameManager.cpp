@@ -27,18 +27,27 @@ GameManager::GameManager()
 GameManager::~GameManager()
 {
 	gameObjects.~vector();
+
 	if (_pCameraThirdPerson)delete _pCameraThirdPerson;
-	if(_pCameraFront) delete _pCameraFront;
-	if(car) delete car;
-	if (_pVertexShaders) for each(ID3D11VertexShader* shader in *_pVertexShaders)shader->Release();
-	//if (_pVertexLayout) _pVertexLayout->Release();
-	if (_pPixelShaders) for each(ID3D11PixelShader* shader in *_pPixelShaders)shader->Release();
-	if (_pSamplerLinear) _pSamplerLinear->Release();
+	if (_pCameraFront) delete _pCameraFront;
+	if (car) delete car;
 	if (fm) delete fm;
+
+	if (_pVertexShaders) for each(ID3D11VertexShader* shader in *_pVertexShaders)shader->Release();
+	if (_pVertexLayouts) for each(ID3D11InputLayout* iLayout in *_pVertexLayouts)iLayout->Release();
+	if (_pPixelShaders) for each(ID3D11PixelShader* shader in *_pPixelShaders)shader->Release();
+
+	if(_pWireframe) _pWireframe->Release();
+	if(_pSolid) _pSolid->Release();
+	if(_pSolidFrontCull) _pSolidFrontCull->Release();
+	if(_pSolidNoCull) _pSolidNoCull->Release();
+	if(_pSamplerLinear) _pSamplerLinear->Release();
+	if(_pTransparency) _pTransparency->Release();
 }
 
 void GameManager::Initialise(ID3D11Device *deviceRef, ID3D11DeviceContext *context, ID3D11Buffer *constantBuffer)
 {
+
 	_pDContext = context;
 	_pDeviceRef = deviceRef;
 	_pConstantBuffer = constantBuffer;
@@ -61,28 +70,22 @@ void GameManager::Initialise(ID3D11Device *deviceRef, ID3D11DeviceContext *conte
 
 	_pCameraThirdPerson = new Camera(XMVECTOR(XMVectorSet(0.0f, 0.0f, -3.0f, 0.0f)), XMVECTOR(XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f)));
 	_pCameraFront = new Camera(XMVECTOR(XMVectorSet(0.0f, 10.0f, 3.0f, 0.0f)), XMVECTOR(XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f)));
-	//_pCameraTop = new Camera(XMVECTOR(XMVectorSet(0.0f, 10.0f, 3.0f, 0.0f)), XMVECTOR(XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f)));
+	_pCameraTop = new Camera(XMVECTOR(XMVectorSet(0.0f, 50.0f, 3.0f, 0.0f)), XMVECTOR(XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f)));
 	
-	_pCurrCamera = _pCameraFront;
+	_pCurrCamera = _pCameraThirdPerson;
 
 
 	Object *object = new Object("Models/Hercules.obj", true, L"Textures/Hercules_COLOR.dds");
 	object->SetPosition(5, 0, 0);
 	gameObjects.emplace_back(object);
 
-	//Grid *grid = new Grid(100, 100);
-	//grid->SetPosition(0, 1, 0);
-	//grid->SetTexture(L"Textures/asphalt.dds");
-	//gameObjects.emplace_back(grid);
-
-
 	for (int i = 0; i < gameObjects.size(); i++) {
 		if (gameObjects[i]->GetObjectType() == StaticStructs::CAR)
 			car = (Car*)gameObjects[i];
 		gameObjects[i]->Initialise(_pDeviceRef, _pDContext, _pConstantBuffer);
 	}
-
-	_pCurrCamera->FollowObject(car);
+	if(_pCurrCamera == _pCameraThirdPerson)
+		_pCameraThirdPerson->FollowObject(car);
 
 
 }
@@ -142,6 +145,14 @@ HRESULT GameManager::CreateRasterizers()
 	solidFrontCullDesc.FillMode = D3D11_FILL_SOLID;
 	solidFrontCullDesc.CullMode = D3D11_CULL_FRONT;
 	hr = _pDeviceRef->CreateRasterizerState(&solidFrontCullDesc, &_pSolidFrontCull);
+	
+	D3D11_RASTERIZER_DESC solidNoCullDesc;
+	ZeroMemory(&solidNoCullDesc, sizeof(D3D11_RASTERIZER_DESC));
+	solidNoCullDesc.FillMode = D3D11_FILL_SOLID;
+	solidNoCullDesc.CullMode = D3D11_CULL_NONE;
+	hr = _pDeviceRef->CreateRasterizerState(&solidNoCullDesc, &_pSolidNoCull);
+
+
 
 	if (hr == E_FAIL)
 		MessageBox(nullptr, L"Rasterizer failure", L"Error", MB_OK);
@@ -212,16 +223,23 @@ void GameManager::Draw()
 	float blendFactor[] = { 0.75f, 0.75f, 0.75f, 1.0f };
 
 	for (int i = 0; i < gameObjects.size(); i++) {
-		_pPrevRasteriserState = _pCurrRasteriserState;
 		if (gameObjects[i]->GetObjectType() == StaticStructs::DOME) {
-			_pCurrRasteriserState = _pSolidFrontCull;
+			if(_pCurrRasteriserState == _pWireframe)
+				_pDContext->RSSetState(_pWireframe);
+			else
+				_pDContext->RSSetState(_pSolidNoCull);
 			_pDContext->OMSetBlendState(_pTransparency, blendFactor, 0xffffffff);
-		}else
+			_pDContext->PSSetShader(_pPixelShaders->at(1), nullptr, 0);
+			_pDContext->VSSetShader(_pVertexShaders->at(1), nullptr, 0);
+			gameObjects[i]->Draw(world, cbData);
+		}
+		else {
+			_pDContext->RSSetState(_pCurrRasteriserState);
 			_pDContext->OMSetBlendState(0, 0, 0xffffffff);
-		_pDContext->RSSetState(_pCurrRasteriserState);
-		gameObjects[i]->Draw(world, cbData);
-		if (_pCurrRasteriserState == _pSolidFrontCull)
-			_pCurrRasteriserState = _pPrevRasteriserState;
+			_pDContext->PSSetShader(_pPixelShaders->at(0), nullptr, 0);
+			_pDContext->VSSetShader(_pVertexShaders->at(0), nullptr, 0);
+			gameObjects[i]->Draw(world, cbData);
+		}
 	}
 
 	
@@ -230,17 +248,8 @@ void GameManager::Draw()
 void GameManager::Update(float _Time)
 {
 	Input(_Time);
-
-	//gameObjects[0]->SetRotation(-1 * time, 1, -1);
-	//gameObjects[0]->ChangeWorld(XMMatrixScaling(0.5f, 0.5f, 0.5f)  * XMMatrixRotationZ(time * 0.25f));
-	//gameObjects[1]->ChangeWorld(XMMatrixScaling(1.0f, 1.0f, 1.0f) * XMMatrixRotationZ(time) * XMMatrixTranslation(2.5f, 0, 0)  * XMMatrixRotationZ(time * 2.0f));
-	//objects[2]->ChangeWorld(XMMatrixScaling(0.2f, 0.2f, 0.2f) * XMMatrixRotationZ(t) * XMMatrixTranslation(1.0f, 0, 0)  * XMMatrixRotationZ(t * 3.0f)  * XMMatrixTranslation(2.5f, 0, 0)  * XMMatrixRotationZ(t * 2.0f));
-	//objects[3]->ChangeWorld(XMMatrixScaling(0.1f, 0.1f, 0.1f) * XMMatrixRotationZ(t) * XMMatrixTranslation(0.5f, 0, 0)  * XMMatrixRotationZ(t * 4.0f) * XMMatrixTranslation(1.0f, 0, 0)  * XMMatrixRotationZ(t * 3.0f)  * XMMatrixTranslation(2.5f, 0, 0)  * XMMatrixRotationZ(t * 2.0f));
-	//objects[4]->ChangeWorld(XMMatrixScaling(0.25f, 0.25f, 0.25f)  * XMMatrixTranslation(1.5f, 0, 0) * XMMatrixRotationZ(-t));
-	//objects[5]->ChangeWorld(XMMatrixScaling(0.25f, 0.25f, 0.25f)  * XMMatrixTranslation(3.0f, 0, 0) * XMMatrixRotationZ(t));
 	for (int i = 0; i < gameObjects.size(); i++)
 		gameObjects[i]->Update(_Time);
-	_pDContext->RSSetState(_pCurrRasteriserState);
 	_pCurrCamera->Update(_Time);
 }
 

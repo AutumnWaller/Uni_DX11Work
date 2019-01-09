@@ -90,7 +90,7 @@ float4 PS(PS_INPUT input) : SV_Target
     float specularAmount = pow(max(dot(r, toEye), 0.0f), specularPower);
 
     float diffuseAmount = max(dot(LightVecW, input.Normal), 0.0f);
-
+	
     float3 diffuse = diffuseAmount * (DiffuseMtrl * DiffuseLight).rgb;
     float3 ambient = AmbientMtrl * AmbientLight;
     float3 specular = specularAmount * (specularMtrl * specularLight).rgb;

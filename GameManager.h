@@ -43,8 +43,8 @@ private:
 	ID3D11RasterizerState* _pWireframe;
 	ID3D11RasterizerState* _pSolid;
 	ID3D11RasterizerState* _pSolidFrontCull;
+	ID3D11RasterizerState* _pSolidNoCull;
 	ID3D11RasterizerState* _pCurrRasteriserState;
-	ID3D11RasterizerState* _pPrevRasteriserState;
 	ID3D11SamplerState*		_pSamplerLinear;
 	ID3D11BlendState *_pTransparency;
 
