@@ -20,6 +20,7 @@ void GameManager::LoadConstantBuffer()
 
 GameManager::GameManager()
 {
+	fm = new FileManager();
 }
 
 
@@ -29,9 +30,10 @@ GameManager::~GameManager()
 	if (_pCameraThirdPerson)delete _pCameraThirdPerson;
 	if(_pCameraFront) delete _pCameraFront;
 	if(car) delete car;
-	if (_pVertexShader)_pVertexShader->Release();
-	if (_pVertexLayout) _pVertexLayout->Release();
-	if (_pPixelShader) _pPixelShader->Release();
+	//if (_pVertexShader)_pVertexShader->Release();
+	//if (_pVertexLayout) _pVertexLayout->Release();
+	//if (_pPixelShader) _pPixelShader->Release();
+	if (fm) delete fm;
 }
 
 void GameManager::Initialise(ID3D11Device *deviceRef, ID3D11DeviceContext *context, ID3D11Buffer *constantBuffer)
@@ -84,10 +86,8 @@ void GameManager::Initialise(ID3D11Device *deviceRef, ID3D11DeviceContext *conte
 
 	XMStoreFloat4x4(&_World, XMMatrixIdentity());
 
-	FileManager* fm = new FileManager();
-	fm->ConvertToData("Data/StartingPositions.rbd", &gameObjects);
-	delete fm;
-	fm = nullptr;
+	fm->ConvertRBD("Data/StartingPositions.rbd", &gameObjects);
+	
 
 	_pCameraThirdPerson = new Camera(XMVECTOR(XMVectorSet(0.0f, 0.0f, -3.0f, 0.0f)), XMVECTOR(XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f)));
 	_pCameraFront = new Camera(XMVECTOR(XMVectorSet(0.0f, 10.0f, 3.0f, 0.0f)), XMVECTOR(XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f)));
@@ -119,45 +119,6 @@ void GameManager::Initialise(ID3D11Device *deviceRef, ID3D11DeviceContext *conte
 
 HRESULT GameManager::CompileShaders()
 {
-	HRESULT hr;
-
-	// Compile the vertex shader
-	ID3DBlob* pVSBlob = nullptr;
-	hr = Shader::CompileShaderFromFile(L"DX11 Framework.fx", "VS", "vs_4_0", &pVSBlob);
-
-	if (FAILED(hr))
-	{
-		MessageBox(nullptr,
-			L"The FX file cannot be compiled.  Please run this executable from the directory that contains the FX file.", L"Error", MB_OK);
-		return hr;
-	}
-
-	// Create the vertex shader
-	hr = _pDeviceRef->CreateVertexShader(pVSBlob->GetBufferPointer(), pVSBlob->GetBufferSize(), nullptr, &_pVertexShader);
-
-	if (FAILED(hr))
-	{
-		pVSBlob->Release();
-		return hr;
-	}
-
-	// Compile the pixel shader
-	ID3DBlob* pPSBlob = nullptr;
-	hr = Shader::CompileShaderFromFile(L"DX11 Framework.fx", "PS", "ps_4_0", &pPSBlob);
-
-	if (FAILED(hr))
-	{
-		MessageBox(nullptr,
-			L"The FX file cannot be compiled.  Please run this executable from the directory that contains the FX file.", L"Error", MB_OK);
-		return hr;
-	}
-
-	// Create the pixel shader
-	hr = _pDeviceRef->CreatePixelShader(pPSBlob->GetBufferPointer(), pPSBlob->GetBufferSize(), nullptr, &_pPixelShader);
-	pPSBlob->Release();
-
-	if (FAILED(hr))
-		return hr;
 
 	// Define the input layout
 	D3D11_INPUT_ELEMENT_DESC layout[] =
@@ -166,27 +127,20 @@ HRESULT GameManager::CompileShaders()
 		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	};
-
-	UINT numElements = ARRAYSIZE(layout);
-
-	// Create the input layout
-	hr = _pDeviceRef->CreateInputLayout(layout, numElements, pVSBlob->GetBufferPointer(),
-		pVSBlob->GetBufferSize(), &_pVertexLayout);
-	pVSBlob->Release();
-
-	if (FAILED(hr))
-		return hr;
+	std::vector<std::string> strings;
+	fm->ConvertRBS("Data/ShaderPaths.rbs", &strings);
+	Shader::InitialiseShaders(_pDeviceRef, _pVertexShaders, _pPixelShaders, layout, _pVertexLayouts, strings);
 
 	// Set the input layout
-	_pDContext->IASetInputLayout(_pVertexLayout);
-
+	//_pDContext->IASetInputLayout(_pVertexLayout);
+	return S_OK;
 }
 
 void GameManager::Draw()
 {
 	LoadConstantBuffer();
-	_pDContext->PSSetShader(_pPixelShader, nullptr, 0);
-	_pDContext->VSSetShader(_pVertexShader, nullptr, 0);
+	//_pDContext->PSSetShader(_pPixelShader, nullptr, 0);
+	//_pDContext->VSSetShader(_pVertexShader, nullptr, 0);
 	_pDContext->VSSetConstantBuffers(0, 1, &_pConstantBuffer);
 	_pDContext->PSSetConstantBuffers(0, 1, &_pConstantBuffer);
 

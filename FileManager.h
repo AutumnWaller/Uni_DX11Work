@@ -15,7 +15,8 @@ public:
 	FileManager();
 	char* Read(char* filePath);
 	void Write(char* filePath, char* data);
-	void ConvertToData(char* filePath, vector<Object*> *objects);
+	void ConvertRBD(char* filePath, vector<Object*> *objects);
+	void ConvertRBS(char* filePath, vector<string> *paths);
 	Object* GetObjectFromString(string str);
 	~FileManager();
 };

@@ -31,3 +31,63 @@ HRESULT Shader::CompileShaderFromFile(WCHAR* szFileName, LPCSTR szEntryPoint, LP
 
 	return S_OK;
 }
+
+HRESULT Shader::InitialiseShaders(ID3D11Device *device, std::vector<ID3D11VertexShader*>* outputVS, std::vector<ID3D11PixelShader*>* outputPS, D3D11_INPUT_ELEMENT_DESC *layoutDesc, std::vector<ID3D11InputLayout*>* inputLayout, std::vector<std::string> filePaths)
+{
+	for (int i = 0; i < filePaths.size(); i++) {
+		HRESULT hr;
+		int size = filePaths.at(i).size();
+		int num = MultiByteToWideChar(CP_UTF8, 0, filePaths.at(i).c_str(), -1, NULL, 0);
+		wchar_t *convertedPath = new wchar_t[num];
+
+		MultiByteToWideChar(CP_UTF8, 0, filePaths.at(i).c_str(), -1, convertedPath, num);
+
+		ID3DBlob* pVSBlob = nullptr;
+		hr = Shader::CompileShaderFromFile(convertedPath, "VS", "vs_4_0", &pVSBlob);
+		if (FAILED(hr))
+		{
+			MessageBox(nullptr,
+				L"The FX file cannot be compiled.  Please run this executable from the directory that contains the FX file.", L"Error", MB_OK);
+			return hr;
+		}
+		// Create the vertex shader
+		hr = device->CreateVertexShader(pVSBlob->GetBufferPointer(), pVSBlob->GetBufferSize(), nullptr, &outputVS->at(i));
+
+		if (FAILED(hr))
+		{
+			pVSBlob->Release();
+			return hr;
+		}
+
+		// Compile the pixel shader
+		ID3DBlob* pPSBlob = nullptr;
+		hr = Shader::CompileShaderFromFile(convertedPath, "PS", "ps_4_0", &pPSBlob);
+
+		if (FAILED(hr))
+		{
+			MessageBox(nullptr,
+				L"The FX file cannot be compiled.  Please run this executable from the directory that contains the FX file.", L"Error", MB_OK);
+			return hr;
+		}
+
+		// Create the pixel shader
+		hr = device->CreatePixelShader(pPSBlob->GetBufferPointer(), pPSBlob->GetBufferSize(), nullptr, &outputPS->at(i));
+		pPSBlob->Release();
+
+		if (FAILED(hr))
+			return hr;
+
+
+
+		UINT numElements = 3;
+
+		// Create the input layout
+		hr = device->CreateInputLayout(layoutDesc, numElements, pVSBlob->GetBufferPointer(),
+			pVSBlob->GetBufferSize(), &inputLayout->at(i));
+		pVSBlob->Release();
+
+		if (FAILED(hr))
+			return hr;
+	}
+	return S_OK;
+}

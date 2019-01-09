@@ -29,15 +29,15 @@ void FileManager::Write(char* filePath, char* data)
 	file.close();
 }
 
-void FileManager::ConvertToData(char* filePath, vector<Object*> *objects)
+void FileManager::ConvertRBD(char* filePath, vector<Object*> *objects)
 {
 	char* data = Read(filePath);
 	int dataLength = strlen(data);
-	Object* object;
-	char objName[3];
+	Object* object = nullptr;
+	char objName[3] = {' ', ' ', ' '};
 	int pos = 0;
-	float posX, posY, posZ, scaX = 1, scaY = 1, scaZ = 1, rotX, rotY, rotZ;
-	int tileW, tileL;
+	float posX = 0, posY = 0, posZ = 0, scaX = 1, scaY = 1, scaZ = 1, rotX = 0, rotY = 0, rotZ = 0;
+	int tileW = 0, tileL = 0;
 	for (int i = 0; i < dataLength; i) {
 		if (data[i] == '~') {
 			for (int j = 0; j < 3; j++) {
@@ -54,7 +54,7 @@ void FileManager::ConvertToData(char* filePath, vector<Object*> *objects)
 
 		if (data[i] == 'p') {
 			i += 2;
-			string pos;
+			string pos = "";
 			int counter = 0;
 			for (int j = 0; j < 6; j++) {
 				if (data[i + j] == '\n') {
@@ -85,7 +85,7 @@ void FileManager::ConvertToData(char* filePath, vector<Object*> *objects)
 		}
 		if (data[i] == 's') {
 			i += 2;
-			string scale;
+			string scale = "";
 			int counter = 0;
 			for (int j = 0; j < 6; j++) {
 				if (data[i + j] == '\n') {
@@ -117,7 +117,7 @@ void FileManager::ConvertToData(char* filePath, vector<Object*> *objects)
 		}
 		if (data[i] == 'r') {
 			i += 2;
-			string rotation;
+			string rotation = "";
 			int counter = 0;
 			for (int j = 0; j < 6; j++) {
 				if (data[i + j] == '\n')
@@ -150,7 +150,7 @@ void FileManager::ConvertToData(char* filePath, vector<Object*> *objects)
 
 		if (data[i] == 't') { //Grid-only tiling
 			i += 2;
-			string tiling;
+			string tiling = "";
 			int counter = 0;
 			for (int j = 0; j < 6; j++) {
 				if (data[i + j] == '\n')
@@ -185,6 +185,22 @@ void FileManager::ConvertToData(char* filePath, vector<Object*> *objects)
 			if (data[i] != '~')
 				return;
 		}
+	}
+}
+
+void FileManager::ConvertRBS(char * filePath, vector<string> *paths)
+{
+	char* data = Read(filePath);
+	string value;
+	for (int i = 0; i < strlen(data); i++) {
+		if (data[i] == ';')
+			break;
+		if (data[i] == '\n') {
+			paths->emplace_back(value);
+			value = "";
+		}
+		else
+			value += data[i];
 	}
 }
 

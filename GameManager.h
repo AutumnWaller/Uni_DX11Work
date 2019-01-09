@@ -48,14 +48,16 @@ private:
 	ID3D11BlendState *_pTransparency;
 
 	ID3D11Buffer* _pConstantBuffer;
-	ID3D11InputLayout *_pVertexLayout;
-	ID3D11VertexShader *_pVertexShader;
-	ID3D11PixelShader *_pPixelShader;
+	std::vector < ID3D11InputLayout*> *_pVertexLayouts;
+	std::vector<ID3D11VertexShader*> *_pVertexShaders;
+	std::vector <ID3D11PixelShader*> *_pPixelShaders;
 
 	ID3D11DeviceContext *_pDContext;
 	ID3D11Device *_pDeviceRef;
 
 	StaticStructs::ConstantBuffer cbData;
+
+	FileManager* fm;
 
 
 	void LoadConstantBuffer();
