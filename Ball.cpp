@@ -4,7 +4,7 @@
 
 Ball::Ball()
 {
-	_pModelPath = "Models/Ball.obj";
+	_pModelPath = "Models/Ball3.obj";
 	_pTexturePath = L"Textures/black.dds";
 	invertTexCoords = false;
 	type = StaticStructs::BALL;

@@ -53,6 +53,7 @@ struct PS_INPUT
     float4 Pos : SV_POSITION;
     float3 Normal : NORMAL;
     float2 Tex : TEXCOORD0;
+    float3 ToEye : TEXCOORD1;
 };
 
 //--------------------------------------------------------------------------------------
@@ -68,7 +69,7 @@ PS_INPUT VS(VS_INPUT input)
     // W component of vector is 0 as vectors cannot be translated
     float3 normalW = mul(float4(input.Normal, 0.0f), World).xyz;
     normalW = normalize(normalW);
-
+    output.ToEye = normalize(output.Pos.xyz - cameraEye.xyz);
     output.Normal = normalW;
     output.Tex = input.Tex;
 
@@ -83,21 +84,17 @@ PS_INPUT VS(VS_INPUT input)
 //--------------------------------------------------------------------------------------
 float4 PS(PS_INPUT input) : SV_Target
 {
+    float3 normal = normalize(input.Normal);
+    float3 r = reflect(-LightVecW, normal);
+    
+    float amount = max(dot(normal, LightVecW), 0.0f);
 
-    float3 r = reflect(-LightVecW, input.Normal);
-    float3 toEye = normalize(cameraEye.xyz - input.Pos.xyz);
-
-    float specularAmount = pow(max(dot(r, toEye), 0.0f), specularPower);
-
-    float diffuseAmount = max(dot(LightVecW, input.Normal), 0.0f);
-	
-    float3 diffuse = diffuseAmount * (DiffuseMtrl * DiffuseLight).rgb;
-    float3 ambient = AmbientMtrl * AmbientLight;
-    float3 specular = specularAmount * (specularMtrl * specularLight).rgb;
+    float3 diffuse = amount * (DiffuseLight * DiffuseMtrl).rgb;
+    float3 ambient = (AmbientMtrl * AmbientLight).rgb;
+    float3 specular = pow(max(dot(input.ToEye, r), 0), specularPower) * (specularLight * specularMtrl);
     float4 colour;
-    colour.rgb = ambient + diffuse + specular;
+    colour.rgb = diffuse + ambient + specular;
     colour.a = DiffuseMtrl.a;
-
     float4 textureColour = colour + txDiffuse.Sample(samLinear, input.Tex);
     clip(textureColour.a - 0.95f);
     return textureColour;

@@ -13,7 +13,7 @@ void GameManager::LoadConstantBuffer()
 	cbData.AmbientLight = ambientLight;
 	cbData.AmbientMtrl = ambientMaterial;
 	cbData.cameraEye = *_pCurrCamera->GetEye();
-	cbData.specularPower = 10.0f;
+	cbData.specularPower = 256.0f;
 	cbData.specularLight = specularLight;
 	cbData.specularMtrl = specularMaterial;
 }
@@ -281,12 +281,10 @@ void GameManager::Input(float deltaTime)
 
 
 	
-	if (GetAsyncKeyState(VK_SPACE))
+	if (GetAsyncKeyState(VK_RSHIFT))
 		_pCurrCamera->MovePosition(0, (1 * deltaTime) * _pCurrCamera->GetMovementSpeed(), 0);
 	if (GetAsyncKeyState(VK_SHIFT))
 		_pCurrCamera->MovePosition(0, (-1 * deltaTime) * _pCurrCamera->GetMovementSpeed(), 0);
-	if (GetAsyncKeyState('E'))
-		_pCurrCamera->MoveRotation((1 * deltaTime), 0, 0);
 
 	if (GetAsyncKeyState('Q'))
 		car->Boost(deltaTime);
