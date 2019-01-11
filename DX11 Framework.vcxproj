@@ -393,6 +393,7 @@
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="Ball.cpp" />
+    <ClCompile Include="Billboard.cpp" />
     <ClCompile Include="BumperCamera.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Car.cpp" />
@@ -402,6 +403,7 @@
     <ClCompile Include="DX11 Framework.cpp" />
     <ClCompile Include="FileManager.cpp" />
     <ClCompile Include="GameManager.cpp" />
+    <ClCompile Include="Grass.cpp" />
     <ClCompile Include="Grid.cpp" />
     <ClCompile Include="MathsFunctions.cpp" />
     <ClCompile Include="Object.cpp" />
@@ -419,6 +421,7 @@
   <ItemGroup>
     <ClInclude Include="Application.h" />
     <ClInclude Include="Ball.h" />
+    <ClInclude Include="Billboard.h" />
     <ClInclude Include="BumperCamera.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Car.h" />
@@ -427,6 +430,7 @@
     <ClInclude Include="Dome.h" />
     <ClInclude Include="FileManager.h" />
     <ClInclude Include="GameManager.h" />
+    <ClInclude Include="Grass.h" />
     <ClInclude Include="Grid.h" />
     <ClInclude Include="MathsFunctions.h" />
     <ClInclude Include="Object.h" />
@@ -440,8 +444,6 @@
     <ClInclude Include="AppTime.h" />
     <ClInclude Include="ThirdPersonCamera.h" />
     <ResourceCompile Include="DX11 Framework.rc" />
-  </ItemGroup>
-  <ItemGroup>
   </ItemGroup>
   <ItemGroup>
   </ItemGroup>

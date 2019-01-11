@@ -110,6 +110,12 @@
     <ClInclude Include="BumperCamera.h">
       <Filter>Cameras\Headers</Filter>
     </ClInclude>
+    <ClInclude Include="Grass.h">
+      <Filter>Objects\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Billboard.h">
+      <Filter>Objects\Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp">
@@ -174,6 +180,12 @@
     </ClCompile>
     <ClCompile Include="BumperCamera.cpp">
       <Filter>Cameras\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Grass.cpp">
+      <Filter>Objects\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Billboard.cpp">
+      <Filter>Objects\Source</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -10,6 +10,7 @@
 #include "Car.h"
 #include "Dome.h"
 #include "FileManager.h"
+#include "Grass.h"
 #include "Shader.h"
 
 

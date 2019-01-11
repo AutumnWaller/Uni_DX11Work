@@ -51,7 +51,8 @@ public:
 		CUBE,
 		PYRAMID,
 		BALL,
-		CAR
+		CAR,
+		BILLBOARD
 	};
 
 };

@@ -72,6 +72,10 @@ void GameManager::Initialise(ID3D11Device *deviceRef, ID3D11DeviceContext *conte
 	object->SetPosition(5, 0, 0);
 	gameObjects.emplace_back(object);
 
+	Grass *grass = new Grass();
+	grass->SetPosition(30, 4, 30);
+	gameObjects.emplace_back(grass);
+
 	for (int i = 0; i < gameObjects.size(); i++) {
 		if (gameObjects[i]->GetObjectType() == StaticStructs::CAR)
 			car = (Car*)gameObjects[i];
@@ -220,7 +224,19 @@ void GameManager::Draw()
 	float blendFactor[] = { 0.75f, 0.75f, 0.75f, 1.0f };
 
 	for (int i = 0; i < gameObjects.size(); i++) {
-		if (gameObjects[i]->GetObjectType() == StaticStructs::DOME) {
+		Object *currObject = gameObjects[i];
+		if (currObject->GetObjectType() == StaticStructs::BILLBOARD) {
+			if (_pCurrRasteriserState == _pWireframe)
+				_pDContext->RSSetState(_pWireframe);
+			else
+			{
+				_pDContext->OMSetBlendState(_pTransparency, blendFactor, 0xffffffff);
+				_pDContext->RSSetState(_pSolidNoCull);
+				_pDContext->PSSetShader(_pPixelShaders->at(2), nullptr, 0);
+				_pDContext->VSSetShader(_pVertexShaders->at(2), nullptr, 0);
+			}
+		}
+		if (currObject->GetObjectType() == StaticStructs::DOME) {
 			if(_pCurrRasteriserState == _pWireframe)
 				_pDContext->RSSetState(_pWireframe);
 			else
