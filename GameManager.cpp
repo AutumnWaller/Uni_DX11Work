@@ -120,7 +120,7 @@ HRESULT GameManager::CompileShaders()
 
 HRESULT GameManager::CreateRasterizers()
 {
-	HRESULT hr;
+	HRESULT hr;  
 	D3D11_RASTERIZER_DESC wfDesc;
 	ZeroMemory(&wfDesc, sizeof(D3D11_RASTERIZER_DESC));
 	wfDesc.FillMode = D3D11_FILL_WIREFRAME;
@@ -234,6 +234,8 @@ void GameManager::Draw()
 				_pDContext->RSSetState(_pSolidNoCull);
 				_pDContext->PSSetShader(_pPixelShaders->at(2), nullptr, 0);
 				_pDContext->VSSetShader(_pVertexShaders->at(2), nullptr, 0);
+				gameObjects[i]->Draw(world, cbData);
+
 			}
 		}
 		if (currObject->GetObjectType() == StaticStructs::DOME) {

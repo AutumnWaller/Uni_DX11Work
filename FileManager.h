@@ -8,6 +8,7 @@
 #include "Ball.h"
 #include "Car.h"
 #include "Dome.h"
+#include "Goal.h"
 using namespace std;
 class FileManager
 {

@@ -403,6 +403,7 @@
     <ClCompile Include="DX11 Framework.cpp" />
     <ClCompile Include="FileManager.cpp" />
     <ClCompile Include="GameManager.cpp" />
+    <ClCompile Include="Goal.cpp" />
     <ClCompile Include="Grass.cpp" />
     <ClCompile Include="Grid.cpp" />
     <ClCompile Include="MathsFunctions.cpp" />
@@ -430,6 +431,7 @@
     <ClInclude Include="Dome.h" />
     <ClInclude Include="FileManager.h" />
     <ClInclude Include="GameManager.h" />
+    <ClInclude Include="Goal.h" />
     <ClInclude Include="Grass.h" />
     <ClInclude Include="Grid.h" />
     <ClInclude Include="MathsFunctions.h" />

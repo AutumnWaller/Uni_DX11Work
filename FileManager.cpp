@@ -12,7 +12,7 @@ char* FileManager::Read(char * filePath)
 	file.seekg(0, ios::beg);
 	char* storage = new char[end];
 	file.read(storage, end);
-
+	file.close();
 	return storage;
 }
 
@@ -214,6 +214,8 @@ Object* FileManager::GetObjectFromString(string str) {
 		return new Dome();
 	if (str == "Grd")
 		return new Grid();
+	if (str == "Goa")
+		return new Goal();
 	//Goal posts
 }
 

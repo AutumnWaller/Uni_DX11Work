@@ -11,6 +11,7 @@
 #include "Dome.h"
 #include "FileManager.h"
 #include "Grass.h"
+#include "Goal.h"
 #include "Shader.h"
 
 
