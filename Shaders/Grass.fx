@@ -33,6 +33,7 @@ cbuffer ConstantBuffer : register(b0)
 struct VS_INPUT
 {
 	float4 Pos : POSITION;
+    float2 Normal : NORMAL;
 	float2 Tex : TEXCOORD0;
 
 };
@@ -69,7 +70,8 @@ PS_INPUT VS(VS_INPUT input)
 //--------------------------------------------------------------------------------------
 float4 PS(PS_INPUT input) : SV_Target
 {
-    float4 textureColour =  txDiffuse.Sample(samLinear, input.Tex);
+    float4 textureColour = txDiffuse.Sample(samLinear, input.Tex);
+    
     clip(textureColour.a - 0.95f);
-    return float4(1, 0, 0, 0);
+    return textureColour;
 }

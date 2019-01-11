@@ -58,11 +58,6 @@ void GameManager::Initialise(ID3D11Device *deviceRef, ID3D11DeviceContext *conte
 	
 
 	CompileShaders();
-
-	
-
-	
-
 	XMStoreFloat4x4(&_World, XMMatrixIdentity());
 
 	fm->ConvertRBD("Data/StartingPositions.rbd", &gameObjects);
@@ -72,9 +67,24 @@ void GameManager::Initialise(ID3D11Device *deviceRef, ID3D11DeviceContext *conte
 	object->SetPosition(5, 0, 0);
 	gameObjects.emplace_back(object);
 
-	Grass *grass = new Grass();
-	grass->SetPosition(30, 4, 30);
-	gameObjects.emplace_back(grass);
+	for (int i = 1; i < 50; i++) {
+		for (int j = 1; j < 50; j++) {
+			int x = rand() % 98 + 3;
+			int z = rand() % 98 + 4;
+			int yRot = rand() % 360;
+			Grass *grass = new Grass();
+			grass->SetPosition(x, 0.5f, z);
+			grass->SetScale(0.6f, 0.4f, 0.6f);
+			grass->SetRotation(0, yRot, 0);
+			gameObjects.emplace_back(grass);
+			Grass *grass2 = new Grass();
+			grass2->SetScale(0.6f, 0.4f, 0.6f);
+			grass2->SetPosition(x, 0.5f, z);
+			grass2->SetRotation(0, yRot + 90, 0);
+			gameObjects.emplace_back(grass2);
+		}
+	}
+
 
 	for (int i = 0; i < gameObjects.size(); i++) {
 		if (gameObjects[i]->GetObjectType() == StaticStructs::CAR)
@@ -230,7 +240,7 @@ void GameManager::Draw()
 				_pDContext->RSSetState(_pWireframe);
 			else
 			{
-				_pDContext->OMSetBlendState(_pTransparency, blendFactor, 0xffffffff);
+				_pDContext->OMSetBlendState(0, 0, 0xffffffff);
 				_pDContext->RSSetState(_pSolidNoCull);
 				_pDContext->PSSetShader(_pPixelShaders->at(2), nullptr, 0);
 				_pDContext->VSSetShader(_pVertexShaders->at(2), nullptr, 0);

@@ -5,7 +5,7 @@ Grid::Grid()
 {
 	Object();
 	if (!_pTexturePath)
-		_pTexturePath = L"Textures/MetalPlate.dds";
+		_pTexturePath = L"Textures/grassfloor.dds";
 }
 
 Grid::Grid(int width, int length)

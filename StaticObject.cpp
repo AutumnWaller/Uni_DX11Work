@@ -95,13 +95,13 @@ void StaticObject::Initialise()
 	_pScale = new XMFLOAT3(1, 1, 1);
 	_pRotation = new XMFLOAT3(0, 0, 0);
 	_pForward = new XMFLOAT3(0, 0, 1);
+
 }
 
 
 
 void StaticObject::Update(float time) {
 	DirectX::XMStoreFloat4x4(&world, XMMatrixScaling(_pScale->x, _pScale->y, _pScale->z) * XMMatrixRotationX(_pRotation->x) * XMMatrixRotationY(_pRotation->y) * XMMatrixRotationZ(_pRotation->z) * XMMatrixTranslation(_pPosition->x, _pPosition->y, _pPosition->z));
-
 }
 
 void StaticObject::Cleanup()

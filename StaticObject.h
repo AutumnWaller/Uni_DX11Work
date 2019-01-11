@@ -44,6 +44,8 @@ protected:
 
 	float turnSpeed = 1; 
 
+	bool isUpdateable = true;
+
 	XMFLOAT4X4 world;
 	XMFLOAT3 *_pPosition;
 	XMFLOAT3 *_pScale;

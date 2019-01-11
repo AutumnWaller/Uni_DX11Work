@@ -5,6 +5,7 @@
 Grass::Grass()
 {
 	_pTexturePath = L"Textures/Grass.dds";
+	isUpdateable = false;
 	Billboard();
 }
 

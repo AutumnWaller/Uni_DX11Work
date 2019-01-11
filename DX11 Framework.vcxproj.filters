@@ -116,7 +116,9 @@
     <ClInclude Include="Billboard.h">
       <Filter>Objects\Headers</Filter>
     </ClInclude>
-    <ClInclude Include="Goal.h" />
+    <ClInclude Include="Goal.h">
+      <Filter>Objects\Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp">
@@ -188,7 +190,9 @@
     <ClCompile Include="Billboard.cpp">
       <Filter>Objects\Source</Filter>
     </ClCompile>
-    <ClCompile Include="Goal.cpp" />
+    <ClCompile Include="Goal.cpp">
+      <Filter>Objects\Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CLInclude Include="resource.h">
