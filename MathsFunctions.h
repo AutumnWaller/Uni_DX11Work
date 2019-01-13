@@ -3,7 +3,7 @@
 #include <DirectXMath.h>
 
 using namespace DirectX;
-static class MathsFunctions
+class MathsFunctions
 {
 public:
 	static float Normalise(float value, float min = 0, float max = 1);

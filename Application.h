@@ -45,8 +45,6 @@ private:
 	HRESULT InitWindow(HINSTANCE hInstance, int nCmdShow);
 	HRESULT InitDevice();
 	void Cleanup();
-	HRESULT InitShadersAndInputLayout();
-	HRESULT InitDrawBuffers();
 	
 	UINT _WindowHeight;
 	UINT _WindowWidth;

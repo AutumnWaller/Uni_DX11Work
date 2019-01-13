@@ -2,8 +2,6 @@
 
 
 
-
-
 void GameManager::LoadConstantBuffer()
 {
 	cbData.gTime = time;
@@ -20,13 +18,34 @@ void GameManager::LoadConstantBuffer()
 
 GameManager::GameManager()
 {
+	_pCameraTop = nullptr;
+	_pCameraBumper = nullptr;
+	_pCameraThirdPerson = nullptr;
+	car = nullptr;
+	_pWireframe = nullptr;
+	_pSolid = nullptr;
+	_pSolidFrontCull = nullptr;
+	_pSolidNoCull = nullptr;
+	_pCurrRasteriserState = nullptr;
+	_pSamplerLinear = nullptr;
+	_pTransparency = nullptr;
+	_pConstantBuffer = nullptr;
+	_pVertexLayouts = nullptr;
+	_pVertexShaders = nullptr;
+	_pPixelShaders = nullptr;
+	_pDContext = nullptr;
+	_pDeviceRef = nullptr;
+	cbData = {};
+	_pCurrCamera = nullptr;
+
+
 	fm = new FileManager();
 }
 
 
 GameManager::~GameManager()
 {
-	gameObjects.~vector();
+	gameObjects.clear();
 
 	if (_pCameraThirdPerson)delete _pCameraThirdPerson;
 	if (_pCameraBumper) delete _pCameraBumper;
@@ -66,7 +85,7 @@ void GameManager::Initialise(ID3D11Device *deviceRef, ID3D11DeviceContext *conte
 	Object *object = new Object("Models/Hercules.obj", true, L"Textures/Hercules_COLOR.dds");
 	object->SetPosition(5, 0, 0);
 	gameObjects.emplace_back(object);
-
+/*
 	for (int i = 1; i < 50; i++) {
 		for (int j = 1; j < 50; j++) {
 			int x = rand() % 98 + 3;
@@ -83,7 +102,7 @@ void GameManager::Initialise(ID3D11Device *deviceRef, ID3D11DeviceContext *conte
 			grass2->SetRotation(0, yRot + 90, 0);
 			gameObjects.emplace_back(grass2);
 		}
-	}
+	}*/
 
 
 	for (int i = 0; i < gameObjects.size(); i++) {
@@ -115,9 +134,9 @@ HRESULT GameManager::CompileShaders()
 	fm->ConvertRBS("Data/ShaderPaths.rbs", &strings);
 	for(int i = 0; i < strings.size(); i++)
 	{
-		ID3D11VertexShader* vs;
-		ID3D11PixelShader* ps;
-		ID3D11InputLayout* il;
+		ID3D11VertexShader* vs = nullptr;
+		ID3D11PixelShader* ps = nullptr;
+		ID3D11InputLayout* il = nullptr;
 
 		_pVertexShaders->emplace_back(vs);
 		_pPixelShaders->emplace_back(ps);
@@ -213,7 +232,6 @@ HRESULT GameManager::CreateSampleAndBlend()
 
 void GameManager::Draw()
 {
-	HRESULT hr;
 	LoadConstantBuffer();
 	_pDContext->PSSetSamplers(0, 1, &_pSamplerLinear);
 

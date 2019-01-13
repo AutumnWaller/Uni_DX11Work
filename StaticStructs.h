@@ -44,7 +44,7 @@ public:
 		float z;
 	};
 
-	static enum ObjectType {
+	enum ObjectType {
 		OBJECT,
 		GRID,
 		DOME,

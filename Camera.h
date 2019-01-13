@@ -15,7 +15,7 @@ protected:
 	XMFLOAT4 *_pEye;
 	XMFLOAT4 *_pAt;
 	XMFLOAT4 *_pUp;
-	XMFLOAT4 *_pForward;
+	XMFLOAT4 *_pCamForward;
 	Object *_pTarget;
 public:
 	Camera(XMVECTOR _Eye = XMVECTOR{0, 0, 0}, XMVECTOR _At = XMVECTOR{ 1, 1, 1 }, int windowWidth = 1280, int windowHeight = 720);
@@ -27,7 +27,7 @@ public:
 	XMFLOAT4* GetEye() { return _pEye; }
 	XMFLOAT4* GetAt() { return _pAt; }
 	XMFLOAT4* GetUp() { return _pUp; }
-	XMFLOAT4* GetForward4() { return _pForward; }
+	XMFLOAT4* GetForward4() { return _pCamForward; }
 	XMFLOAT4X4 GetViewMatrix() { return view; }
 	XMFLOAT4X4 GetProjectionMatrix() { return projection; }
 

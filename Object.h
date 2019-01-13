@@ -35,7 +35,6 @@ public:
 	virtual void Turn(float amount) override;
 protected:
 	void CalculateNormals();
-	virtual void Nullify();
 	virtual void Cleanup() override;
 	StaticStructs::StandardVertex *_pVertices;
 	WORD *_pIndices;

@@ -3,6 +3,8 @@
 
 Grid::Grid()
 {
+	_pHeightMap = nullptr;
+
 	Object();
 	if (!_pTexturePath)
 		_pTexturePath = L"Textures/grassfloor.dds";
@@ -10,12 +12,16 @@ Grid::Grid()
 
 Grid::Grid(int width, int length)
 {
+	_pHeightMap = nullptr;
+
 	Object();
 	SetSize(width, length);
 }
 
 Grid::Grid(int width, int length, char *heightmapFileName)
 {
+	_pHeightMap = nullptr;
+
 	Object();
 	LoadHeightmap("Textures/Heightmap.raw", 513, 513);
 	SetSize(width, length);
@@ -23,13 +29,7 @@ Grid::Grid(int width, int length, char *heightmapFileName)
 
 Grid::~Grid()
 {
-	Cleanup();
-}
-
-void Grid::Nullify()
-{
-	Object::Nullify();
-	_pHeightMap = nullptr;
+	if (_pHeightMap) delete _pHeightMap;
 }
 
 void Grid::SetSize(int width, int length)

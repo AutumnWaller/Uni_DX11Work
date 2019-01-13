@@ -17,9 +17,11 @@
 
 
 using namespace DirectX;
-
-class GameManager
+__declspec(align(16)) class GameManager
 {
+
+	
+
 private:
 
 	XMFLOAT4X4 _World;
@@ -71,6 +73,17 @@ private:
 
 	void LoadConstantBuffer();
 public:
+
+	void* operator new(size_t i)
+	{
+		return _mm_malloc(i, 16);
+	}
+
+	void operator delete(void* p)
+	{
+		_mm_free(p);
+	}
+
 	Camera *_pCurrCamera;
 	GameManager();
 	~GameManager();

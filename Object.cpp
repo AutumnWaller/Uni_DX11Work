@@ -28,7 +28,12 @@ void Object::CreateBuffers(ID3D11Device *deviceRef)
 
 }
 
-void Object::Nullify() {
+Object::Object()
+{
+	meshData = {};
+	vertexAmount = 0;
+	indexAmount = 0;
+	type = StaticStructs::OBJECT;
 	_pVertices = nullptr;
 	_pIndices = nullptr;
 
@@ -41,19 +46,21 @@ void Object::Nullify() {
 	_pDeviceContext = nullptr;
 	_pDeviceRef = nullptr;
 	_pModelPath = nullptr;
-
-}
-
-
-Object::Object()
-{
-	Nullify();
 	StaticObject();
 }
 
 Object::Object(char *modelPath, bool _InvertTexCoords = true, const wchar_t *texturePath = nullptr)
 {
-	Nullify();
+	_pVertices = nullptr;
+	_pIndices = nullptr;
+
+	_pTextureRV = nullptr;
+
+	_pIndexBuffer = nullptr;
+	_pVertexBuffer = nullptr;
+	_pConstantBuffer = nullptr;
+	_pDeviceContext = nullptr;
+	_pDeviceRef = nullptr;
 	_pTexturePath = texturePath;
 	invertTexCoords = _InvertTexCoords;
 	_pModelPath = modelPath;
@@ -63,7 +70,22 @@ Object::Object(char *modelPath, bool _InvertTexCoords = true, const wchar_t *tex
 
 Object::Object(float xPos, float yPos, float zPos)
 {
-	Nullify();
+	meshData = {};
+	vertexAmount = 0;
+	indexAmount = 0;
+	type = StaticStructs::OBJECT;
+	_pVertices = nullptr;
+	_pIndices = nullptr;
+
+	_pTexturePath = nullptr;
+	_pTextureRV = nullptr;
+
+	_pIndexBuffer = nullptr;
+	_pVertexBuffer = nullptr;
+	_pConstantBuffer = nullptr;
+	_pDeviceContext = nullptr;
+	_pDeviceRef = nullptr;
+	_pModelPath = nullptr;
 	StaticObject(new XMFLOAT3(xPos, yPos, zPos));
 }
 
@@ -79,7 +101,6 @@ void Object::CalculateNormals()
 
 Object::~Object()
 {
-	Cleanup();
 }
 
 

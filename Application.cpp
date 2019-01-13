@@ -34,6 +34,14 @@ Application::Application()
 	_pRenderTargetView = nullptr;
 	_pConstantBuffer = nullptr;
 	_pTransparency = nullptr;
+	_pDepthStencilView = nullptr;
+	_pDepthStencilBuffer = nullptr;
+	kbState = 0;
+	_WindowHeight = 720;
+	_WindowWidth = 1280;
+	gTime = 0;
+	_pGameManager = new GameManager();
+
 }
 
 Application::~Application()
@@ -59,27 +67,6 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
 
         return E_FAIL;
     }
-	return S_OK;
-}
-
-HRESULT Application::InitShadersAndInputLayout()
-{
-	HRESULT hr;
-
-	
-	return S_OK;
-}
-
-
-
-
-
-HRESULT Application::InitDrawBuffers()
-{
-	HRESULT hr;
-
-	_pGameManager = new GameManager();
-	
 	return S_OK;
 }
 
@@ -217,21 +204,17 @@ HRESULT Application::InitDevice()
     vp.TopLeftY = 0;
     _pImmediateContext->RSSetViewports(1, &vp);
 
-	InitShadersAndInputLayout();
-
-	InitDrawBuffers();
-
     // Set primitive topology
     _pImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	// Create the constant buffer
-	D3D11_BUFFER_DESC bd;
-	ZeroMemory(&bd, sizeof(bd));
-	bd.Usage = D3D11_USAGE_DEFAULT;
-	bd.ByteWidth = sizeof(StaticStructs::ConstantBuffer);
-	bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	bd.CPUAccessFlags = 0;
-    hr = _pd3dDevice->CreateBuffer(&bd, nullptr, &_pConstantBuffer);
+	D3D11_BUFFER_DESC desc;
+	ZeroMemory(&desc, sizeof(desc));
+	desc.Usage = D3D11_USAGE_DEFAULT;
+	desc.ByteWidth = sizeof(StaticStructs::ConstantBuffer);
+	desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	desc.CPUAccessFlags = 0;
+    hr = _pd3dDevice->CreateBuffer(&desc, nullptr, &_pConstantBuffer);
 
 	_pGameManager->Initialise(_pd3dDevice, _pImmediateContext, _pConstantBuffer);
 
@@ -282,19 +265,7 @@ void Application::Draw()
 
 	_pImmediateContext->ClearDepthStencilView(_pDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
-
-
-
-
-
-	// "fine-tune" the blending equation
-
-	// Set the default blend state (no blending) for opaque objects
-
 	_pGameManager->Draw();
-
-	// Set the blend state for transparent objects
-
 	
 	//
 	// Present our back buffer to our front buffer

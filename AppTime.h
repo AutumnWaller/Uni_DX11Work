@@ -1,7 +1,7 @@
 #pragma once
 
 #include <windows.h>
-static class AppTime
+class AppTime
 {
 public:
 	static float DeltaTime();

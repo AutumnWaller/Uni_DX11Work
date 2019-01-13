@@ -2,8 +2,6 @@
 #include "Object.h"
 class Grid : public Object
 {
-protected:
-	virtual void Nullify() override;
 public:
 	void SetSize(int _Width, int _Length);
 

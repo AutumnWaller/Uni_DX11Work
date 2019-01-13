@@ -35,7 +35,6 @@ void FileManager::ConvertRBD(char* filePath, vector<Object*> *objects)
 	int dataLength = strlen(data);
 	Object* object = nullptr;
 	char objName[3] = {' ', ' ', ' '};
-	int pos = 0;
 	float posX = 0, posY = 0, posZ = 0, scaX = 1, scaY = 1, scaZ = 1, rotX = 0, rotY = 0, rotZ = 0;
 	int tileW = 0, tileL = 0;
 	for (int i = 0; i < dataLength; i) {
@@ -54,11 +53,11 @@ void FileManager::ConvertRBD(char* filePath, vector<Object*> *objects)
 
 		if (data[i] == 'p') {
 			i += 2;
-			string pos = "";
+			string position = "";
 			int counter = 0;
 			for (int j = 0; j < 6; j++) {
 				if (data[i + j] == '\n') {
-					posZ = stof(pos);
+					posZ = stof(position);
 					i += j;
 					break;
 				}
@@ -66,19 +65,19 @@ void FileManager::ConvertRBD(char* filePath, vector<Object*> *objects)
 				{
 					switch (counter) {
 					case 0:
-						posX = stof(pos);
+						posX = stof(position);
 						break;
 					case 1:
-						posY = stof(pos);
+						posY = stof(position);
 						break;
 					}
 					i++;
 					i += j;
 					j = 0;
 					counter++;
-					pos.clear();
+					position.clear();
 				}
-				pos += data[i + j];
+				position += data[i + j];
 			}
 			object->SetPosition(posX, posY, posZ);
 			i++;
@@ -217,6 +216,7 @@ Object* FileManager::GetObjectFromString(string str) {
 	if (str == "Goa")
 		return new Goal();
 	//Goal posts
+	return nullptr;
 }
 
 FileManager::~FileManager()

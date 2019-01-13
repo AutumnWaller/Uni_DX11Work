@@ -5,7 +5,7 @@
 #include <vector>
 #include <string>
 #include <tchar.h>
-static class Shader
+class Shader
 {
 public:
 	static HRESULT CompileShaderFromFile(WCHAR* szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel, ID3DBlob** ppBlobOut);

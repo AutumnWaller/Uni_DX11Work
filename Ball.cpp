@@ -4,8 +4,8 @@
 
 Ball::Ball()
 {
-	_pModelPath = "Models/Ball3.obj";
-	_pTexturePath = L"Textures/black.dds";
+	_pModelPath = "Models/ball.obj";
+	_pTexturePath = L"Textures/ball.dds";
 	invertTexCoords = false;
 	type = StaticStructs::BALL;
 }
@@ -28,9 +28,4 @@ void Ball::Draw(DirectX::XMMATRIX appWorld, StaticStructs::ConstantBuffer cb)
 void Ball::Update(float time)
 {
 	Object::Update(time);
-}
-
-void Ball::Cleanup()
-{
-	Object::Cleanup();
 }

@@ -10,7 +10,7 @@ Camera::Camera(XMVECTOR _Eye, XMVECTOR _At, int windowWidth, int windowHeight)
 	_pEye = new XMFLOAT4();
 	_pAt = new XMFLOAT4();
 	_pUp = new XMFLOAT4(0, 1, 0, 0);
-	_pForward = new XMFLOAT4(0, 0, 1, 0);
+	_pCamForward = new XMFLOAT4(0, 0, 1, 0);
 
 	DirectX::XMStoreFloat4(_pEye, _Eye);
 	DirectX::XMStoreFloat4(_pAt, _At);
@@ -68,5 +68,5 @@ void Camera::Update(float time)
 
 Camera::~Camera()
 {
-	delete _pAt, _pUp, _pForward;
+	delete _pAt, _pUp, _pCamForward;
 }

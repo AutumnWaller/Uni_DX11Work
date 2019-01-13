@@ -17,7 +17,6 @@ Cube::Cube(const wchar_t *texturePath = nullptr)
 
 Cube::~Cube()
 {
-	Cleanup();
 }
 
 void Cube::Initialise(ID3D11Device * deviceRef,  ID3D11DeviceContext * context, ID3D11Buffer * cBuffer)
