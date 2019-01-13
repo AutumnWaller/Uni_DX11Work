@@ -82,12 +82,12 @@ void GameManager::Initialise(ID3D11Device *deviceRef, ID3D11DeviceContext *conte
 	fm->ConvertRBD("Data/StartingPositions.rbd", &gameObjects);
 	
 
-	Object *object = new Object("Models/Hercules.obj", true, L"Textures/Hercules_COLOR.dds");
-	object->SetPosition(5, 0, 0);
-	gameObjects.emplace_back(object);
-/*
-	for (int i = 1; i < 50; i++) {
-		for (int j = 1; j < 50; j++) {
+	//Object *object = new Object("Models/Hercules.obj", true, L"Textures/Hercules_COLOR.dds");
+	//object->SetPosition(5, 0, 0);
+	//gameObjects.emplace_back(object);
+
+	for (int i = 1; i < 30; i++) {
+		for (int j = 1; j < 30; j++) {
 			int x = rand() % 98 + 3;
 			int z = rand() % 98 + 4;
 			int yRot = rand() % 360;
@@ -102,7 +102,7 @@ void GameManager::Initialise(ID3D11Device *deviceRef, ID3D11DeviceContext *conte
 			grass2->SetRotation(0, yRot + 90, 0);
 			gameObjects.emplace_back(grass2);
 		}
-	}*/
+	}
 
 
 	for (int i = 0; i < gameObjects.size(); i++) {
@@ -304,11 +304,11 @@ void GameManager::Input(float deltaTime)
 	if (GetAsyncKeyState(0x32)) //2
 		_pCurrRasteriserState = _pSolid;
 
-	if (GetAsyncKeyState(VK_NUMPAD2))
+	if (GetAsyncKeyState('T'))
 		_pCurrCamera = _pCameraThirdPerson;
-	else if (GetAsyncKeyState(VK_NUMPAD8))
+	else if (GetAsyncKeyState('B'))
 		_pCurrCamera = _pCameraBumper;
-	else if(GetAsyncKeyState(VK_NUMPAD5))
+	else if(GetAsyncKeyState('U'))
 		_pCurrCamera = _pCameraTop;
 
 
@@ -327,12 +327,12 @@ void GameManager::Input(float deltaTime)
 
 
 	
-	if (GetAsyncKeyState(VK_RSHIFT))
+	if (GetAsyncKeyState(VK_UP))
 		_pCurrCamera->MovePosition(0, (1 * deltaTime) * _pCurrCamera->GetMovementSpeed(), 0);
-	if (GetAsyncKeyState(VK_SHIFT))
+	if (GetAsyncKeyState(VK_DOWN))
 		_pCurrCamera->MovePosition(0, (-1 * deltaTime) * _pCurrCamera->GetMovementSpeed(), 0);
 
-	if (GetAsyncKeyState('Q'))
+	if (GetAsyncKeyState(VK_SHIFT))
 		car->Boost(deltaTime);
 
 }

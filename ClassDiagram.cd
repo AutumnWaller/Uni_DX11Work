@@ -1,0 +1,187 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Application">
+    <Position X="44.25" Y="9" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AASgAIIAABKAAxAAIEAAAAgAAAACAIMAACBAQEIQAAg=</HashCode>
+      <FileName>Application.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="AppTime">
+    <Position X="41.75" Y="17.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAEAAA=</HashCode>
+      <FileName>AppTime.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Ball">
+    <Position X="36.5" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAAAwAAAAAAAAAAAAAAAAAAAEAAAAAAAIA=</HashCode>
+      <FileName>Ball.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Billboard">
+    <Position X="40.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Billboard.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BumperCamera">
+    <Position X="34.5" Y="5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAIAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAA=</HashCode>
+      <FileName>BumperCamera.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Camera">
+    <Position X="36.75" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABQCAAgAAAAAAIgCQCAAAQAACjKAAggIAQAAIIAAAAI=</HashCode>
+      <FileName>Camera.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Car">
+    <Position X="44.25" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAEAQQAAAAAAFACAEAASAECgAQAABQAAAAAAAI=</HashCode>
+      <FileName>Car.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Cube">
+    <Position X="32.25" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQQUAAgAAAAAwAAAAAAAAAAABAQAAABAAAAAEAAAAA=</HashCode>
+      <FileName>Cube.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Dome">
+    <Position X="42.75" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABAAAAAAAAAAwAAAAAAAAAAAAAAAAAAAAQAAAAAAAA=</HashCode>
+      <FileName>Dome.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FileManager">
+    <Position X="41.75" Y="11.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAgACCAAAAAAAACAAEBBAA=</HashCode>
+      <FileName>FileManager.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GameManager">
+    <Position X="46.25" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AATBBEBBCAABB2AHAEEIAQAYEAEEAIAICIGSRgBQCAI=</HashCode>
+      <FileName>GameManager.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Goal">
+    <Position X="34.25" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Goal.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Grass">
+    <Position X="42.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAgAAIAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Grass.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Grid">
+    <Position X="41.75" Y="8" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAgAAAAAAAwAAAAAIAAAAAAEAAAQAAAAAAEAAAQA=</HashCode>
+      <FileName>Grid.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MathsFunctions">
+    <Position X="35" Y="11.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAA=</HashCode>
+      <FileName>MathsFunctions.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Object">
+    <Position X="38.75" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIUCACEAAQhAAwAgAkAKAkIAACABIISAAAAAAkAAIAA=</HashCode>
+      <FileName>Object.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Pyramid">
+    <Position X="38.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAQAAAAAAAAwAAIAAAAAAAAAAQAAEAAAAAAEAAAAA=</HashCode>
+      <FileName>Pyramid.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Shader">
+    <Position X="41.75" Y="16.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAA=</HashCode>
+      <FileName>Shader.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Skybox">
+    <Position X="41.75" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAhAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Skybox.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="StaticObject">
+    <Position X="33.25" Y="7.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQUAEEgAgCCAgQAIAIACIAAAAAEMAggAAAAAAkACAAA=</HashCode>
+      <FileName>StaticObject.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="StaticStructs">
+    <Position X="41.75" Y="4.75" Width="1.5" />
+    <NestedTypes>
+      <Struct Name="StaticStructs::StandardVertex" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>StaticStructs.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Struct>
+      <Struct Name="StaticStructs::ConstantBuffer" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>StaticStructs.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Struct>
+      <Struct Name="StaticStructs::Vector3f" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>StaticStructs.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Struct>
+      <Enum Name="StaticStructs::ObjectType" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>StaticStructs.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>StaticStructs.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ThirdPersonCamera">
+    <Position X="32.25" Y="5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAYAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ThirdPersonCamera.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Struct Name="MeshData">
+    <Position X="46.25" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAgAAAAAAAAAAAAAAEAEAAQAAIAAAAAAAAAAAEAA=</HashCode>
+      <FileName>OBJLoader.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
