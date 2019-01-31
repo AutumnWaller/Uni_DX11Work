@@ -11,7 +11,7 @@ Camera::Camera(XMVECTOR _Eye, XMVECTOR _At, int windowWidth, int windowHeight)
 	_pAt = new XMFLOAT4();
 	_pUp = new XMFLOAT4(0, 1, 0, 0);
 	_pCamForward = new XMFLOAT4(0, 0, 1, 0);
-
+	
 	DirectX::XMStoreFloat4(_pEye, _Eye);
 	DirectX::XMStoreFloat4(_pAt, _At);
 	

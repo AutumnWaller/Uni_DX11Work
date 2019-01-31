@@ -200,9 +200,6 @@
     </CLInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="DX11 Framework.fx">
-      <Filter>Shaders</Filter>
-    </None>
     <None Include="Shaders\TextureTiling.fx">
       <Filter>Shaders</Filter>
     </None>
@@ -211,5 +208,13 @@
     <ResourceCompile Include="DX11 Framework.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Shaders\DX11 Framework.fx">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\Grass.fx">
+      <Filter>Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

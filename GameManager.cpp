@@ -11,7 +11,8 @@ void GameManager::LoadConstantBuffer()
 	cbData.AmbientLight = ambientLight;
 	cbData.AmbientMtrl = ambientMaterial;
 	cbData.cameraEye = *_pCurrCamera->GetEye();
-	cbData.specularPower = 256.0f;
+	cbData.specularPower = 20.0f;
+	cbData.LightVecW = lightDirection;
 	cbData.specularLight = specularLight;
 	cbData.specularMtrl = specularMaterial;
 }
@@ -85,24 +86,24 @@ void GameManager::Initialise(ID3D11Device *deviceRef, ID3D11DeviceContext *conte
 	Object *object = new Object("Models/Hercules.obj", true, L"Textures/Hercules_COLOR.dds");
 	object->SetPosition(5, 0, 0);
 	gameObjects.emplace_back(object);
-/*
-	for (int i = 1; i < 50; i++) {
-		for (int j = 1; j < 50; j++) {
-			int x = rand() % 98 + 3;
-			int z = rand() % 98 + 4;
-			int yRot = rand() % 360;
-			Grass *grass = new Grass();
-			grass->SetPosition(x, 0.5f, z);
-			grass->SetScale(0.6f, 0.4f, 0.6f);
-			grass->SetRotation(0, yRot, 0);
-			gameObjects.emplace_back(grass);
-			Grass *grass2 = new Grass();
-			grass2->SetScale(0.6f, 0.4f, 0.6f);
-			grass2->SetPosition(x, 0.5f, z);
-			grass2->SetRotation(0, yRot + 90, 0);
-			gameObjects.emplace_back(grass2);
-		}
-	}*/
+
+	//for (int i = 1; i < 50; i++) {
+	//	for (int j = 1; j < 50; j++) {
+	//		int x = rand() % 98 + 3;
+	//		int z = rand() % 98 + 4;
+	//		int yRot = rand() % 360;
+	//		Grass *grass = new Grass();
+	//		grass->SetPosition(x, 0.5f, z);
+	//		grass->SetScale(0.6f, 0.4f, 0.6f);
+	//		grass->SetRotation(0, yRot, 0);
+	//		gameObjects.emplace_back(grass);
+	//		Grass *grass2 = new Grass();
+	//		grass2->SetScale(0.6f, 0.4f, 0.6f);
+	//		grass2->SetPosition(x, 0.5f, z);
+	//		grass2->SetRotation(0, yRot + 90, 0);
+	//		gameObjects.emplace_back(grass2);
+	//	}
+	//}
 
 
 	for (int i = 0; i < gameObjects.size(); i++) {
@@ -232,7 +233,6 @@ HRESULT GameManager::CreateSampleAndBlend()
 
 void GameManager::Draw()
 {
-	LoadConstantBuffer();
 	_pDContext->PSSetSamplers(0, 1, &_pSamplerLinear);
 
 	_pDContext->PSSetShader(_pPixelShaders->at(0), nullptr, 0);
@@ -250,6 +250,7 @@ void GameManager::Draw()
 	cbData.mProjection = XMMatrixTranspose(projection);
 
 	float blendFactor[] = { 0.75f, 0.75f, 0.75f, 1.0f };
+	LoadConstantBuffer();
 
 	for (int i = 0; i < gameObjects.size(); i++) {
 		Object *currObject = gameObjects[i];
@@ -327,10 +328,10 @@ void GameManager::Input(float deltaTime)
 
 
 	
-	if (GetAsyncKeyState(VK_RSHIFT))
-		_pCurrCamera->MovePosition(0, (1 * deltaTime) * _pCurrCamera->GetMovementSpeed(), 0);
-	if (GetAsyncKeyState(VK_SHIFT))
-		_pCurrCamera->MovePosition(0, (-1 * deltaTime) * _pCurrCamera->GetMovementSpeed(), 0);
+	//if (GetAsyncKeyState(VK_RSHIFT))
+	//	_pCurrCamera->MovePosition(0, (1 * deltaTime) * _pCurrCamera->GetMovementSpeed(), 0);
+	//if (GetAsyncKeyState(VK_SHIFT))
+	//	_pCurrCamera->MovePosition(0, (-1 * deltaTime) * _pCurrCamera->GetMovementSpeed(), 0);
 
 	if (GetAsyncKeyState('Q'))
 		car->Boost(deltaTime);

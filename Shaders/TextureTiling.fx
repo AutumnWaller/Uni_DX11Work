@@ -8,46 +8,46 @@ SamplerState samLinear : register(s0);
 
 cbuffer ConstantBuffer : register(b0)
 {
-	matrix World;
+    matrix World;
 
-	matrix View;
+    matrix View;
 
-	matrix Projection;
+    matrix Projection;
+	
+    float pad;
+    float3 LightVecW;
 
-	float pad;
-	float3 LightVecW;
+    float4 DiffuseMtrl;
+    float4 DiffuseLight;
+    float3 AmbientMtrl;
+    float a = 0;
 
-	float4 DiffuseMtrl;
-	float4 DiffuseLight;
-	float3 AmbientMtrl;
-	float a = 0;
+    float3 AmbientLight;
+    float specularPower;
 
-	float3 AmbientLight;
-	float specularPower;
-
-	float4 cameraEye;
-	float3 specularMtrl;
-	float padding;
-	float3 specularLight;
-	float morePadding;
+    float4 cameraEye;
+    float3 specularMtrl;
+    float padding;
+    float3 specularLight;
+    float morePadding;
 }
 
 
 //--------------------------------------------------------------------------------------
 struct VS_INPUT
 {
-	float4 Pos : POSITION;
-	float3 Normal : NORMAL;
-	float2 Tex : TEXCOORD0;
+    float4 Pos : POSITION;
+    float3 Normal : NORMAL;
+    float2 Tex : TEXCOORD0;
 
 };
 
 struct PS_INPUT
 {
-	float4 Pos : SV_POSITION;
-	float3 Normal : NORMAL;
-	float2 Tex : TEXCOORD0;
-    float3 ToEye : TEXCOORD1;
+    float4 Pos : SV_POSITION;
+    float3 Normal : NORMAL;
+    float2 Tex : TEXCOORD0;
+    float3 PosW : POSITION;
 };
 
 //--------------------------------------------------------------------------------------
@@ -56,31 +56,23 @@ struct PS_INPUT
 PS_INPUT VS(VS_INPUT input)
 {
     PS_INPUT output = (PS_INPUT) 0;
-    output.Pos = mul(input.Pos, World);
-    output.Pos = mul(output.Pos, View);
+    float4 posW = mul(input.Pos, World);
+    output.PosW = posW.xyz;
+
+    output.Pos = mul(posW, View);
     output.Pos = mul(output.Pos, Projection);
-    // Convert from local space to world space 
-    // W component of vector is 0 as vectors cannot be translated
+    input.Tex.x *= 300;
+    input.Tex.y *= 300;
+    output.Tex = input.Tex;
+
+
     float3 normalW = mul(float4(input.Normal, 0.0f), World).xyz;
     normalW = normalize(normalW);
-    
-    float3 vertexPos = mul(input.Pos, World);
-
-    output.ToEye = normalize(cameraEye.xyz - vertexPos.xyz);
     output.Normal = normalW;
-	
-    float2 tex = input.Tex;
 
+    return output;
 
-        tex.x *= 300;
-
-        tex.y *= 300;
-
-
-    output.Tex = tex;
-	return output;
-
-    }
+}
 
 
 
@@ -89,18 +81,28 @@ PS_INPUT VS(VS_INPUT input)
 //--------------------------------------------------------------------------------------
 float4 PS(PS_INPUT input) : SV_Target
 {
-    float3 normal = normalize(input.Normal);
-    float3 r = reflect(-LightVecW, normal);
+    float3 normalW = normalize(input.Normal);
+    float3 toEye = normalize(cameraEye.xyz - input.PosW);
     
-    float amount = max(dot(normal, LightVecW), 0.0f);
+    float4 textureColour = txDiffuse.Sample(samLinear, input.Tex);
 
-    float3 diffuse = amount * (DiffuseLight * DiffuseMtrl).rgb;
+    float3 lightVecNorm = normalize(LightVecW);
+    
+    float3 r = reflect(-lightVecNorm, normalW);
+    float specularAmount = pow(max(dot(r, toEye), 0), specularPower);
+    float diffuseAmount = max(dot(lightVecNorm, normalW), 0);
+
+    if (diffuseAmount <= 0)
+    {
+        specularAmount = 0;
+    }
+
+    float3 diffuse = diffuseAmount * (DiffuseMtrl * DiffuseLight).rgb;
     float3 ambient = (AmbientMtrl * AmbientLight).rgb;
-    float3 specular = pow(max(dot(input.ToEye, r), 0), specularPower) * (specularLight * specularMtrl);
+    float3 specular = specularAmount * (specularMtrl * specularLight).rgb;
     float4 colour;
-    colour.rgb = diffuse + ambient + specular;
+    colour.rgb = textureColour.rgb * (ambient + diffuse) + specular;
     colour.a = DiffuseMtrl.a;
-    float4 textureColour = colour + txDiffuse.Sample(samLinear, input.Tex);
     clip(textureColour.a - 0.95f);
-    return textureColour;
+    return colour;
 }
