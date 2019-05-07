@@ -79,7 +79,7 @@ void FileManager::ConvertRBD(char* filePath, vector<Object*> *objects)
 				}
 				position += data[i + j];
 			}
-			object->SetPosition(posX, posY, posZ);
+			object->SetStartingPosition(Vector::Vector3(posX, posY, posZ));
 			i++;
 		}
 		if (data[i] == 's') {
@@ -205,7 +205,7 @@ void FileManager::ConvertRBS(char * filePath, vector<string> *paths)
 
 
 Object* FileManager::GetObjectFromString(string str) {
-	if (str == "Car")
+	if (str == "Car") 
 		return new Car();
 	if (str == "Bal")
 		return new Ball();

@@ -15,8 +15,8 @@ BumperCamera::~BumperCamera()
 void BumperCamera::Update(float deltaTime)
 {
 	if (_pTarget) {
-		XMFLOAT3 *_pTFor = _pTarget->GetForward();
-		XMFLOAT3 *_pTPos = _pTarget->GetPosition();
+		XMFLOAT3 *_pTFor = &_pTarget->GetForward().ToXMFLOAT3();
+		XMFLOAT3 *_pTPos = &_pTarget->GetPosition().ToXMFLOAT3();
 
 
 		_pEye->x = (_pTFor->x * 0.5f) + _pTPos->x;

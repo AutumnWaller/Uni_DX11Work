@@ -2,18 +2,28 @@
 
 
 using namespace Vector;
+
+Car::Car()
+{
+	_pModelPath = "Models/Car.obj";
+	_pTexturePath = L"Textures/black.dds";
+	_pForward = Vector3(0, 0, 1);
+	type = StaticStructs::CAR;
+	PhysicalObject();
+}
+
 void Car::Turn(float amount)
 {
 	if (velocity != 0) {
 		PhysicalObject::Turn(amount * turnSpeed);
-		if (velocity > maxVelocity)
-			Decelerate(amount);
+		//if (velocity > maxVelocity)
+		//	Decelerate(amount);
 	}
 }
 
 void Car::Drive(float deltaTime)
 {
-	_massAggregate->AddForce(Vector3(1 * deltaTime, 0, 0));
+	_massAggregate->AddForce(_pForward * 100);
 }
 
 void Car::ChargeBoost()
@@ -43,13 +53,7 @@ void Car::Update(float deltaTime)
 	PhysicalObject::Update(deltaTime);
 }
 
-Car::Car()
-{
-	_pModelPath = "Models/Car.obj";
-	_pTexturePath = L"Textures/black.dds";
-	type = StaticStructs::CAR;
-	PhysicalObject();
-}
+
 
 
 Car::~Car()

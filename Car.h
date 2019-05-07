@@ -21,8 +21,8 @@ public:
 	void Drive(float deltaTime);
 	void ChargeBoost();
 	void Boost(float deltaTime);
-	void Accelerate(float deltaTime);
-	void Decelerate(float deltaTime);
+	//void Accelerate(float deltaTime);
+	//void Decelerate(float deltaTime);
 	virtual void Update(float deltaTime) override;
 	Car();
 	~Car();

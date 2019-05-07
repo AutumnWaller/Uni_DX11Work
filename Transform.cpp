@@ -1,50 +1,58 @@
 #include "Transform.h"
 
-
+using namespace Vector;
 
 Transform::Transform()
 {
+	SetPrevPosition(_pPosition);
 }
 
-Transform::Transform(XMFLOAT3 position)
+Transform::Transform(Vector3 position)
 {
+	SetPrevPosition(position);
 	SetPosition(position);
+}
+
+void Transform::SetStartingPosition(Vector::Vector3 xyz)
+{
+	_pPrevPosition = xyz;
+	_pPosition = _pPrevPosition;
 }
 
 void Transform::SetPosition(float x, float y, float z)
 {
 	_pPrevPosition = _pPosition;
 
-	*_pPosition = { x, y, z };
+	_pPosition = { x, y, z };
+}
+
+void Transform::SetPrevPosition(Vector::Vector3 xyz)
+{
+	_pPrevPosition = xyz;
 }
 
 void Transform::SetPosition(XMFLOAT3 xyz)
 {
 	_pPrevPosition = _pPosition;
-	*_pPosition = xyz;
+	_pPosition = Vector3::ToVector3(xyz);
+}
+
+void Transform::SetPosition(Vector::Vector3 xyz)
+{
+	_pPrevPosition = _pPosition;
+	_pPosition = xyz;
 }
 
 void Transform::SetScale(float x, float y, float z)
 {
-	*_pScale = { x, y, z };
+	_pScale = { x, y, z };
 }
 
 void Transform::Update(float deltaTime)
 {
-	DirectX::XMStoreFloat4x4(&world, XMMatrixScaling(_pScale->x, _pScale->y, _pScale->z) * XMMatrixRotationX(_pRotation->x) * XMMatrixRotationY(_pRotation->y) * XMMatrixRotationZ(_pRotation->z) * XMMatrixTranslation(_pPosition->x, _pPosition->y, _pPosition->z));
+	DirectX::XMStoreFloat4x4(&world, XMMatrixScaling(_pScale.ToXMFLOAT3().x, _pScale.ToXMFLOAT3().y, _pScale.ToXMFLOAT3().z) * XMMatrixRotationX(_pRotation.ToXMFLOAT3().x) * XMMatrixRotationY(_pRotation.ToXMFLOAT3().y) * XMMatrixRotationZ(_pRotation.ToXMFLOAT3().z) * XMMatrixTranslation(_pPosition.ToXMFLOAT3().x, _pPosition.ToXMFLOAT3().y, _pPosition.ToXMFLOAT3().z));
 }
 
 Transform::~Transform()
 {
-	if (_pPosition) delete _pPosition;
-	_pPosition = nullptr;
-
-	if (_pScale) delete _pScale;
-	_pScale = nullptr;
-
-	if (_pRotation) delete _pRotation;
-	_pRotation = nullptr;
-
-	if (_pForward) delete _pForward;
-	_pForward = nullptr;
 }

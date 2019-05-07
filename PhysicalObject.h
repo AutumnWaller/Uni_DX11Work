@@ -4,6 +4,7 @@
 #include "MassAggregate.h"
 #include "RigidBody.h"
 
+class MassAggregate;
 class PhysicalObject : public Object
 {
 protected:

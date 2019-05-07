@@ -10,7 +10,38 @@ namespace Vector {
 		float x, y, z;
 	public:
 		static void Vector3::ToXMFLOAT3(DirectX::XMFLOAT3* destination, Vector3 v);
+		
+		static Vector3 ToVector3(DirectX::XMFLOAT3 a) {
+			return Vector3(a.x, a.y, a.z);
+		}
 
+		DirectX::XMFLOAT3 ToXMFLOAT3() {
+			return DirectX::XMFLOAT3(this->x, this->y, this->z);
+		}
+
+		bool operator!=(const Vector3 a) {
+			if (this->x != a.x)
+				if (this->y != a.y)
+					if (this->z != a.z)
+						return true;
+			return false;
+		}
+
+		bool operator==(const Vector3 a) {
+			if (this->x == a.x)
+				if (this->y == a.y)
+					if (this->z == a.z)
+						return true;
+			return false;
+		}
+
+		Vector3 operator<=(const Vector3 a) {
+			if (this->x <= a.x)
+				if (this->y <= a.y)
+					if (this->z <= a.z)
+						return true;
+			return false;
+		}
 
 		Vector3 operator=(const Vector3 a) {
 			return Vector3(this->x = a.x, this->y = a.y, this->z = a.z);

@@ -321,12 +321,12 @@ void GameManager::Input(float deltaTime)
 	else if (GetAsyncKeyState('A'))
 		car->Turn(-deltaTime);
 	else if (GetAsyncKeyState('W')) {
-		car->Accelerate(deltaTime);
+		car->Drive(deltaTime);
 	}
 	else if (GetAsyncKeyState('S')) {
-		car->Accelerate(-deltaTime);
+		//car->Accelerate(-deltaTime);
 	}else
-		car->Decelerate(deltaTime);
+		//car->Decelerate(deltaTime);
 
 
 	

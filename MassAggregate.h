@@ -14,7 +14,6 @@ private:
 	std::vector<Vector::Vector3> accumulatedForces;
 	Vector::Vector3 netForce = Vector::Vector3(0, 0, 0);
 	float mass = 1;
-
 public:
 	MassAggregate();
 	

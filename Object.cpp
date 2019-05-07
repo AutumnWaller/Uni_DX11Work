@@ -87,7 +87,7 @@ Object::Object(float xPos, float yPos, float zPos)
 	_pDeviceContext = nullptr;
 	_pDeviceRef = nullptr;
 	_pModelPath = nullptr;
-	Transform((XMFLOAT3(xPos, yPos, zPos)));
+	Transform((Vector::Vector3(xPos, yPos, zPos)));
 }
 
 void Object::CalculateNormals()
@@ -158,52 +158,52 @@ void Object::Turn(float amount)
 	if (amount == 0)
 		return;
 	if (amount > 0) {
-		if (_pRotation->y >= XM_PI * 2)
-			_pRotation->y = 0;
+		if (_pRotation.y >= XM_PI * 2)
+			_pRotation.y = 0;
 	}
 	else if (amount < 0) {
-		if (_pRotation->y <= -(XM_PI * 2))
-			_pRotation->y = 0;
+		if (_pRotation.y <= -(XM_PI * 2))
+			_pRotation.y = 0;
 	}
 
 	MoveRotation(0, amount, 0);
-	float rot = _pRotation->y;
+	float rot = _pRotation.y;
 	SetForward(MathsFunctions::Normalise(sin(rot)), 0, MathsFunctions::Normalise(cos(rot)));
 }
 
 void Object::MovePosition(float x, float y, float z)
 {
-	*_pPosition = { _pPosition->x + x, _pPosition->y + y, _pPosition->z + z };
+	_pPosition = { _pPosition.x + x, _pPosition.y + y, _pPosition.z + z };
 }
 
 void Object::MovePosition(XMFLOAT3 xyz)
 {
-	*_pPosition = xyz;
+	_pPosition = Vector::Vector3(xyz.x, xyz.y, xyz.z);
 }
 
 void Object::SetRotation(float x, float y, float z)
 {
-	*_pRotation = { x, y, z };
+	_pRotation = { x, y, z };
 }
 
 void Object::SetRotation(XMFLOAT3 xyz)
 {
-	*_pRotation = { xyz };
+	_pRotation = Vector::Vector3(xyz.x, xyz.y, xyz.z);
 }
 
 void Object::MoveRotation(float x, float y, float z)
 {
-	*_pRotation = { _pRotation->x += x, _pRotation->y += y, _pRotation->z += z };
+	_pRotation = { _pRotation.x += x, _pRotation.y += y, _pRotation.z += z };
 }
 
 void Object::SetForward(float x, float y, float z)
 {
-	*_pForward = { x, y, z };
+	_pForward = { x, y, z };
 }
 
 void Object::MoveForward(float x, float y, float z)
 {
-	*_pForward = { _pForward->x + x, _pForward->y + y, _pForward->z + z };
+	_pForward = { _pForward.x + x, _pForward.y + y, _pForward.z + z };
 }
 
 

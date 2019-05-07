@@ -7,6 +7,7 @@ PhysicalObject::PhysicalObject()
 {
 	_massAggregate = new MassAggregate();
 	_rigidBody = new RigidBody();
+	Object();
 }
 
 

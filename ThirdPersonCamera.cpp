@@ -18,8 +18,8 @@ ThirdPersonCamera::ThirdPersonCamera(Object * target)
 void ThirdPersonCamera::Update(float deltaTime)
 {
 	if (_pTarget) {
-		XMFLOAT3 *_pTFor = _pTarget->GetForward();
-		XMFLOAT3 *_pTPos = _pTarget->GetPosition();
+		XMFLOAT3 *_pTFor = &_pTarget->GetForward().ToXMFLOAT3();
+		XMFLOAT3 *_pTPos = &_pTarget->GetPosition().ToXMFLOAT3();
 
 
 		_pEye->x = (-_pTFor->x * 3) + _pTPos->x;

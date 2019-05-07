@@ -15,10 +15,7 @@ Camera::Camera(XMVECTOR _Eye, XMVECTOR _At, int windowWidth, int windowHeight)
 	DirectX::XMStoreFloat4(_pEye, _Eye);
 	DirectX::XMStoreFloat4(_pAt, _At);
 	
-	XMFLOAT3* forward;
-	Vector::Vector3::ToXMFLOAT3(forward, _pForward);
-
-	DirectX::XMStoreFloat3(forward, DirectX::XMLoadFloat3(new XMFLOAT3(0, 0, 1)));
+	DirectX::XMStoreFloat3(&_pForward.ToXMFLOAT3(), DirectX::XMLoadFloat3(new XMFLOAT3(0, 0, 1)));
 	
 	DirectX::XMStoreFloat4x4(&projection, XMMatrixPerspectiveFovLH(XM_PIDIV2, windowWidth / (FLOAT)windowHeight, 0.01f, 100.0f));
 	LookAt();
@@ -66,7 +63,7 @@ void Camera::SetRotation(float x, float y, float z)
 
 void Camera::Update(float time)
 {
-	DirectX::XMStoreFloat4x4(&world, XMMatrixTranspose( XMMatrixRotationX(_pRotation->x) * XMMatrixRotationY(_pRotation->y) * XMMatrixRotationZ(_pRotation->z) * XMMatrixTranslation(_pPosition->x, _pPosition->y, _pPosition->z) ) );
+	DirectX::XMStoreFloat4x4(&world, XMMatrixTranspose( XMMatrixRotationX(_pRotation.ToXMFLOAT3().x) * XMMatrixRotationY(_pRotation.ToXMFLOAT3().y) * XMMatrixRotationZ(_pRotation.ToXMFLOAT3().z) * XMMatrixTranslation(_pPosition.ToXMFLOAT3().x, _pPosition.ToXMFLOAT3().y, _pPosition.ToXMFLOAT3().z) ) );
 }
 
 Camera::~Camera()
