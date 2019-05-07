@@ -12,6 +12,7 @@ private:
 	Vector::Vector3 prevVelocity = Vector::Vector3(0, 0, 0);
 	Vector::Vector3 acceleration = Vector::Vector3(0, 0, 0);
 	std::vector<Vector::Vector3> accumulatedForces;
+	Vector::Vector3 accForce = Vector::Vector3(0, 0, 0);
 	Vector::Vector3 netForce = Vector::Vector3(0, 0, 0);
 	float mass = 1;
 public:
@@ -27,8 +28,8 @@ public:
 
 	void CalculateAcceleration(float deltaTime);
 	void CalculateVelocity(float deltaTime);
-
 	void AddForce(Vector::Vector3 force);
+
 	void Move(PhysicalObject* object, float deltaTime);
 	void Update(float deltaTime);
 	

@@ -173,12 +173,12 @@ void Object::Turn(float amount)
 
 void Object::MovePosition(float x, float y, float z)
 {
-	_pPosition = { _pPosition.x + x, _pPosition.y + y, _pPosition.z + z };
+	Transform::MovePosition(x, y, z);
 }
 
 void Object::MovePosition(XMFLOAT3 xyz)
 {
-	_pPosition = Vector::Vector3(xyz.x, xyz.y, xyz.z);
+	Transform::MovePosition(xyz.x, xyz.y, xyz.z);
 }
 
 void Object::SetRotation(float x, float y, float z)

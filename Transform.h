@@ -18,6 +18,9 @@ public:
 	Vector::Vector3 GetPosition() { return _pPosition; };
 	Vector::Vector3 GetPrevPosition() { return _pPrevPosition; };
 	virtual void SetStartingPosition(Vector::Vector3 xyz);
+	virtual void MovePosition(float x, float y, float z);
+	virtual void MovePosition(XMFLOAT3 xyz);
+
 	virtual void SetPosition(float x, float y, float z);
 	virtual void SetPrevPosition(Vector::Vector3 xyz);
 	virtual void SetPosition(XMFLOAT3 xyz);

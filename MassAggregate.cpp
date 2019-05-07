@@ -15,14 +15,14 @@ MassAggregate::~MassAggregate()
 
 void MassAggregate::ApplyForces()
 {
-	netForce = Vector3(0, 0, 0);
-	accumulatedForces.push_back(velocity);
 	for (int i = 0; i < accumulatedForces.size(); i++) {
-		netForce.x += accumulatedForces.at(i).x;
-		netForce.y += accumulatedForces.at(i).y;
-		netForce.z += accumulatedForces.at(i).z;
+		accForce.x += accumulatedForces.at(i).x;
+		accForce.y += accumulatedForces.at(i).y;
+		accForce.z += accumulatedForces.at(i).z;
 	}
 	accumulatedForces.clear();
+	netForce = accForce;
+	accForce = Vector3(0);
 
 }
 
@@ -43,10 +43,14 @@ void MassAggregate::AddForce(Vector::Vector3 force)
 
 void MassAggregate::Move(PhysicalObject* object, float deltaTime)
 {
+	netForce = Vector3(0);
+	accForce = Vector3(0);
 	ApplyForces();
 	CalculateAcceleration(deltaTime);
+	Vector3 prevPosition = object->GetPrevPosition();
 	CalculateVelocity(deltaTime);
-	object->SetPosition(object->GetPrevPosition() + (GetVelocity() * deltaTime) + ((acceleration / 2) * deltaTime * deltaTime));
+	object->MovePosition(((prevVelocity * deltaTime) + (acceleration / 2) * (deltaTime * deltaTime)).ToXMFLOAT3());
+	prevVelocity = velocity;
 }
 
 void MassAggregate::Update(float deltaTime)

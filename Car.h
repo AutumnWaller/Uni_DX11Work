@@ -5,13 +5,6 @@
 class Car : public PhysicalObject
 {
 private:
-	void SetVelocity(float amount);
-
-	float velocity = 0;
-	float maxVelocity = 10;
-
-	float acceleration = 2.0f;
-
 	float boostAcceleration = 5.0f;
 	int boostAmount = 100;
 	float maxBoostVelocity = 30.0f;

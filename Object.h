@@ -33,8 +33,8 @@ public:
 	virtual void Update(float time) override;
 	virtual void Turn(float amount);
 
-	virtual void MovePosition(float x, float y, float z);
-	virtual void MovePosition(XMFLOAT3 xyz);
+	virtual void MovePosition(float x, float y, float z) override;
+	virtual void MovePosition(XMFLOAT3 xyz) override;
 
 	virtual void SetRotation(float x, float y, float z);
 	virtual void SetRotation(XMFLOAT3 xyz);

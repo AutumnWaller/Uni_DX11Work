@@ -19,6 +19,16 @@ void Transform::SetStartingPosition(Vector::Vector3 xyz)
 	_pPosition = _pPrevPosition;
 }
 
+void Transform::MovePosition(float x, float y, float z)
+{
+	_pPosition = { _pPosition.x + x, _pPosition.y + y, _pPosition.z + z };
+}
+
+void Transform::MovePosition(XMFLOAT3 xyz)
+{
+	_pPosition = Vector::Vector3(xyz.x, xyz.y, xyz.z);
+}
+
 void Transform::SetPosition(float x, float y, float z)
 {
 	_pPrevPosition = _pPosition;
