@@ -5,7 +5,7 @@
 void Car::Turn(float amount)
 {
 	if (velocity != 0) {
-		Object::Turn(amount * turnSpeed);
+		PhysicalObject::Turn(amount * turnSpeed);
 		if (velocity > maxVelocity)
 			Decelerate(amount);
 	}
@@ -71,7 +71,7 @@ void Car::Update(float deltaTime)
 	}
 	Drive(deltaTime);
 
-	Object::Update(deltaTime);
+	PhysicalObject::Update(deltaTime);
 }
 
 Car::Car()
@@ -79,7 +79,7 @@ Car::Car()
 	_pModelPath = "Models/Car.obj";
 	_pTexturePath = L"Textures/black.dds";
 	type = StaticStructs::CAR;
-	Object();
+	PhysicalObject();
 }
 
 

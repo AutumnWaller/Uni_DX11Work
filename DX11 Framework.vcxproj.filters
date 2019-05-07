@@ -116,7 +116,12 @@
     <ClInclude Include="Goal.h">
       <Filter>Objects\Headers</Filter>
     </ClInclude>
-    <ClInclude Include="Transform.h" />
+    <ClInclude Include="Transform.h">
+      <Filter>Base Classes\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="MassAggregate.h" />
+    <ClInclude Include="RigidBody.h" />
+    <ClInclude Include="PhysicalObject.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp">
@@ -188,7 +193,12 @@
     <ClCompile Include="Goal.cpp">
       <Filter>Objects\Source</Filter>
     </ClCompile>
-    <ClCompile Include="Transform.cpp" />
+    <ClCompile Include="Transform.cpp">
+      <Filter>Base Classes\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="MassAggregate.cpp" />
+    <ClCompile Include="RigidBody.cpp" />
+    <ClCompile Include="PhysicalObject.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CLInclude Include="resource.h">

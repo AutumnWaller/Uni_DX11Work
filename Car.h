@@ -1,7 +1,7 @@
 #pragma once
-#include "Object.h"
 #include "AppTime.h"
-class Car : public Object
+#include "PhysicalObject.h"
+class Car : public PhysicalObject
 {
 private:
 	void SetVelocity(float amount);

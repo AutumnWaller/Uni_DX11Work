@@ -61,7 +61,7 @@ struct PS_INPUT
 //--------------------------------------------------------------------------------------
 PS_INPUT VS(VS_INPUT input)
 {
-    PS_INPUT output = (PS_INPUT) 0;
+    PS_INPUT output = (PS_INPUT)0;
     float4 posW = mul(input.Pos, World);
     output.PosW = posW.xyz;
 
@@ -99,9 +99,13 @@ float4 PS(PS_INPUT input) : SV_Target
         specularAmount = 0;
     }
 
-    float3 diffuse += diffuseAmount * (DiffuseMtrl * DiffuseLight).rgb;
-    float3 ambient += (AmbientMtrl * AmbientLight).rgb;
-    float3 specular += specularAmount * (specularMtrl * specularLight).rgb;
+	float3 ambient = float3(0.0f, 0.0f, 0.0f);
+	float3 diffuse = float3(0.0f, 0.0f, 0.0f);
+	float3 specular = float3(0.0f, 0.0f, 0.0f);
+
+    diffuse = diffuse + ( diffuseAmount * (DiffuseMtrl * DiffuseLight).rgb);
+    ambient = ambient + ((AmbientMtrl * AmbientLight).rgb);
+    specular = specular + (specularAmount * (specularMtrl * specularLight).rgb);
     float4 colour;
     colour.rgb = textureColour.rgb * (ambient + diffuse) + specular;
     colour.a = DiffuseMtrl.a;
