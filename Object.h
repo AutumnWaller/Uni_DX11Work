@@ -39,11 +39,11 @@ public:
 	virtual void SetRotation(float x, float y, float z);
 	virtual void SetRotation(XMFLOAT3 xyz);
 	virtual void MoveRotation(float x, float y, float z);
-	XMFLOAT3* GetRotation() { return _pRotation; }
+	Vector::Vector3 GetRotation() { return _pRotation; }
 
 	virtual void SetForward(float x, float y, float z);
 	virtual void MoveForward(float x, float y, float z);
-	XMFLOAT3* GetForward() { return _pForward; };
+	Vector::Vector3 GetForward() { return _pForward; };
 
 protected:
 	bool isUpdateable = true;

@@ -15,7 +15,10 @@ Camera::Camera(XMVECTOR _Eye, XMVECTOR _At, int windowWidth, int windowHeight)
 	DirectX::XMStoreFloat4(_pEye, _Eye);
 	DirectX::XMStoreFloat4(_pAt, _At);
 	
-	DirectX::XMStoreFloat3(Object::_pForward, DirectX::XMLoadFloat3(new XMFLOAT3(0, 0, 1)));
+	XMFLOAT3* forward;
+	Vector::Vector3::ToXMFLOAT3(forward, _pForward);
+
+	DirectX::XMStoreFloat3(forward, DirectX::XMLoadFloat3(new XMFLOAT3(0, 0, 1)));
 	
 	DirectX::XMStoreFloat4x4(&projection, XMMatrixPerspectiveFovLH(XM_PIDIV2, windowWidth / (FLOAT)windowHeight, 0.01f, 100.0f));
 	LookAt();
@@ -56,9 +59,9 @@ void Camera::MovePosition(float x, float y, float z)
 
 void Camera::SetRotation(float x, float y, float z)
 {
-	_pRotation->x = x;
-	_pRotation->y = y;
-	_pRotation->z = z;
+	_pRotation.x = x;
+	_pRotation.y = y;
+	_pRotation.z = z;
 }
 
 void Camera::Update(float time)

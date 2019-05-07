@@ -1,4 +1,5 @@
 #pragma once
+#include "Vector.h"
 #include "AppTime.h"
 #include "PhysicalObject.h"
 class Car : public PhysicalObject

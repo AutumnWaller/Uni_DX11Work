@@ -135,6 +135,9 @@
     <ClInclude Include="RigidBody.h">
       <Filter>Physics\Headers</Filter>
     </ClInclude>
+    <ClInclude Include="Vector.h">
+      <Filter>Utility\Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp">
@@ -215,6 +218,9 @@
     </ClCompile>
     <ClCompile Include="RigidBody.cpp">
       <Filter>Physics\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Vector.cpp">
+      <Filter>Utility\Source</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -13,11 +13,14 @@ Transform::Transform(XMFLOAT3 position)
 
 void Transform::SetPosition(float x, float y, float z)
 {
+	_pPrevPosition = _pPosition;
+
 	*_pPosition = { x, y, z };
 }
 
 void Transform::SetPosition(XMFLOAT3 xyz)
 {
+	_pPrevPosition = _pPosition;
 	*_pPosition = xyz;
 }
 
