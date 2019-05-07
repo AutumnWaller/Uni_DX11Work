@@ -17,6 +17,7 @@ Cube::Cube(const wchar_t *texturePath = nullptr)
 
 Cube::~Cube()
 {
+	Object::~Object();
 }
 
 void Cube::Initialise(ID3D11Device * deviceRef,  ID3D11DeviceContext * context, ID3D11Buffer * cBuffer)
@@ -32,9 +33,4 @@ void Cube::Draw(DirectX::XMMATRIX appWorld, StaticStructs::ConstantBuffer cb)
 void Cube::Update(float time)
 {
 	Object::Update(time);
-}
-
-void Cube::Cleanup()
-{
-	Object::Cleanup();
 }

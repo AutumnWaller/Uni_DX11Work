@@ -99,9 +99,9 @@ float4 PS(PS_INPUT input) : SV_Target
         specularAmount = 0;
     }
 
-    float3 diffuse = diffuseAmount * (DiffuseMtrl * DiffuseLight).rgb;
-    float3 ambient = (AmbientMtrl * AmbientLight).rgb;
-    float3 specular = specularAmount * (specularMtrl * specularLight).rgb;
+    float3 diffuse += diffuseAmount * (DiffuseMtrl * DiffuseLight).rgb;
+    float3 ambient += (AmbientMtrl * AmbientLight).rgb;
+    float3 specular += specularAmount * (specularMtrl * specularLight).rgb;
     float4 colour;
     colour.rgb = textureColour.rgb * (ambient + diffuse) + specular;
     colour.a = DiffuseMtrl.a;

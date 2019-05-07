@@ -1,4 +1,5 @@
 #include "Object.h"
+#include "MathsFunctions.h"
 
 void Object::CreateBuffers(ID3D11Device *deviceRef)
 {
@@ -46,7 +47,7 @@ Object::Object()
 	_pDeviceContext = nullptr;
 	_pDeviceRef = nullptr;
 	_pModelPath = nullptr;
-	StaticObject();
+	Transform();
 }
 
 Object::Object(char *modelPath, bool _InvertTexCoords = true, const wchar_t *texturePath = nullptr)
@@ -64,7 +65,7 @@ Object::Object(char *modelPath, bool _InvertTexCoords = true, const wchar_t *tex
 	_pTexturePath = texturePath;
 	invertTexCoords = _InvertTexCoords;
 	_pModelPath = modelPath;
-	StaticObject();
+	Transform();
 
 }
 
@@ -86,7 +87,7 @@ Object::Object(float xPos, float yPos, float zPos)
 	_pDeviceContext = nullptr;
 	_pDeviceRef = nullptr;
 	_pModelPath = nullptr;
-	StaticObject(new XMFLOAT3(xPos, yPos, zPos));
+	Transform((XMFLOAT3(xPos, yPos, zPos)));
 }
 
 void Object::CalculateNormals()
@@ -99,9 +100,6 @@ void Object::CalculateNormals()
 	}
 }
 
-Object::~Object()
-{
-}
 
 
 void Object::SetTexture(const wchar_t *texturePath)
@@ -152,16 +150,65 @@ void Object::Draw(DirectX::XMMATRIX appWorld, StaticStructs::ConstantBuffer cb)
 
 void Object::Update(float time)
 {
-	StaticObject::Update(time);
+	Transform::Update(time);
 }
 
 void Object::Turn(float amount)
 {
-	StaticObject::Turn(amount);
+	if (amount == 0)
+		return;
+	if (amount > 0) {
+		if (_pRotation->y >= XM_PI * 2)
+			_pRotation->y = 0;
+	}
+	else if (amount < 0) {
+		if (_pRotation->y <= -(XM_PI * 2))
+			_pRotation->y = 0;
+	}
+
+	MoveRotation(0, amount, 0);
+	float rot = _pRotation->y;
+	SetForward(MathsFunctions::Normalise(sin(rot)), 0, MathsFunctions::Normalise(cos(rot)));
 }
 
-void Object::Cleanup()
+void Object::MovePosition(float x, float y, float z)
+{
+	*_pPosition = { _pPosition->x + x, _pPosition->y + y, _pPosition->z + z };
+}
+
+void Object::MovePosition(XMFLOAT3 xyz)
+{
+	*_pPosition = xyz;
+}
+
+void Object::SetRotation(float x, float y, float z)
+{
+	*_pRotation = { x, y, z };
+}
+
+void Object::SetRotation(XMFLOAT3 xyz)
+{
+	*_pRotation = { xyz };
+}
+
+void Object::MoveRotation(float x, float y, float z)
+{
+	*_pRotation = { _pRotation->x += x, _pRotation->y += y, _pRotation->z += z };
+}
+
+void Object::SetForward(float x, float y, float z)
+{
+	*_pForward = { x, y, z };
+}
+
+void Object::MoveForward(float x, float y, float z)
+{
+	*_pForward = { _pForward->x + x, _pForward->y + y, _pForward->z + z };
+}
+
+
+Object::~Object()
 {
 	if (_pTextureRV) _pTextureRV->Release();
-	StaticObject::Cleanup();
+	Transform::~Transform();
 }

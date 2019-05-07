@@ -44,7 +44,6 @@ private:
 	GameManager *_pGameManager;
 	HRESULT InitWindow(HINSTANCE hInstance, int nCmdShow);
 	HRESULT InitDevice();
-	void Cleanup();
 	
 	UINT _WindowHeight;
 	UINT _WindowWidth;

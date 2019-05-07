@@ -15,7 +15,7 @@ Camera::Camera(XMVECTOR _Eye, XMVECTOR _At, int windowWidth, int windowHeight)
 	DirectX::XMStoreFloat4(_pEye, _Eye);
 	DirectX::XMStoreFloat4(_pAt, _At);
 	
-	DirectX::XMStoreFloat3(StaticObject::_pForward, DirectX::XMLoadFloat3(new XMFLOAT3(0, 0, 1)));
+	DirectX::XMStoreFloat3(Object::_pForward, DirectX::XMLoadFloat3(new XMFLOAT3(0, 0, 1)));
 	
 	DirectX::XMStoreFloat4x4(&projection, XMMatrixPerspectiveFovLH(XM_PIDIV2, windowWidth / (FLOAT)windowHeight, 0.01f, 100.0f));
 	LookAt();
@@ -42,7 +42,7 @@ void Camera::SetPosition(float x, float y, float z)
 {
 	_pAt->x = x, _pAt->y = y, _pAt->z = z;
 	_pEye->x = x, _pEye->y = _pAt->y + 1, _pEye->z = _pAt->z - 3;
-	StaticObject::SetPosition(_pAt->x, _pAt->y, _pAt->z);
+	Object::SetPosition(_pAt->x, _pAt->y, _pAt->z);
 	LookAt();
 }
 
@@ -50,7 +50,7 @@ void Camera::MovePosition(float x, float y, float z)
 {
 	_pAt->x += x, _pAt->y += y, _pAt->z += z;
 	_pEye->x += x, _pEye->y += y, _pEye->z += z;
-	StaticObject::MovePosition(x, y, z);
+	Object::MovePosition(x, y, z);
 	LookAt();
 }
 

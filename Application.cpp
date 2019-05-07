@@ -46,7 +46,16 @@ Application::Application()
 
 Application::~Application()
 {
-	Cleanup();
+	if (_pImmediateContext) _pImmediateContext->ClearState();
+	if (_pRenderTargetView) _pRenderTargetView->Release();
+	if (_pSwapChain) _pSwapChain->Release();
+	if (_pImmediateContext) _pImmediateContext->Release();
+	if (_pd3dDevice) _pd3dDevice->Release();
+	if (_pDepthStencilView) _pDepthStencilView->Release();
+	if (_pDepthStencilBuffer) _pDepthStencilBuffer->Release();
+	if (_pTransparency) _pTransparency->Release();
+	if (_pConstantBuffer) _pConstantBuffer->Release();
+	if (_pGameManager) delete _pGameManager;
 }
 HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
 {
@@ -63,7 +72,7 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
 
     if (FAILED(InitDevice()))
     {
-        Cleanup();
+		Application::~Application();
 
         return E_FAIL;
     }
@@ -225,20 +234,6 @@ HRESULT Application::InitDevice()
         return hr;
 
     return S_OK;
-}
-
-void Application::Cleanup()
-{
-    if (_pImmediateContext) _pImmediateContext->ClearState();
-    if (_pRenderTargetView) _pRenderTargetView->Release();
-    if (_pSwapChain) _pSwapChain->Release();
-    if (_pImmediateContext) _pImmediateContext->Release();
-    if (_pd3dDevice) _pd3dDevice->Release();
-	if(_pDepthStencilView) _pDepthStencilView->Release();
-	if(_pDepthStencilBuffer) _pDepthStencilBuffer->Release();
-	if(_pTransparency) _pTransparency->Release();
-	if (_pConstantBuffer) _pConstantBuffer->Release();
-	if (_pGameManager) delete _pGameManager;
 }
 
 void Application::Update()

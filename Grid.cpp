@@ -29,7 +29,8 @@ Grid::Grid(int width, int length, char *heightmapFileName)
 
 Grid::~Grid()
 {
-	if (_pHeightMap) delete _pHeightMap;
+	if (_pHeightMap) delete[] _pHeightMap;
+	Object::~Object();
 }
 
 void Grid::SetSize(int width, int length)
@@ -103,10 +104,4 @@ void Grid::Draw(DirectX::XMMATRIX appWorld, StaticStructs::ConstantBuffer cb)
 void Grid::Update(float time)
 {
 	Object::Update(time);
-}
-
-void Grid::Cleanup()
-{
-	Object::Cleanup();
-	if (_pHeightMap) delete[] _pHeightMap;
 }

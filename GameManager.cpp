@@ -87,6 +87,8 @@ void GameManager::Initialise(ID3D11Device *deviceRef, ID3D11DeviceContext *conte
 	object->SetPosition(5, 0, 0);
 	gameObjects.emplace_back(object);
 
+	//Disable to prevent massive lag and load times
+
 	//for (int i = 1; i < 50; i++) {
 	//	for (int j = 1; j < 50; j++) {
 	//		int x = rand() % 98 + 3;

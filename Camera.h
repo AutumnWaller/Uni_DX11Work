@@ -2,11 +2,11 @@
 #include "MathsFunctions.h"
 #include <windows.h>
 #include "Object.h"
-#include "StaticObject.h"
+
 #include <d3dcompiler.h>
 #include <directxcolors.h>
 
-class Camera : public StaticObject
+class Camera : public Object
 {
 protected:
 	float movementSpeed = 100;
