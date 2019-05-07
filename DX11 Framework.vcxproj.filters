@@ -45,6 +45,15 @@
     <Filter Include="Utility\Source">
       <UniqueIdentifier>{706e4a4b-e206-480d-b56d-92d77c861349}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Physics">
+      <UniqueIdentifier>{aad7a81e-d8a4-4f25-ba84-38aa6f0a3db3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Physics\Headers">
+      <UniqueIdentifier>{1fd5250b-1b8f-4726-a2b9-fa057574f6a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Physics\Source">
+      <UniqueIdentifier>{7a6c414d-4204-42aa-a19f-5a80097ea993}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h">
@@ -119,9 +128,13 @@
     <ClInclude Include="Transform.h">
       <Filter>Base Classes\Headers</Filter>
     </ClInclude>
-    <ClInclude Include="MassAggregate.h" />
-    <ClInclude Include="RigidBody.h" />
     <ClInclude Include="PhysicalObject.h" />
+    <ClInclude Include="MassAggregate.h">
+      <Filter>Physics\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="RigidBody.h">
+      <Filter>Physics\Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp">
@@ -196,9 +209,13 @@
     <ClCompile Include="Transform.cpp">
       <Filter>Base Classes\Source</Filter>
     </ClCompile>
-    <ClCompile Include="MassAggregate.cpp" />
-    <ClCompile Include="RigidBody.cpp" />
     <ClCompile Include="PhysicalObject.cpp" />
+    <ClCompile Include="MassAggregate.cpp">
+      <Filter>Physics\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="RigidBody.cpp">
+      <Filter>Physics\Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CLInclude Include="resource.h">
