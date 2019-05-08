@@ -21,7 +21,7 @@ void Car::Turn(float amount)
 
 void Car::Drive(float deltaTime)
 {
-	_massAggregate->AddForce(_pForward * 10);
+	_massAggregate->AddForce((_pForward * deltaTime) * 500);
 }
 
 void Car::ChargeBoost()

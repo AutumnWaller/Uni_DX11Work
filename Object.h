@@ -48,7 +48,7 @@ public:
 protected:
 	bool isUpdateable = true;
 
-	float turnSpeed = 1;
+	float turnSpeed = 100;
 
 	void CalculateNormals();
 	StaticStructs::StandardVertex *_pVertices;

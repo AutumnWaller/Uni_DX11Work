@@ -324,7 +324,7 @@ void GameManager::Input(float deltaTime)
 		car->Drive(deltaTime);
 	}
 	else if (GetAsyncKeyState('S')) {
-		//car->Accelerate(-deltaTime);
+		car->Drive(-deltaTime);
 	}else
 		//car->Decelerate(deltaTime);
 

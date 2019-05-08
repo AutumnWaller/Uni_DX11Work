@@ -4,7 +4,7 @@ using namespace DirectX;
 using namespace Vector;
 MassAggregate::MassAggregate()
 {
-	//accumulatedForces.push_back(Vector3(0, -9.81, 0));
+	accumulatedForces.push_back(Vector3(0, -9.81, 0));
 	
 }
 
@@ -20,7 +20,6 @@ void MassAggregate::ApplyForces()
 		accForce.y += accumulatedForces.at(i).y;
 		accForce.z += accumulatedForces.at(i).z;
 	}
-	accumulatedForces.clear();
 	netForce = accForce;
 	accForce = Vector3(0);
 
@@ -33,7 +32,7 @@ void MassAggregate::CalculateAcceleration(float deltaTime)
 
 void MassAggregate::CalculateVelocity(float deltaTime)
 {
-	velocity = (prevVelocity + acceleration) * deltaTime;
+	velocity = ((prevVelocity + acceleration) * deltaTime);
 }
 
 void MassAggregate::AddForce(Vector::Vector3 force)

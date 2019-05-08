@@ -21,6 +21,7 @@ public:
 	Vector::Vector3 GetVelocity() { return velocity; };
 	float GetMass() { return mass; };
 
+	void SetVelocityModifier(float modifier);
 	Vector::Vector3 GetPrevVelocity() { return prevVelocity; };
 	Vector::Vector3 GetAcceleration() { return acceleration; };
 	
