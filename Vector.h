@@ -79,6 +79,10 @@ namespace Vector {
 			return Vector3(this->x * a, this->y * a, this->z * a);
 		}
 
+		Vector3 operator*=(const double a) {
+			return Vector3(this->x *= a, this->y *= a, this->z *= a);
+		}
+
 		Vector3 operator/(const Vector3 a) {
 			return Vector3(this->x / a.x, this->y / a.y, this->z / a.z);
 		}

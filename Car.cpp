@@ -14,14 +14,13 @@ Car::Car()
 
 void Car::Turn(float amount)
 {
-	if (_massAggregate->GetVelocity() != 0) {
-		PhysicalObject::Turn(amount * turnSpeed);
-	}
+	if (_massAggregate->GetVelocity() != 0)
+		PhysicalObject::Turn(amount);
 }
 
 void Car::Drive(float deltaTime)
 {
-	_massAggregate->AddForce((_pForward * deltaTime) * 500);
+	_massAggregate->MoveVelocity(Vector3((_pForward * deltaTime) * 10));
 }
 
 void Car::ChargeBoost()

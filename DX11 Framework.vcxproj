@@ -406,6 +406,7 @@
     <ClCompile Include="Dome.cpp" />
     <ClCompile Include="DX11 Framework.cpp" />
     <ClCompile Include="FileManager.cpp" />
+    <ClCompile Include="Force.cpp" />
     <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="Goal.cpp" />
     <ClCompile Include="Grass.cpp" />
@@ -436,6 +437,7 @@
     <ClInclude Include="DDSTextureLoader.h" />
     <ClInclude Include="Dome.h" />
     <ClInclude Include="FileManager.h" />
+    <ClInclude Include="Force.h" />
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="Goal.h" />
     <ClInclude Include="Grass.h" />
