@@ -5,6 +5,7 @@ using namespace Vector;
 Transform::Transform()
 {
 	SetPrevPosition(_pPosition);
+	_pCollision = new Collision(this);
 }
 
 Transform::Transform(Vector3 position)

@@ -12,7 +12,7 @@ ThirdPersonCamera::ThirdPersonCamera(Object * target)
 {
 	Camera();
 	_pTarget = target;
-	_pEye->y = 3;
+	_pEye->y = target->GetPosition().y + 2;
 }
 
 void ThirdPersonCamera::Update(float deltaTime)
@@ -23,6 +23,9 @@ void ThirdPersonCamera::Update(float deltaTime)
 
 
 		_pEye->x = (-_pTFor->x * 3) + _pTPos->x;
+		_pAt->y = _pTarget->GetPosition().y + 2;
+		_pEye->y = _pTarget->GetPosition().y + 2;
+
 		_pEye->z = (-_pTFor->z * 3) + _pTPos->z;
 		_pAt->x = (_pTFor->x) + _pTPos->x;
 		_pAt->z = (_pTFor->z) + _pTPos->z;

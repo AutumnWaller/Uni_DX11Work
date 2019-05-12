@@ -9,14 +9,17 @@ private:
 	int boostAmount = 100;
 	float maxBoostVelocity = 30.0f;
 	const int boostTimer = 3;
+	bool isGrounded = false;
 public:
 	virtual void Turn(float amount) override;
 	void Drive(float deltaTime);
 	void ChargeBoost();
 	void Boost(float deltaTime);
+	void Jump(float deltaTime);
 	//void Accelerate(float deltaTime);
 	//void Decelerate(float deltaTime);
 	virtual void Update(float deltaTime) override;
+	void CollisionHandling();
 	Car();
 	~Car();
 };

@@ -294,8 +294,15 @@ void GameManager::Draw()
 void GameManager::Update(float _Time)
 {
 	Input(_Time);
-	for (int i = 0; i < gameObjects.size(); i++)
+	for (int i = 0; i < gameObjects.size(); i++) {
 		gameObjects[i]->Update(_Time);
+		for (int j = 0; j < gameObjects.size(); j++) {
+			if (gameObjects[i]->GetCollision()->CollisionCheck(gameObjects[j]->GetPosition(), gameObjects[j]->GetCollision()->GetRadius())) {
+				gameObjects[i]->SetPosition(gameObjects[i]->GetPrevPosition());
+				gameObjects[j]->SetPosition(gameObjects[j]->GetPrevPosition());
+			}
+		}
+	}
 	_pCurrCamera->Update(_Time);
 }
 
@@ -306,6 +313,9 @@ void GameManager::Input(float deltaTime)
 		_pCurrRasteriserState = _pWireframe;
 	if (GetAsyncKeyState(0x32)) //2
 		_pCurrRasteriserState = _pSolid;
+
+	if (GetAsyncKeyState(VK_SPACE)) //2
+		car->Jump(deltaTime);
 
 	if (GetAsyncKeyState(VK_NUMPAD2))
 		_pCurrCamera = _pCameraThirdPerson;

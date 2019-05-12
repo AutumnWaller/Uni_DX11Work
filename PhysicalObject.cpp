@@ -5,15 +5,15 @@
 
 PhysicalObject::PhysicalObject()
 {
-	_massAggregate = new MassAggregate();
-	_rigidBody = new RigidBody();
+	_pMassAggregate = new MassAggregate();
+	_pRigidBody = new RigidBody();
 	Object();
 }
 
 
 PhysicalObject::~PhysicalObject()
 {
-	if (_rigidBody) delete _rigidBody;
-	if (_massAggregate) delete _massAggregate;
+	if (_pRigidBody) delete _pRigidBody;
+	if (_pMassAggregate) delete _pMassAggregate;
 	Object::~Object();
 }

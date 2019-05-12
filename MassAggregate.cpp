@@ -12,6 +12,11 @@ MassAggregate::~MassAggregate()
 {
 }
 
+void MassAggregate::SetCoefficient(float _coefficient)
+{
+	frictionCoefficient = _coefficient;
+}
+
 void MassAggregate::ApplyForces()
 {
 	for (int i = 0; i < accumulatedForces.size(); i++) {
@@ -34,8 +39,23 @@ void MassAggregate::CalculateVelocity(float deltaTime)
 
 void MassAggregate::CalculateGravity()
 {
-	gravity->SetForceVector(Vector3(0, -9.81 * GetMass(), 0));
+	gravity->SetForceVector(Vector3(0, (-9.81 * GetMass()), 0));
 	AddForce(gravity);
+}
+
+void MassAggregate::CalculateFriction()
+{
+	Vector3 vForce = velocity->GetForceVector();
+	friction->SetForceVector(Vector3(frictionCoefficient * -vForce.x, 0, frictionCoefficient * -vForce.z));
+	MoveVelocity(friction->GetForceVector());
+}
+
+void MassAggregate::CalculateLaminarDrag()
+{
+	float airDensity = 1.2;
+	Vector3 pressure = ((GetVelocity()->GetForceVector() * airDensity) * (GetVelocity()->GetForceVector() * airDensity)) * 0.5;
+	//dragForce = (dragFactor * -1) * GetVelocity();
+	AddForce(dragForce);
 }
 
 void MassAggregate::AddForce(Force* force)
@@ -43,10 +63,15 @@ void MassAggregate::AddForce(Force* force)
 	accumulatedForces.push_back(force);
 }
 
+void MassAggregate::AddThrust(Vector::Vector3 force)
+{
+	thrust->SetForceVector(force);
+	AddForce(thrust);
+}
+
 void MassAggregate::MoveVelocity(Vector::Vector3 force)
 {
 	velocity->SetForceVector(velocity->GetForceVector() + force);
-
 }
 
 void MassAggregate::Move(PhysicalObject* object, float deltaTime)
@@ -60,6 +85,7 @@ void MassAggregate::Move(PhysicalObject* object, float deltaTime)
 	else {
 		isGrounded = false;
 	}
+
 	object->MovePosition(((prevVelocity->GetForceVector() * deltaTime) + (acceleration->GetForceVector() / 2) * (deltaTime * deltaTime)).ToXMFLOAT3());
 
 	prevVelocity = velocity;
@@ -75,8 +101,8 @@ void MassAggregate::Bounce()
 void MassAggregate::Update(float deltaTime)
 {
 	CalculateGravity();
-
 	ApplyForces();
+	CalculateFriction();
 	CalculateAcceleration();
 
 }

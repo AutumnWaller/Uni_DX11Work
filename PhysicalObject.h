@@ -8,9 +8,8 @@ class MassAggregate;
 class PhysicalObject : public Object
 {
 protected:
-	RigidBody* _rigidBody = nullptr;
-	MassAggregate* _massAggregate = nullptr;
-
+	RigidBody* _pRigidBody = nullptr;
+	MassAggregate* _pMassAggregate = nullptr;
 public:
 	PhysicalObject();
 	~PhysicalObject();
