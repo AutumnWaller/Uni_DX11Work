@@ -74,11 +74,16 @@ void MassAggregate::MoveVelocity(Vector::Vector3 force)
 	velocity->SetForceVector(velocity->GetForceVector() + force);
 }
 
-void MassAggregate::Move(PhysicalObject* object, float deltaTime)
+void MassAggregate::SetVelocity(Vector::Vector3 force)
+{
+	velocity->SetForceVector(force);
+}
+
+Vector::Vector3 MassAggregate::Move(Vector::Vector3 position, float deltaTime)
 {
 
 
-	if (object->GetPosition().y <= 0.5) {
+	if (position.y <= 0.5) {
 		isGrounded = true;
 		Bounce();
 	}
@@ -86,10 +91,12 @@ void MassAggregate::Move(PhysicalObject* object, float deltaTime)
 		isGrounded = false;
 	}
 
-	object->MovePosition(((prevVelocity->GetForceVector() * deltaTime) + (acceleration->GetForceVector() / 2) * (deltaTime * deltaTime)).ToXMFLOAT3());
+	Vector::Vector3 newPos = (((prevVelocity->GetForceVector() * deltaTime) + (acceleration->GetForceVector() / 2) * (deltaTime * deltaTime)));
 
 	prevVelocity = velocity;
 	netForce->SetForceVector(Vector3(0));
+
+	return newPos;
 
 }
 

@@ -140,8 +140,10 @@
     <ClInclude Include="PhysicalObject.h">
       <Filter>Physics\Headers</Filter>
     </ClInclude>
-    <ClInclude Include="Collision.h" />
     <ClInclude Include="Force.h">
+      <Filter>Physics\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Collision.h">
       <Filter>Physics\Headers</Filter>
     </ClInclude>
   </ItemGroup>
@@ -230,8 +232,10 @@
     <ClCompile Include="PhysicalObject.cpp">
       <Filter>Physics\Source</Filter>
     </ClCompile>
-    <ClCompile Include="Collision.cpp" />
     <ClCompile Include="Force.cpp">
+      <Filter>Physics\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Collision.cpp">
       <Filter>Physics\Source</Filter>
     </ClCompile>
   </ItemGroup>

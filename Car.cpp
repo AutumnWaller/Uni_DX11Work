@@ -12,7 +12,7 @@ Car::Car()
 	_pMassAggregate->SetGravityScale(_pScale.y);
 	_pMassAggregate->SetCoefficient(0.000057);
 	type = StaticStructs::CAR;
-	_pCollision->SetRadius(5);
+	_pCollision->SetRadius(1);
 	PhysicalObject();
 }
 
@@ -54,12 +54,14 @@ void Car::Jump(float deltaTime)
 void Car::Update(float deltaTime)
 {
 	_pMassAggregate->Update(deltaTime);
-	_pMassAggregate->Move(this, deltaTime);
+	MovePosition(_pMassAggregate->Move(GetPosition(), deltaTime).ToXMFLOAT3());
 	PhysicalObject::Update(deltaTime);
-	if (GetPosition().y <= 0.5)
+	if (GetPosition().y <= 0.5) {
 		isGrounded = true;
-	else
+	}
+	else {
 		isGrounded = false;
+	}
 }
 
 void Car::CollisionHandling()

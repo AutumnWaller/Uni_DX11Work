@@ -1,6 +1,5 @@
 #pragma once
 #include "Camera.h"
-#include "Object.h"
 class BumperCamera : public Camera
 {
 public:

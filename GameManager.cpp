@@ -297,10 +297,16 @@ void GameManager::Update(float _Time)
 	for (int i = 0; i < gameObjects.size(); i++) {
 		gameObjects[i]->Update(_Time);
 		for (int j = 0; j < gameObjects.size(); j++) {
-			if (gameObjects[i]->GetCollision()->CollisionCheck(gameObjects[j]->GetPosition(), gameObjects[j]->GetCollision()->GetRadius())) {
-				gameObjects[i]->SetPosition(gameObjects[i]->GetPrevPosition());
-				gameObjects[j]->SetPosition(gameObjects[j]->GetPrevPosition());
-			}
+			if (j == i)
+				break;
+			if(gameObjects[i]->IsPhysical())
+				if (gameObjects[j]->IsPhysical()) {
+					PhysicalObject* iObj = (PhysicalObject*)gameObjects[i];
+					PhysicalObject* jObj = (PhysicalObject*)gameObjects[j];
+					if(iObj->GetCollision()->CollisionCheck(iObj->GetPosition(), jObj->GetPosition(), jObj->GetCollision()->GetRadius()))
+						Collision::ResolveCollision(((PhysicalObject*)gameObjects[i])->GetMassAggregate(), ((PhysicalObject*)gameObjects[j])->GetMassAggregate());
+				}
+
 		}
 	}
 	_pCurrCamera->Update(_Time);
@@ -330,7 +336,7 @@ void GameManager::Input(float deltaTime)
 		car->Turn(deltaTime);
 	else if (GetAsyncKeyState('A'))
 		car->Turn(-deltaTime);
-	else if (GetAsyncKeyState('W')) {
+	if (GetAsyncKeyState('W')) {
 		car->Drive(deltaTime);
 	}
 	else if (GetAsyncKeyState('S')) {

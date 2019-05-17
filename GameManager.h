@@ -1,20 +1,12 @@
 #pragma once
 
-#include "Object.h"
+#include "PhysicalObject.h"
 #include "Camera.h"
 #include "ThirdPersonCamera.h"
 #include "BumperCamera.h"
-#include "Grid.h"
-#include "Cube.h"
-#include "Ball.h"
-#include "Car.h"
-#include "Dome.h"
 #include "FileManager.h"
-#include "Grass.h"
-#include "Goal.h"
 #include "Shader.h"
 #include <random>
-
 
 using namespace DirectX;
 __declspec(align(16)) class GameManager

@@ -3,9 +3,7 @@
 #include <DirectXMath.h>
 #include <vector>
 #include "Vector.h"
-#include "PhysicalObject.h"
 #include "Force.h"
-class PhysicalObject;
 class MassAggregate
 {
 private:
@@ -46,7 +44,8 @@ public:
 	void AddForce(Force* force);
 	void AddThrust(Vector::Vector3 force);
 	void MoveVelocity(Vector::Vector3 force);
-	void Move(PhysicalObject* object, float deltaTime);
+	void SetVelocity(Vector::Vector3 force);
+	Vector::Vector3 Move(Vector::Vector3 position, float deltaTime);
 	void Bounce();
 	void Update(float deltaTime);
 	

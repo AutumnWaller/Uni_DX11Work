@@ -35,6 +35,10 @@ namespace Vector {
 			return false;
 		}
 
+		static Vector3 Multiply(const float a, const Vector3 b) {
+			return Vector3(a * b.x, a * b.y, a * b.z);
+		}
+
 		Vector3 operator<=(const Vector3 a) {
 			if (this->x <= a.x)
 				if (this->y <= a.y)
@@ -116,7 +120,7 @@ namespace Vector {
 		static float Dot(Vector3 a, Vector3 b) { return (a.x * b.x) + (a.y * b.y); };
 		static Vector3 Cross(Vector3 a, Vector3 b) { return Vector3((a.y * b.z) - (a.z * b.y), (a.z * b.x) - (a.x * b.z), (a.x * b.y) - (a.y * b.x)); };
 		static float Magnitude(Vector3 a) { return sqrt(Sqr(a.x) + Sqr(a.y) + Sqr(a.z)); };
-
+		Vector3 Reflect(Vector3 a) { return Vector3((*this - 2) * Multiply(Dot(*this, a), a)); };
 		Vector3(float _X, float _Y, float _Z);
 		Vector3(float n = 0);
 		~Vector3();
